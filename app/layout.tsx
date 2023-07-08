@@ -10,7 +10,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <table>
+          <tr>BYO Tube</tr>
+          <tr>{children}</tr>
+        </table>
+      </body>
     </html>
   )
 }
