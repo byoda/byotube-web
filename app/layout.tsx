@@ -1,3 +1,8 @@
+export const metadata = {
+  title: 'ByoTube',
+  description: 'Bring Your Own Tube',
+}
+
 export default function RootLayout({
   children,
 }: {
