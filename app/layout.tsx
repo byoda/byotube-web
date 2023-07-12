@@ -1,21 +1,18 @@
-export const metadata = {
-  title: 'ByoTube',
-  description: 'Bring Your Own Tube',
-}
+import { ApolloWrapper } from "/lib/apollo-wrapper";
 
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode,
 }) {
-  return (
-    <html lang="en">
-      <body>
-        <table>
-          <tr>BYO Tube</tr>
-          <tr>{children}</tr>
-        </table>
-      </body>
-    </html>
-  )
+    return (
+        <html lang="en">
+            <body>
+                <table>
+                    <tr>BYO Tube</tr>
+                    <tr><ApolloWrapper>{children}</ApolloWrapper></tr>
+                </table>
+            </body>
+        </html>
+    );
 }
