@@ -1,24 +1,10 @@
 'use client'
 
-export const dynamic = "force-dynamic";
+import Link from 'next/link'
 
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import { StrictMode } from 'react';
-
-import * as ReactDOM from 'react-dom/client';
-import {createRoot} from 'react-dom/client';
-
-import { useQuery } from '@apollo/client';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider
-} from '@apollo/client';
-
-import ASSET_QUERY from './AssetLists/AssetQuery.js';
-
-// import { useRouter } from 'next/navigation'
+import ASSET_QUERY from '/lib/AssetQuery.ts';
 
 import {
   SafeAreaView,
@@ -33,6 +19,14 @@ import {
 
 const styles = StyleSheet.create(
     {
+        navbar: {
+            innerHeight: 16,
+        },
+        video: {
+            innerHeight: 240,
+            innerWidth: 320,
+            alignItems: 'center',
+        },
         item: {
             flex: 1,
             margin: 10,
@@ -58,19 +52,29 @@ const styles = StyleSheet.create(
     }
 );
 
-
 function AssetGrid({ data }) {
     const renderItem = ({ item }) => (
         <View style={styles.item}>
-            <TouchableOpacity key={item.asset.asset_id}
-                style={styles.item}
-            >
-                  <Image
-                    style={styles.image}
-                    source={{ uri: item.asset.public_video_thumbnails[0].url }}
-                  />
-                  <Text style={styles.title}>{item.asset.title}</Text>
-                  <Text style={styles.creator}>{item.asset.creator}</Text>
+            <TouchableOpacity key={item.asset.asset_id} style={styles.item}>
+                <Link
+                    href= {{
+                        pathname: '/AssetPage',
+                        query: {
+                            asset_url: item.asset.asset_url,
+                            asset_id: item.asset.asset_id,
+                            creator: item.asset.creator,
+                            title: item.asset.title,
+                            thumbnail_url: item.asset.public_video_thumbnails[0].url,
+                        },
+                    }}
+                >
+                    <Image
+                        style={styles.image}
+                        source={{ uri: item.asset.public_video_thumbnails[0].url }}
+                    />
+                </Link>
+                <Text style={styles.title}>{item.asset.title}</Text>
+                <Text style={styles.creator}>{item.asset.creator}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -96,10 +100,7 @@ function AssetList() {
         }
     );
 
-    console.log(data)
-
     var assetArray = data.public_assets_connection.edges;
-    console.log(assetArray)
 
     return (
         <div>

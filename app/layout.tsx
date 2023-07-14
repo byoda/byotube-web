@@ -1,5 +1,7 @@
 import { ApolloWrapper } from "/lib/apollo-wrapper";
 
+import { StyleSheet } from 'react-native-web';
+
 export default function RootLayout({
     children,
 }: {
@@ -8,10 +10,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <table>
-                    <tr>BYO Tube</tr>
-                    <tr><ApolloWrapper>{children}</ApolloWrapper></tr>
-                </table>
+                <ApolloWrapper>{children}</ApolloWrapper>
             </body>
         </html>
     );
