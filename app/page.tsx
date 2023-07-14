@@ -1,10 +1,13 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
+
 import Link from 'next/link'
 
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import ASSET_QUERY from '/lib/AssetQuery.ts';
+import Asset from '/lib/types.ts';
 
 import {
   SafeAreaView,
@@ -53,26 +56,42 @@ const styles = StyleSheet.create(
 );
 
 function AssetGrid({ data }) {
+    const router = useRouter()
+
+    const handleGridItemClick = (asset: Asset) => {
+        const SERVICE_ID = "4294929430"
+        const MEMBER_ID = "94f23c4b-1721-4ffe-bfed-90f86d07611a"
+        const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        const TOKEN = "dummy"
+        let apiUrl = `https://proxy.byoda.net/${SERVICE_ID}/${MEMBER_ID}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${SERVICE_ID}&signedby=${SIGNEDBY}&token=${TOKEN}`
+        fetch(apiUrl
+            ).then(
+                (response) => response.json()
+            ).then(
+                (data) => {
+                    console.log(`key ID: ${data.key_id} content token: ${data.content_token}`)
+                    let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.public_video_thumbnails[0].url}&key_id=${data.key_id}&content_token=${data.content_token}`
+                    let url = '/AssetPage' + query_string
+                    router.push(url)
+                }
+            ).catch(
+                (error) => {
+                        // Handle any errors
+                        console.error(error);
+                }
+            );
+        };
+
     const renderItem = ({ item }) => (
         <View style={styles.item}>
-            <TouchableOpacity key={item.asset.asset_id} style={styles.item}>
-                <Link
-                    href= {{
-                        pathname: '/AssetPage',
-                        query: {
-                            asset_url: item.asset.asset_url,
-                            asset_id: item.asset.asset_id,
-                            creator: item.asset.creator,
-                            title: item.asset.title,
-                            thumbnail_url: item.asset.public_video_thumbnails[0].url,
-                        },
-                    }}
-                >
-                    <Image
-                        style={styles.image}
-                        source={{ uri: item.asset.public_video_thumbnails[0].url }}
-                    />
-                </Link>
+            <TouchableOpacity key={item.asset.asset_id} style={styles.item}
+                onPress={() => handleGridItemClick(item.asset)}
+            >
+
+                <Image
+                    style={styles.image}
+                    source={{ uri: item.asset.public_video_thumbnails[0].url }}
+                />
                 <Text style={styles.title}>{item.asset.title}</Text>
                 <Text style={styles.creator}>{item.asset.creator}</Text>
             </TouchableOpacity>

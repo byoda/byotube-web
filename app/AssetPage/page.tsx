@@ -25,6 +25,13 @@ function AssetPage(data: any) {
         thumbnail_url: searchParams.get('thumbnail_url'),
         creator: searchParams.get('creator'),
     }
+    let key_id = searchParams.get('key_id')
+    let content_token = searchParams.get('content_token')
+
+    if (key_id) {
+        asset.asset_url += `?key_id=${key_id}`
+    }
+
     console.log('URL: ' + asset.asset_url)
 
     const playerRef = React.useRef(null);
@@ -62,33 +69,12 @@ function AssetPage(data: any) {
 
     const SERVICE_ID = "4294929430"
     const MEMBER_ID = "94f23c4b-1721-4ffe-bfed-90f86d07611a"
-    const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
-    const TOKEN = "dummy"
-    let apiUrl = `https://proxy.byoda.net/${SERVICE_ID}/${MEMBER_ID}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${SERVICE_ID}&signedby=${SIGNEDBY}&token=${TOKEN}`
 
-    let token = ''
-    let keyId = ''
-    fetch(apiUrl
-    ).then(
-        (response) => response.json()
-    ).then(
-        (data) => {
-            token = data.content_token
-            keyId = data.key_id
-            const videoUrl = `${asset.asset_url}?key_id=${keyId}`
-            // const headers = { Authorization: `${token}` };
-            console.log(`URL: ${videoUrl}, token: ${token}`)
-        }
-    ).catch(
-        (error) => {
-                // Handle any errors
-                console.error(error);
-        }
-    );
+
     return (
         <>
             <div>Start of app here</div>
-            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} token={token} />
+            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} content_token={content_token} />
             <div>Rest of app here</div>
         </>
     );

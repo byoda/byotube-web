@@ -7,15 +7,15 @@ import 'video.js/dist/video-js.css';
 export const MyVideoJS = (props) => {
     const videoRef = React.useRef(null);
     const playerRef = React.useRef(null);
-    const {options, onReady, token} = props;
+    const {options, onReady, content_token} = props;
 
-    if (token) {
+    if (content_token) {
         if (options.headers == undefined){
             options.headers = {}
         }
-        if (token) {
-            videojs.log(`Adding authorization header with token ${token}`)
-            options.headers["Authorization"] = `Bearer ${token}`
+        if (content_token) {
+            videojs.log(`Adding authorization header with token ${content_token}`)
+            options.headers["Authorization"] = `Bearer ${content_token}`
         }
     }
 
@@ -23,9 +23,9 @@ export const MyVideoJS = (props) => {
         if (options.headers == undefined){
             options.headers = {}
         }
-        if (token) {
-            videojs.log(`Adding authorization header with token ${token}`)
-            options.headers["Authorization"] = `Bearer ${token}`
+        if (content_token) {
+            videojs.log(`Adding authorization header with token ${content_token}`)
+            options.headers["Authorization"] = `Bearer ${content_token}`
         }
 
         return options;

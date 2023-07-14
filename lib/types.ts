@@ -1,7 +1,10 @@
+import { list } from "postcss";
+
 type Asset = {
-    asset_id: String;
-    asset_url: String;
-    title: String;
-    thumbnail_url: String;
-    creator: String;
+    asset_id: string;
+    asset_url: string;
+    title: string;
+    thumbnail_url: string;
+    creator: string;
+    public_video_thumbnails: string[];
 }
