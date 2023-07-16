@@ -1,6 +1,4 @@
-import { ApolloWrapper } from "/lib/apollo-wrapper";
-
-import { StyleSheet } from 'react-native-web';
+import { ApolloWrapper } from "./apollo-wrapper";
 
 export default function RootLayout({
     children,

@@ -6,8 +6,7 @@ import Link from 'next/link'
 
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import ASSET_QUERY from '/lib/AssetQuery.ts';
-import Asset from '/lib/types.ts';
+import ASSET_QUERY from './AssetQuery.js';
 
 import {
   SafeAreaView,
@@ -19,6 +18,14 @@ import {
   Image,
 } from 'react-native-web';
 
+type Asset = {
+    asset_id: string;
+    asset_url: string;
+    title: string;
+    thumbnail_url: string;
+    creator: string;
+    public_video_thumbnails: string[];
+}
 
 const styles = StyleSheet.create(
     {
@@ -70,14 +77,14 @@ function AssetGrid({ data }) {
             ).then(
                 (data) => {
                     console.log(`key ID: ${data.key_id} content token: ${data.content_token}`)
-                    let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.public_video_thumbnails[0].url}&key_id=${data.key_id}&content_token=${data.content_token}`
+                    let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.public_video_thumbnails[0]}&key_id=${data.key_id}&content_token=${data.content_token}`
                     let url = '/AssetPage' + query_string
                     router.push(url)
                 }
             ).catch(
                 (error) => {
-                        // Handle any errors
-                        console.error(error);
+                    // Handle any errors
+                    console.error(error);
                 }
             );
         };
@@ -91,6 +98,7 @@ function AssetGrid({ data }) {
                 <Image
                     style={styles.image}
                     source={{ uri: item.asset.public_video_thumbnails[0].url }}
+                    alt={`Thumbnail for ${item.asset.title}`}
                 />
                 <Text style={styles.title}>{item.asset.title}</Text>
                 <Text style={styles.creator}>{item.asset.creator}</Text>
@@ -109,7 +117,6 @@ function AssetGrid({ data }) {
 }
 
 function AssetList() {
-    console.log('returning asset list')
     const {data} = useSuspenseQuery(
         ASSET_QUERY,
         {
@@ -119,7 +126,8 @@ function AssetList() {
         }
     );
 
-    var assetArray = data.public_assets_connection.edges;
+    let assetData = data as any;
+    var assetArray = assetData.public_assets_connection.edges;
 
     return (
         <div>

@@ -2,17 +2,22 @@
 
 import React from 'react';
 
-import { StyleSheet } from 'react-native-web';
-
 
 import { useSearchParams } from 'next/navigation'
 
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 
-import Asset from '/lib/types.ts';
-
 import MyVideoJS from './VideoPlayer.js';
+
+type Asset = {
+    asset_id: string;
+    asset_url: string;
+    title: string;
+    thumbnail_url: string;
+    creator: string;
+    public_video_thumbnails: string[];
+}
 
 function AssetPage(data: any) {
     console.log('AssetPage')
@@ -80,30 +85,4 @@ function AssetPage(data: any) {
     );
 }
 
-const styles = StyleSheet.create(
-    {
-        video: {
-            innerHeight: 240,
-            innerWidth: 320,
-            alignItems: 'center',
-        },
-        image: {
-            width: 340,
-            height: 170,
-            borderRadius: 8,
-        },
-        title: {
-            marginTop: 8,
-            fontSize: 18,
-            fontWeight: 'bold',
-            textAlign: 'left',
-        },
-        creator: {
-            marginTop: 8,
-            fontSize: 16,
-            fontWeight: 'normal',
-            textAlign: 'left',
-        },
-    }
-);
 export default AssetPage;
