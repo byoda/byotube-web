@@ -9,15 +9,6 @@ export const MyVideoJS = (props) => {
     const playerRef = React.useRef(null);
     const {options, onReady, content_token} = props;
 
-    if (content_token) {
-        if (options.headers == undefined){
-            options.headers = {}
-        }
-        if (content_token) {
-            videojs.log(`Adding authorization header with token ${content_token}`)
-            options.headers["Authorization"] = `Bearer ${content_token}`
-        }
-    }
 
     videojs.Vhs.xhr.beforeRequest = function (options) {
         if (options.headers == undefined){
