@@ -79,7 +79,7 @@ function AssetPage(data: any) {
     return (
         <>
             <div>Start of app here</div>
-            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} content_token={content_token} />
+            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} content_token={content_token} key_id={key_id} />
             <div>Rest of app here</div>
         </>
     );
