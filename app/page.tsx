@@ -76,8 +76,9 @@ function AssetGrid({ data }) {
                 (response) => response.json()
             ).then(
                 (data) => {
-                    console.log(`key ID: ${data.key_id} content token: ${data.content_token}`)
-                    let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.public_video_thumbnails[0]}&key_id=${data.key_id}&content_token=${data.content_token}`
+                    let encoded_content_token = encodeURIComponent(data.content_token)
+                    console.log(`key ID: ${data.key_id} unencoded content token: ${data.content_token} encoded content token: ${encoded_content_token}`)
+                    let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.public_video_thumbnails[0]}&key_id=${data.key_id}&content_token=${encoded_content_token}`
                     let url = '/AssetPage' + query_string
                     router.push(url)
                 }

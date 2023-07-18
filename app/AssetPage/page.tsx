@@ -20,8 +20,6 @@ type Asset = {
 }
 
 function AssetPage(data: any) {
-    console.log('AssetPage')
-
     const searchParams = useSearchParams();
     let asset = {
         asset_url: searchParams.get('asset_url'),
@@ -31,11 +29,11 @@ function AssetPage(data: any) {
         creator: searchParams.get('creator'),
     }
     let key_id = searchParams.get('key_id')
-    let content_token = searchParams.get('content_token')
 
-    if (key_id) {
-        asset.asset_url += `?key_id=${key_id}`
-    }
+    // searchParams seems to automatically decode query params so
+    // we have to encode here again
+    let content_token = searchParams.get('content_token')
+    let encoded_content_token = encodeURI(content_token)
 
     console.log('URL: ' + asset.asset_url)
 
@@ -72,14 +70,12 @@ function AssetPage(data: any) {
         );
     };
 
-    const SERVICE_ID = "4294929430"
-    const MEMBER_ID = "94f23c4b-1721-4ffe-bfed-90f86d07611a"
-
+    videojs.log(`Asset page encoded content_token: ${encoded_content_token}`)
 
     return (
         <>
             <div>Start of app here</div>
-            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} content_token={content_token} key_id={key_id} />
+            <MyVideoJS options={videoJsOptions} onReady={handlePlayerReady} content_token={encoded_content_token} key_id={key_id} />
             <div>Rest of app here</div>
         </>
     );
