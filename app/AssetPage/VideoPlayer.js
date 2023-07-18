@@ -9,17 +9,15 @@ export const MyVideoJS = (props) => {
     const playerRef = React.useRef(null);
     const {options, onReady, content_token, key_id} = props;
 
-    let decoded_content_token = decodeURI(content_token)
-    videojs.log(`Video Player decoded content_token: ${decoded_content_token}, encoded content_token: ${content_token}`)
 
     videojs.Vhs.xhr.beforeRequest = function (options) {
         if (options.headers == undefined){
             options.headers = {}
         }
         if (content_token) {
-            videojs.log(`Adding authorization header with token ${decoded_content_token}`)
-            options.headers["Authorization"] = `Bearer ${decoded_content_token}`
-            options.headers["X-Authorizationkeyid"] = key_id
+            videojs.log(`Adding authorization headers with key_id ${key_id} and token ${content_token}`)
+            options.headers["Authorization"] = `Bearer ${content_token}`
+            options.headers["X-AuthorizationKeyId"] = key_id
         }
 
         return options;
