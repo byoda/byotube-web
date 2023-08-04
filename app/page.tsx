@@ -1,8 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
+// https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+// export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation';
 
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
