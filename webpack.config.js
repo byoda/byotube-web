@@ -6,5 +6,6 @@ module.exports = {
         alias: {
             'react-native$': 'react-native-web'
         }
-    }
+    },
+    externals: { "react-native": true }
 }
