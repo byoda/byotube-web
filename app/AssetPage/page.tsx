@@ -22,7 +22,7 @@ import 'video.js/dist/video-js.css';
 
 import MyVideoJS from './VideoPlayer.js';
 
-import { Asset } from './data_types.ts';
+import { Asset } from '../data_types';
 
 const styles = StyleSheet.create(
     {
@@ -53,9 +53,12 @@ function AssetPage(data: any) {
         asset_url: searchParams.get('asset_url'),
         asset_id: searchParams.get('asset_id'),
         title: searchParams.get('title'),
-        thumbnail_url: searchParams.get('thumbnail_url'),
+        video_thumbnail: searchParams.get('thumbnail_url'),
         creator: searchParams.get('creator'),
+        creator_thumbnail: searchParams.get('creator_thumbnail'),
         ingest_status: searchParams.get('ingest_status'),
+        video_thumbnails: null,
+        publisher_asset_id: null
     }
     let key_id = searchParams.get('key_id')
     let content_token = searchParams.get('content_token')
@@ -76,7 +79,7 @@ function AssetPage(data: any) {
     let videoJsOptions = {
         autoplay: false,
         controls: true,
-        poster: asset.thumbnail_url,
+        poster: asset.video_thumbnail,
         responsive: true,
         // fluid: true,
         width: '1120',
@@ -117,14 +120,14 @@ function AssetPage(data: any) {
                 <table>
                     <tbody>
                         <tr>
-                            <td style={{colSpan:'3'}}>
+                            <td>
                             <View>
                                 <MyVideoJS style={styles.video_box} options={videoJsOptions} onReady={handlePlayerReady} content_token={content_token} key_id={key_id} />
                                 </View>
                             </td>
                         </tr>
                         <tr>
-                            <td style={{'align': 'left', 'width': '10%', 'rowSpan':'2'}}>
+                            <td align='left' width='10%'>
                                 <Image
                                     style={styles.avatar}
                                     source={{ uri: asset.creator_thumbnail }}
