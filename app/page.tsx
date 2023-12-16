@@ -33,12 +33,11 @@ export const revalidate = 300;
 import {
     AssetEdge,
     ApiResponseGetAssets,
-    Asset
-} from './data_types.ts';
+    Asset,
+    VideoThumbnail,
+} from './data_types';
 
-import { constants } from './constants.ts';
-import { get } from 'http';
-import { randomUUID } from 'crypto';
+import { constants } from './constants';
 
 const styles = StyleSheet.create(
     {
@@ -193,7 +192,11 @@ export default function Page() {
                         if (asset_page.total_count > 0) {
                             setOffset(offset + asset_page.total_count);
                             select_thumbnails(asset_page.edges);
+                            setAssetEdges([...asset_edges, ...asset_page.edges]);
                             setLoading(false);
+                            if (asset_edges.length > 100) {
+                                setIsListEnd(true);
+                            }
                         } else {
                             setIsListEnd(true);
                             setLoading(false);
@@ -215,21 +218,28 @@ export default function Page() {
             for (index = asset.video_thumbnails.length - 1; index >= 0; index--) {
                 let thumbnail: VideoThumbnail = asset.video_thumbnails[index]
                 if (thumbnail.height > 720) {
-                    console.log('Found >720p thumbnail: ' + thumbnail.url + ' for asset: ' + asset.asset_id)
+                    // console.log('Found >720p thumbnail: ' + thumbnail.url + ' for asset: ' + asset.asset_id)
                     asset.video_thumbnail = thumbnail.url;
                 } else if (thumbnail.height == 720) {
                     asset.video_thumbnail = thumbnail.url;
-                    console.log('Found 720p thumbnail: ' + thumbnail.url)
+                    // console.log('Found 720p thumbnail: ' + thumbnail.url)
                     break;
                 }
             }
             if (! asset.video_thumbnail) {
-                if (asset.video_thumbnails.length > 1) {
-                    console.log('Using last-resort 2nd thumbnail with height: ' + asset.video_thumbnails[1].height + ' for asset: ' + asset.asset_id)
-                    asset.video_thumbnail = asset.video_thumbnails[1].url;
-                } else if (asset.video_thumbnails.length == 1) {
-                    console.log('Using last-last-resort 1std thumbnail with height: ' + asset.video_thumbnails[1].height + ' for asset: ' + asset.asset_id)
-                    asset.video_thumbnail = asset.video_thumbnails[0].url;
+                let video_thumbnails = asset.video_thumbnails;
+                let thumbnail: VideoThumbnail = null;
+                if (video_thumbnails.length) {
+                    thumbnail = video_thumbnails.shift();
+                    if (video_thumbnails.length) {
+                        thumbnail = video_thumbnails.shift();
+                        // console.log('Using last-resort 2nd thumbnail with height: ' + thumbnail.height + ' for asset: ' + asset.asset_id);
+                    } else {
+                        // console.log('Using last-resort 1st thumbnail with height: ' + thumbnail.height + ' for asset: ' + asset.asset_id);
+                    }
+                    asset.video_thumbnail = thumbnail.url;
+                } else {
+                    asset.video_thumbnail = 'byotube-orange.png'
                 }
             }
         }
@@ -251,7 +261,7 @@ export default function Page() {
                     <table>
                         <tbody>
                             <tr>
-                                <td rowSpan="2">
+                                <td>
                                     <Image
                                         style={styles.avatar}
                                         source={{ uri: item.node.creator_thumbnail }}
@@ -295,12 +305,12 @@ export default function Page() {
 
         let asset: Asset = edge.node
         if (asset.ingest_status != 'external') {
-            let apiUrl: string = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`
+            let apiUrl: string = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`
             fetch(apiUrl)
                 .then((response) => response.json())
                 .then(
                     (data) => {
-                        let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.video_thumbnail}&key_id=${data.key_id}&content_token=${data.content_token}`
+                        let query_string = `?asset_url=${asset.asset_url}&asset_id=${asset.asset_id}&creator=${asset.creator}&title=${asset.title}&thumbnail_url=${asset.video_thumbnail}&key_id=${data.key_id}&content_token=${data.content_token}&creator_thumbnail=${data.creator_thumbnail}`
                         let url = '/AssetPage' + query_string
                         // return <Link href={url} />
                         console.log('Calling: ' + url);

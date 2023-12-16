@@ -3,18 +3,13 @@
 
 import {
     Text,
-    View,
-    Image,
+    Pressable,
     StyleSheet,
-    SafeAreaView,
 } from 'react-native-web';
 
 import Link from 'next/link'
 
 import { EB_Garamond } from 'next/font/google'
-import { loadComponents } from 'next/dist/server/load-components';
-
-import LoginButton from './components/login_button.tsx';
 
 const eb_garamond = EB_Garamond({
     subsets: ['latin'],
@@ -67,7 +62,9 @@ export default function Header() {
             style={{ textDecoration: "none", color: "black",  paddingLeft: 60 }}
             href='https://byo.tube/info'>the social network built on top of personal data servers
         </Link>
-        <LoginButton>Log in</LoginButton>
+        <Link href='/login'>
+            <Pressable title='Login'/>
+        </Link>
     </div>
   );
 }

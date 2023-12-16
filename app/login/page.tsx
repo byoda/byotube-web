@@ -13,12 +13,12 @@ import {
     SafeAreaView,
     TextInput,
     StyleSheet,
-    Button,
+    Pressable,
 } from 'react-native-web';
 
 import { useRouter } from 'next/navigation';
 
-import { constants } from '../constants.ts';
+import { constants } from '../constants';
 
 const styles = StyleSheet.create(
     {
@@ -124,8 +124,8 @@ export default function LoginPage() {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan='2'>
-                            <Button
+                        <td>
+                            <Pressable
                                 onPress={logIn}
                                 title='Log in'
                                 role='Log in'
