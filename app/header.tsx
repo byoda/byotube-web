@@ -46,6 +46,13 @@ const styles = StyleSheet.create(
             fontWeight: 800,
             fontSize: '32px',
         },
+        login: {
+            width: 32,
+            height: 32,
+            padding: 'auto',
+            display: 'block',
+            float: 'right',
+        },
     }
 );
 
@@ -60,10 +67,12 @@ export default function Header() {
         <Text style={styles.headerText}>BYO.Tube</Text>
         <Link
             style={{ textDecoration: "none", color: "black",  paddingLeft: 60 }}
-            href='https://byo.tube/info'>the social network built on top of personal data servers
+            href='https://byo.tube/info'>the social network running on personal data servers
         </Link>
         <Link href='/login'>
-            <Pressable title='Login'/>
+            <Pressable title='Login'>
+                <img src='login.png' style={styles.login}/>
+            </Pressable>
         </Link>
     </div>
   );
