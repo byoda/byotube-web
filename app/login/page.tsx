@@ -129,7 +129,9 @@ export default function LoginPage() {
                                 onPress={logIn}
                                 title='Log in'
                                 role='Log in'
-                            />
+                            >
+                                <img src='login.png' style={styles.login}/>
+                            </Pressable>
                         </td>
                     </tr>
                 </tbody>
