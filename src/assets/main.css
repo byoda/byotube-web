@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 100;
+    src: url('/public/font/Roboto-Thin.ttf') format('truetype'),
+    /* Add more formats if needed */
+  }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: url('/public/font/Roboto-Light.ttf') format('ttf');
+    /* Add more formats if needed */
+  }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/public/font/Roboto-Regular.ttf') format('ttf');
+    /* Add more formats if needed */
+  }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    src: url('/public/font/Roboto-Medium.ttf') format('ttf');
+    /* Add more formats if needed */
+  }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: url('/public/font/Roboto-Bold.ttf') format('ttf');
+    /* Add more formats if needed */
+  }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    src: url('/public/font/Roboto-Black.ttf') format('ttf');
+    /* Add more formats if needed */
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif; /* Use your font-family in the whole app */
+  }
