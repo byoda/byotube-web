@@ -1,24 +1,59 @@
 {
-    "dependencies": {
-        "next": "^14.0.3",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "video.js": "^8.6.1",
-        "videojs-youtube": "^3.0.1"
+  "name": "vuetube",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --port 3000",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "moment": "^2.24.0",
+    "vee-validate": "^3.2.5",
+    "videojs-youtube": "^3.0.1",
+    "vue": "^2.6.11",
+    "vue-image-crop-upload": "^2.5.0",
+    "vue-infinite-loading": "^2.4.5",
+    "vue-router": "^3.1.6",
+    "vuebar": "0.0.20",
+    "vuetify": "^2.2.11",
+    "vuex": "^3.1.3"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.3.0",
+    "@vue/cli-plugin-eslint": "^4.3.0",
+    "@vue/cli-plugin-router": "^4.3.0",
+    "@vue/cli-plugin-vuex": "^4.3.0",
+    "@vue/cli-service": "^4.3.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.19.0",
+    "sass-loader": "^8.0.0",
+    "video.js": "^8.6.1",
+    "vue-cli-plugin-vuetify": "^2.0.5",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.3.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
     },
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint"
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
     },
-    "devDependencies": {
-        "@types/node": "20.9.0",
-        "@types/react": "18.2.37",
-        "autoprefixer": "^10.4.16",
-        "postcss": "^8.4.31",
-        "react-native-web": "^0.19.9",
-        "tailwindcss": "^3.3.5",
-        "typescript": "5.2.2"
-    }
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
