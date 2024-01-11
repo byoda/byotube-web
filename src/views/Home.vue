@@ -188,7 +188,6 @@ export default {
       }
     },
     async getMemberVideos($state) {
-      console.log("BEfore", this.loaded);
       if (!this.loaded) {
         this.loading = true;
       }
@@ -247,8 +246,6 @@ export default {
       } else {
         $state.complete();
       }
-
-      console.log("Lodaed", this.loaded);
     },
     async getVideos($state) {
       this.initialState.auth_token
