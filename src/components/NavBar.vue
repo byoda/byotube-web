@@ -55,7 +55,7 @@
         </template>
         <span>VueTube apps</span>
       </v-tooltip> -->
-
+     
       <!-- <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on" class="mr-7">
@@ -64,11 +64,12 @@
         </template>
         <span>Notifications</span>
       </v-tooltip> -->
+
       <v-btn
         tile
         outlined
         color="blue"
-        class="font-weight-bold"
+        class="font-weight-bold auth-btn"
         v-if="!$store.getters.isAuthenticated"
         router
         to="/signin"
@@ -79,7 +80,7 @@
         tile
         outlined
         color="blue"
-        class="font-weight-bold"
+        class="font-weight-bold auth-btn"
         v-else-if="$store.getters.isAuthenticated"
         router
         @click="logout"
@@ -588,6 +589,11 @@ export default {
 
   .vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
+  }
+  
+  .auth-btn{
+    height: 40px; 
+    border-radius: 4px;
   }
 }
 </style>

@@ -2,7 +2,6 @@ import Api from '@/services/Api'
 
 export default {
   getAll(filter) {
-    console.log("FIlter", filter);
     return Api().get(`service/data?${filter.after ? 'after='+filter.after : ''}`)
   },
   getMemberVideos(url, body={}) {

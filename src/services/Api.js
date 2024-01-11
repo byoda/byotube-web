@@ -16,7 +16,7 @@ export default () => {
       if (error.response.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        location.reload()
+        // location.reload()
       }
       return Promise.reject(error)
     }
