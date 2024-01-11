@@ -1,7 +1,7 @@
 export const constants = {
-    BYOTUBE_SERVICE_ID: '4294929430',
-    BYODA_NETWORK: 'byoda.net',
-    BYOTUBE_API: 'api.byoda.tube'
+    BYOTUBE_SERVICE_ID: '16384',
+    BYODA_NETWORK: 'byo.net',
+    BYOTUBE_API: 'api.byo.tube'
 }
 
 export const  IngestStatus = Object.freeze({

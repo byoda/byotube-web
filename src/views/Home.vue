@@ -35,7 +35,12 @@
             hide-details
             dense
             :options="options"
-            @change="getVideos(_, $event)"
+            @change="
+              ingestStatus = $event;
+              after = null,
+              loaded = false,
+              getVideos();
+            "
           />
         </div>
         <v-row>
@@ -138,10 +143,10 @@ export default {
       youtube: "Youtube Hosted",
       byoda: "BYODA Hosted",
     },
+    ingestStatus: "",
   }),
   methods: {
-    async getServiceVideos($state, ingestStatus) {
-      console.log("Inh", ingestStatus);
+    async getServiceVideos($state) {
       if (!this.loaded) {
         this.loading = true;
       }
@@ -182,8 +187,9 @@ export default {
         $state.complete();
       }
     },
-    async getMemberVideos($state, ingestStatus) {
-      if (ingestStatus || !this.loaded ) {
+    async getMemberVideos($state) {
+      console.log("BEfore", this.loaded);
+      if (!this.loaded) {
         this.loading = true;
       }
 
@@ -204,12 +210,16 @@ export default {
         after: (() => this.after)(),
       };
 
-      if(ingestStatus){
-        filter['filter'] =  {
+      if (this.ingestStatus) {
+        filter["filter"] = {
           ingest_status: {
-            eq: ingestStatus ?  (ingestStatus === this.filter.byoda ? IngestStatus.PUBLISHED : IngestStatus.EXTERNAL) : "",
-          }
-        }
+            eq: this.ingestStatus
+              ? this.ingestStatus === this.filter.byoda
+                ? IngestStatus.PUBLISHED
+                : IngestStatus.EXTERNAL
+              : "",
+          },
+        };
       }
 
       const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
@@ -232,16 +242,18 @@ export default {
           this.after = videos?.data?.page_info?.end_cursor;
         }
         this.videos.push(...videos.data.edges);
-        $state.loaded();
+        $state?.loaded();
         this.loaded = true;
       } else {
         $state.complete();
       }
+
+      console.log("Lodaed", this.loaded);
     },
-    async getVideos($state, ingestStatus) {
+    async getVideos($state) {
       this.initialState.auth_token
-        ? await this.getMemberVideos($state, ingestStatus)
-        : await this.getServiceVideos($state, ingestStatus);
+        ? await this.getMemberVideos($state)
+        : await this.getServiceVideos($state);
     },
     async followChannel(asset, origin) {
       const { creator, created_timestamp } = asset;
