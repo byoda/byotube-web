@@ -34,11 +34,13 @@
             outlined
             hide-details
             dense
+            multiple
             :options="options"
             @change="
               ingestStatus = $event;
               after = null,
               loaded = false,
+              videos = [],
               getVideos();
             "
           />
