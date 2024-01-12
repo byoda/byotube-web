@@ -25,7 +25,9 @@
                 : "Recommended"
             }}
           </h3>
+          {{ filterVal }}
           <v-select
+            v-model="ingestStatus"
             height="36"
             class="select-filter mr-2"
             :full-width="false"
@@ -34,10 +36,10 @@
             outlined
             hide-details
             dense
+            small-chips
             multiple
             :options="options"
             @change="
-              ingestStatus = $event;
               after = null,
               loaded = false,
               videos = [],
@@ -112,12 +114,13 @@ import InfiniteLoading from "vue-infinite-loading";
 import moment from "moment";
 import VideoCard from "@/components/VideoCard";
 import VideoService from "@/services/VideoService";
-import { constants, IngestStatus } from "@/globals/contants";
+import { constants } from "@/globals/contants";
 import { followMixin } from "@/mixins/follow.js";
+import { helperMixin } from "@/mixins/helper.js";
 
 export default {
   name: "Home",
-  mixins: [followMixin],
+  mixins: [followMixin, helperMixin],
   data: () => ({
     options: ["YouTube Hosted", "BYODA Hosted"],
     loading: false,
@@ -145,7 +148,7 @@ export default {
       youtube: "Youtube Hosted",
       byoda: "BYODA Hosted",
     },
-    ingestStatus: "",
+    ingestStatus: [],
   }),
   methods: {
     async getServiceVideos($state) {
@@ -211,14 +214,10 @@ export default {
         after: (() => this.after)(),
       };
 
-      if (this.ingestStatus) {
+      if (this.ingestStatus.length && !this.compareArrays(this.ingestStatus, this.options)) {
         filter["filter"] = {
           ingest_status: {
-            eq: this.ingestStatus
-              ? this.ingestStatus === this.filter.byoda
-                ? IngestStatus.PUBLISHED
-                : IngestStatus.EXTERNAL
-              : "",
+            eq: this.ingestStatus[0]
           },
         };
       }
@@ -320,7 +319,7 @@ export default {
 }
 
 .select-filter {
-  max-width: 200px;
+  max-width: 350px;
 
   .v-input {
     height: 36px;
