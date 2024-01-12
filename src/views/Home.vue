@@ -25,28 +25,6 @@
                 : "Recommended"
             }}
           </h3>
-          <v-select
-            v-model="ingestStatus"
-            height="36"
-            class="select-filter mr-2"
-            :full-width="false"
-            :items="options"
-            label="Filter"
-            outlined
-            hide-details
-            dense
-            small-chips
-            multiple
-            item-text="name"
-            return-object
-            :options="options"
-            @change="
-              after = null,
-              loaded = false,
-              videos = [],
-              getVideos();
-            "
-          />
         </div>
         <v-row>
           <v-col
@@ -123,7 +101,10 @@ export default {
   name: "Home",
   mixins: [followMixin, helperMixin],
   data: () => ({
-    options: [{name:"YouTube Hosted", value:'external'},{name: "BYODA Hosted", value:'published'}],
+    options: [
+      { name: "YouTube Hosted", value: "external" },
+      { name: "BYODA Hosted", value: "published" },
+    ],
     loading: false,
     loaded: false,
     errored: false,
@@ -214,11 +195,18 @@ export default {
         first: 40,
         after: (() => this.after)(),
       };
-      console.log("OPt",this.options.map(opt=>opt.name), this.ingestStatus );
-      if (this.ingestStatus.length && !this.compareArrays(this.ingestStatus, this.options)) {
+      console.log(
+        "OPt",
+        this.options.map((opt) => opt.name),
+        this.ingestStatus
+      );
+      if (
+        this.ingestStatus.length &&
+        !this.compareArrays(this.ingestStatus, this.options)
+      ) {
         filter["filter"] = {
           ingest_status: {
-            eq: this.ingestStatus[0].value
+            eq: this.ingestStatus[0].value,
           },
         };
       }
@@ -306,7 +294,18 @@ export default {
       typeof window !== "undefined"
         ? JSON.parse(window.localStorage.getItem("followedAccounts"))
         : null;
+    this.$root.$on("filter-changed", ($event) => {
+      (this.ingestStatus = $event)
+        this.after = null
+        this.loaded = false
+        this.videos = []
+        this.getVideos();
+    });
   },
+  beforeUnmount() {
+    this.$root.$off();
+  },
+
   components: {
     VideoCard,
     InfiniteLoading,
