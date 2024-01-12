@@ -25,7 +25,6 @@
                 : "Recommended"
             }}
           </h3>
-          {{ filterVal }}
           <v-select
             v-model="ingestStatus"
             height="36"
@@ -38,6 +37,8 @@
             dense
             small-chips
             multiple
+            item-text="name"
+            return-object
             :options="options"
             @change="
               after = null,
@@ -122,7 +123,7 @@ export default {
   name: "Home",
   mixins: [followMixin, helperMixin],
   data: () => ({
-    options: ["YouTube Hosted", "BYODA Hosted"],
+    options: [{name:"YouTube Hosted", value:'exernal'},{name: "BYODA Hosted", value:'published'}],
     loading: false,
     loaded: false,
     errored: false,
@@ -213,11 +214,11 @@ export default {
         first: 40,
         after: (() => this.after)(),
       };
-
+      console.log("OPt",this.options.map(opt=>opt.name), this.ingestStatus );
       if (this.ingestStatus.length && !this.compareArrays(this.ingestStatus, this.options)) {
         filter["filter"] = {
           ingest_status: {
-            eq: this.ingestStatus[0]
+            eq: this.ingestStatus[0].value
           },
         };
       }
