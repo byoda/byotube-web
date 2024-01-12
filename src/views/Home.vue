@@ -123,7 +123,7 @@ export default {
   name: "Home",
   mixins: [followMixin, helperMixin],
   data: () => ({
-    options: [{name:"YouTube Hosted", value:'exernal'},{name: "BYODA Hosted", value:'published'}],
+    options: [{name:"YouTube Hosted", value:'external'},{name: "BYODA Hosted", value:'published'}],
     loading: false,
     loaded: false,
     errored: false,
