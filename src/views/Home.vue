@@ -7,7 +7,7 @@
             <div class="title">Error!</div>
             <div>
               Something went wrong, but don’t fr et — let’s give it another
-              shot. Junaid
+              shot.
             </div>
           </v-col>
           <v-col class="shrink">
@@ -31,15 +31,15 @@
             cols="12"
             sm="6"
             md="4"
-            lg="3"
+            lg='4'
             v-for="(video, i) in loading ? 12 : videos"
             :key="i"
-            class="mx-xs-auto"
+            class="mx-xs-auto py-6"
             @click="getItem(video)"
           >
             <v-skeleton-loader type="card-avatar" :loading="loading">
               <video-card
-                :card="{ maxWidth: 350 }"
+                :card="{ maxWidth: 370 }"
                 :video="video.node"
                 :channel="video.origin"
                 :followed-accounts="followedAccounts"
@@ -100,6 +100,10 @@ import { helperMixin } from "@/mixins/helper.js";
 export default {
   name: "Home",
   mixins: [followMixin, helperMixin],
+  components: {
+    VideoCard,
+    InfiniteLoading,
+  },
   data: () => ({
     options: [
       { name: "YouTube Hosted", value: "external" },
@@ -306,10 +310,7 @@ export default {
     this.$root.$off();
   },
 
-  components: {
-    VideoCard,
-    InfiniteLoading,
-  },
+  
 };
 </script>
 
