@@ -81,7 +81,7 @@
       </v-col>
       <v-col cols="10" class="pl-3">
         <v-card-title
-          class="pl-2 pt-3 subtitle-1 font-weight-bold"
+          class="pl-2 pt-3 subtitle-1 font-weight-bold whitespace-wrap"
           style="line-height: 1.2rem"
         >
           {{ video.title }}
@@ -185,5 +185,9 @@ export default {
 .text-sm {
   font-size: 14px !important;
   line-height: 16px;
+}
+
+.whitespace-wrap{
+  word-break: keep-all;
 }
 </style>
