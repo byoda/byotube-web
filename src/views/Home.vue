@@ -31,7 +31,7 @@
             cols="12"
             sm="6"
             md="4"
-            lg='4'
+            lg='3'
             v-for="(video, i) in loading ? 12 : videos"
             :key="i"
             class="mx-xs-auto py-6"

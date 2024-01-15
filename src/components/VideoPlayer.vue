@@ -56,3 +56,10 @@
     }
   }
   </script>
+
+  <style>
+  .video-js {
+    width: 100%;
+    min-height: 480px;
+  }
+  </style>

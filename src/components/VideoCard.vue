@@ -16,7 +16,6 @@
       <v-col
         cols="1"
         v-if="card.type != 'noAvatar'"
-        style="position: relative; z-index: 10;"
       >
         <div class="pl-0 pt-1" router :to="`/channels/${channel._id}`">
           <v-menu
