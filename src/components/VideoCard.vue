@@ -10,6 +10,7 @@
     <v-img
       :src="`${thumbnail.url}`"
       :min-height="203"
+      :max-height="281"
       class="thumbnail"
     ></v-img>
   </div>

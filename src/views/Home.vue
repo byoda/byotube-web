@@ -333,10 +333,13 @@ export default {
   margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: minmax(450px, 2fr);
+  grid-auto-rows: minmax(350px, 2fr);
   column-gap: 15px;
   row-gap: 15px;
   max-width: 3072px;
+  .thumbnail{
+        max-height: 220px !important;
+  }
 }
 
 @media (min-width: 1440px) {
