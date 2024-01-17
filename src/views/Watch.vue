@@ -94,8 +94,52 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" md="3">
-          Small content here
+        <v-col cols="12" md="3" class="pt-6"> 
+          <div
+              v-for="(video, i) in loading ? 12 : videos"
+              :key="i"
+              class="mb-2 recommended-videos"
+              :followed-accounts="followedAccounts"
+              style=" position: relative; height: 90px;"
+            >
+              <v-skeleton-loader style="" type="card-avatar" :loading="loading">
+                <video-card
+                  :card="{ maxWidth: 370 }"
+                  :video="video.node"
+                  :channel="video.origin"
+                  @follow="followChannel(video.node, video.origin)"
+                  style="position: absolute; width: 100%;"
+                  class="d-flex"
+                ></video-card>
+              </v-skeleton-loader>
+            </div>
+            <infinite-loading @infinite="getVideos($event, '')">
+              <div slot="spinner">
+                <v-progress-circular
+                  indeterminate
+                  :loading="loading"
+                  color="red"
+                ></v-progress-circular>
+              </div>
+              <div slot="no-results"></div>
+              <span slot="no-more"></span>
+              <div slot="error" slot-scope="{ trigger }">
+                <v-alert prominent type="error">
+                  <v-row align="center">
+                    <v-col class="grow">
+                      <div class="title">Error!</div>
+                      <div>
+                        Something went wrong, but don’t fret — let’s give it
+                        another shot.
+                      </div>
+                    </v-col>
+                    <v-col class="shrink">
+                      <v-btn @click="trigger">Take action</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-alert>
+              </div>
+            </infinite-loading>
         </v-col>  
       </v-row>
     </v-container>
@@ -115,6 +159,8 @@ import SigninModal from "@/components/SigninModal";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import "videojs-youtube";
 import { followMixin } from "@/mixins/follow.js";
+import VideoCard from "@/components/VideoCard";
+import InfiniteLoading from "vue-infinite-loading";
 
 export default {
   mixins: [followMixin],
@@ -122,22 +168,11 @@ export default {
     loading: false,
     loaded: false,
     errored: false,
-    videoLoading: true,
-    subscribed: false,
-    subscribeLoading: false,
-    showSubBtn: true,
-    feeling: "",
-    video: {},
-    EXTERNAL: "external",
-    videoId: "",
+    after: null,
+    has_next_page: true,
     videos: [],
-    page: 1,
-    infiniteId: +new Date(),
-    truncate: true,
-    url: process.env.VUE_APP_URL,
-    signinDialog: false,
-    details: {},
     service_id: process.env.VUE_APP_BYOTUBE_SERVICE_ID,
+    page: 1,
     initialState: {
       auth_token:
         typeof window !== "undefined"
@@ -150,11 +185,29 @@ export default {
       isAuthenticated: null,
       user: null,
     },
+    followedAccounts: null,
+    filter: {
+      youtube: "Youtube Hosted",
+      byoda: "BYODA Hosted",
+    },
+    ingestStatus: [],
+    videoLoading: true,
+    subscribed: false,
+    subscribeLoading: false,
+    showSubBtn: true,
+    feeling: "",
+    video: {},
+    EXTERNAL: "external",
+    videoId: "",
+    infiniteId: +new Date(),
+    truncate: true,
+    url: process.env.VUE_APP_URL,
+    signinDialog: false,
+    details: {},
     asset: {},
     videoOptions: {},
     key_id: "",
     content_token: "",
-    followedAccounts: null,
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
@@ -163,6 +216,116 @@ export default {
     },
   },
   methods: {
+    async getServiceVideos($state) {
+      if (!this.loaded) {
+        this.loading = true;
+      }
+
+      if (!this.has_next_page) {
+        this.loading = false;
+        $state.complete();
+        this.loaded = true;
+        return;
+      }
+
+      const filter = {
+        first: 40,
+        after: (() => this.after)(),
+      };
+
+      const videos = await VideoService.getAll(filter)
+        .catch((err) => {
+          console.log(err);
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+
+      if (typeof videos === "undefined") return;
+
+      if (videos.data.edges.length) {
+        this.page += 1;
+        this.has_next_page = videos?.data?.page_info?.has_next_page;
+        if (this.has_next_page) {
+          this.after += videos?.data?.total_count;
+        }
+        this.videos.push(...videos.data.edges);
+        $state.loaded();
+        this.loaded = true;
+      } else {
+        $state.complete();
+      }
+    },
+    async getMemberVideos($state) {
+      if (!this.loaded) {
+        this.loading = true;
+      }
+
+      if (!this.has_next_page) {
+        this.loading = false;
+        $state.complete();
+        this.loaded = true;
+        return;
+      }
+
+      let host_url = "";
+      if (this.initialState.domain) {
+        host_url = `https://${this.initialState.domain}`;
+      }
+
+      const filter = {
+        first: 40,
+        after: (() => this.after)(),
+      };
+      console.log(
+        "OPt",
+        this.options.map((opt) => opt.name),
+        this.ingestStatus
+      );
+      if (
+        this.ingestStatus.length &&
+        !this.compareArrays(this.ingestStatus, this.options)
+      ) {
+        filter["filter"] = {
+          ingest_status: {
+            eq: this.ingestStatus[0].value,
+          },
+        };
+      }
+
+      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
+
+      const videos = await VideoService.getMemberVideos(data_url, filter)
+        .catch((err) => {
+          console.log(err);
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+
+      if (typeof videos === "undefined") return;
+
+      if (videos.data.edges.length) {
+        this.page += 1;
+        this.has_next_page = videos?.data?.page_info?.has_next_page;
+        if (this.has_next_page) {
+          this.after = videos?.data?.page_info?.end_cursor;
+        }
+        this.videos.push(...videos.data.edges);
+        $state?.loaded();
+        this.loaded = true;
+      } else {
+        $state.complete();
+      }
+    },
+    async getVideos($state) {
+      console.log("Inside methods");
+      this.initialState.auth_token
+        ? await this.getMemberVideos($state)
+        : await this.getServiceVideos($state);
+    },
     async getVideo() {
       let assetData =
         typeof window !== "undefined"
@@ -377,8 +540,9 @@ export default {
     // AddComment,
     // CommentList,
     SigninModal,
-    // InfiniteLoading,
+    InfiniteLoading,
     VideoPlayer,
+    VideoCard
   },
   created() {
     this.getVideo();
@@ -437,5 +601,14 @@ button.v-btn.remove-hover-bg {
 
 .grey-background{
   background-color: #f2f2f2 !important; 
+}
+
+.recommended-videos{
+  .thumbnail{
+    max-height: 90px !important;
+    min-height: 90px !important;
+    max-width: 168px;
+    object-fit: cover;
+  }
 }
 </style>

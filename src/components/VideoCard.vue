@@ -1,21 +1,22 @@
 <template>
   <v-card
-    class="content-bg card mx-auto"
-    :max-width="card.maxWidth"
+    class="content-bg card rounded-lg"
     flat
     tile
     router
+    :class="{'d-flex':smallCard}"
   >
+  <div>
     <v-img
       :src="`${thumbnail.url}`"
-      :height="206"
-      :width="368"
-      style="border-radius: 8px;"
+      :min-height="203"
+      class="thumbnail"
     ></v-img>
+  </div>
     <v-row no-gutters>
       <v-col
         cols="1"
-        v-if="card.type != 'noAvatar'"
+        v-if="card.type != 'noAvatar' && !smallCard"
       >
         <div class="pl-0 pt-1" router :to="`/channels/${channel._id}`">
           <v-menu
@@ -78,22 +79,24 @@
             {{ video.creator }}
           </p> -->
       </v-col>
-      <v-col cols="10" class="pl-3">
+      <v-col :cols="smallCard ? 12 : 10" :class="{'pl-3':!smallCard}">
         <v-card-title
-          class="pl-2 pt-3 subtitle-1 font-weight-bold whitespace-wrap"
+          class="pl-2 font-weight-bold whitespace-wrap"
+          :class="{'text-sm': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'pt-0':smallCard}"
           style="line-height: 1.2rem"
         >
-          {{ video.title }}
+        <!-- {{ video.title.slice(0,10) }} -->
+          {{ smallCard ?  `${video.title.length > 35 ? `${video.title.slice(0,35)}...` : video.title }` : video.title }}
         </v-card-title>
 
-        <v-card-subtitle class="pl-2 pb-0">
+        <v-card-subtitle class="pl-2 pb-0" :class="{'text-xs':smallCard}">
           {{ video.creator }}
         </v-card-subtitle>
         <v-card-subtitle class="pl-2 pb-0 pt-0 mt-n1">
           {{ convertDateToDuration(video.published_timestamp) }}
         </v-card-subtitle>
       </v-col>
-      <v-col v-if="video.ingest_status === EXTERNAL" cols="1" class="pt-2">
+      <v-col v-if="video.ingest_status === EXTERNAL && !smallCard" cols="1" class="pt-2">
         <v-img src="~@/assets/YouTube_icon.png" height="32" width="32"></v-img>
       </v-col>
     </v-row>
@@ -115,7 +118,11 @@ export default {
     },
     followedAccounts: {
       type: [Array, String],
-      required: true,
+      required: false,
+    },
+    smallCard:{
+      type:Boolean,
+      default:true
     },
     card: Object,
   },
@@ -185,8 +192,17 @@ export default {
   font-size: 14px !important;
   line-height: 16px;
 }
+.text-xs {
+  font-size: 12px !important;
+  line-height: 16px;
+}
 
 .whitespace-wrap{
   word-break: keep-all;
+}
+
+.thumbnail{
+  max-width: 100%; 
+  border-radius: 10px;
 }
 </style>

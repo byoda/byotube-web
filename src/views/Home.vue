@@ -26,31 +26,31 @@
             }}
           </h3>
         </div>
-        <v-row>
-          <v-col
-            cols="12"
-            sm="6"
-            md="4"
-            lg='3'
-            v-for="(video, i) in loading ? 12 : videos"
-            :key="i"
-            class="mx-xs-auto py-6"
-            @click="getItem(video)"
-          >
-            <v-skeleton-loader type="card-avatar" :loading="loading">
-              <video-card
-                :card="{ maxWidth: 370 }"
-                :video="video.node"
-                :channel="video.origin"
-                :followed-accounts="followedAccounts"
-                @follow="followChannel(video.node, video.origin)"
-              ></video-card>
-            </v-skeleton-loader>
-          </v-col>
-          <v-col class="text-center" v-if="videos.length === 0 && !loading">
+        <div> 
+          <div class="grid-layout">
+            <div
+              v-for="(video, i) in loading ? 12 : videos"
+              :key="i"
+              class="py-6"
+              @click="getItem(video)"
+              :followed-accounts="followedAccounts"
+              style=" position: relative;"
+            >
+              <v-skeleton-loader style="" type="card-avatar" :loading="loading">
+                <video-card
+                  :card="{ maxWidth: 370 }"
+                  :video="video.node"
+                  :channel="video.origin"
+                  @follow="followChannel(video.node, video.origin)"
+                  style="position: absolute; width: 100%;"
+                ></video-card>
+              </v-skeleton-loader>
+            </div>
+          </div>
+          <div class="text-center" v-if="videos.length === 0 && !loading">
             <p>No videos yet</p>
-          </v-col>
-          <v-col cols="12" sm="12" md="12" lg="12">
+          </div>
+          <div cols="12" sm="12" md="12" lg="12">
             <infinite-loading @infinite="getVideos($event, '')">
               <div slot="spinner">
                 <v-progress-circular
@@ -78,8 +78,8 @@
                 </v-alert>
               </div>
             </infinite-loading>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
         <v-col class="text-center" v-if="!has_next_page">
           <p>No more videos</p>
         </v-col>
@@ -242,6 +242,7 @@ export default {
       }
     },
     async getVideos($state) {
+      console.log("Inside methods");
       this.initialState.auth_token
         ? await this.getMemberVideos($state)
         : await this.getServiceVideos($state);
@@ -326,4 +327,50 @@ export default {
     height: 36px;
   }
 }
+
+
+.grid-layout{
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(450px, 2fr);
+  column-gap: 15px;
+  row-gap: 15px;
+  max-width: 3072px;
+}
+
+@media (min-width: 1440px) {
+    .grid-layout{
+      grid-template-columns: repeat(4, 1fr);
+      .thumbnail{
+        max-height: 220px !important;
+      }
+    }
+}
+@media (min-width: 1800px) {
+    .grid-layout{
+      grid-template-columns: repeat(5, 1fr);
+      .thumbnail{
+        max-height: 230px !important;
+      }
+    }
+}
+@media (min-width: 2160px) {
+    .grid-layout{
+      grid-template-columns: repeat(6, 1fr);
+      .thumbnail{
+        max-height: 240px !important;
+      }
+    }
+}
+@media (min-width: 4320px) {
+    .grid-layout{
+      grid-template-columns: repeat(6, 1fr);
+      .thumbnail{
+        max-height: 281px !important;
+      }
+    }
+}
+
+
 </style>
