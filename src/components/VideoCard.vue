@@ -122,7 +122,7 @@ export default {
     },
     smallCard:{
       type:Boolean,
-      default:true
+      default:false
     },
     card: Object,
   },

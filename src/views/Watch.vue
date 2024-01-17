@@ -22,7 +22,9 @@
               <v-skeleton-loader type="card-avatar, article, actions" tile large>
                 <div>
                   <v-responsive>
-                    <video-player style="min-height: 480px;" :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
+                    <div style="border-radius: 10px !important; overflow: hidden;">
+                      <video-player style="min-height: 480px;" :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
+                    </div>
                     <v-card flat tile class="card">
                       <div class="d-flex justify-space-between">
                         <div class="d-flex align-center mt-3">
@@ -98,18 +100,19 @@
           <div
               v-for="(video, i) in loading ? 12 : videos"
               :key="i"
-              class="mb-2 recommended-videos"
+              class="recommended-videos mb-2"
               :followed-accounts="followedAccounts"
-              style=" position: relative; height: 90px;"
+              style=" position: relative; height: 90px"
             >
-              <v-skeleton-loader style="" type="card-avatar" :loading="loading">
+              <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
                 <video-card
                   :card="{ maxWidth: 370 }"
                   :video="video.node"
                   :channel="video.origin"
                   @follow="followChannel(video.node, video.origin)"
                   style="position: absolute; width: 100%;"
-                  class="d-flex"
+                  small-card
+                  class="mb-2 "
                 ></video-card>
               </v-skeleton-loader>
             </div>

@@ -57,9 +57,19 @@
   }
   </script>
 
-  <style>
+  <style lang="scss">
   .video-js {
     width: 100%;
     min-height: 480px;
+    border-radius: 10px !important;
+    .vjs-poster{
+      border-radius: 10px;
+    }
+    div{
+      border-radius: 20px;
+    }
+    img{
+      border-radius: 20px;
+    }
   }
   </style>
