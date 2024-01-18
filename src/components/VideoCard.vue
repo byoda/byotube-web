@@ -136,9 +136,9 @@ export default {
   },
   computed: {
     thumbnail() {
-      const findWithSize = this.video?.video_thumbnails?.find(tn => tn.size == "640x480") 
+      const findWithSize = this.video?.video_thumbnails?.find(tn => tn.size == "480x360")
+      || this.video?.video_thumbnails?.find(tn => tn.size == "640x480")
         || this.video?.video_thumbnails?.find(tn => tn.size == "1280x720")
-        || this.video?.video_thumbnails?.find(tn => tn.size == "480x360")
         || this.video?.video_thumbnails?.find(tn => tn.size == "1920x1080")
       return findWithSize ? findWithSize : this.video?.video_thumbnails?.reduce((maxObject, currentObject) => {
         return currentObject['height'] > maxObject['height'] ? currentObject : maxObject;
@@ -203,7 +203,7 @@ export default {
 }
 
 .thumbnail{
-  max-width: 100%; 
+  max-width: 100%;
   border-radius: 10px;
 }
 </style>
