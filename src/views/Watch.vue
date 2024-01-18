@@ -1,5 +1,5 @@
 <template>
-  <div id="watch" ref="watch">
+  <div id="watch" ref="watch" :key="pageKey">
     <v-container fluid>
       <v-row >
         <v-alert prominent class="mx-auto" type="error" v-if="errored">
@@ -103,6 +103,7 @@
               class="recommended-videos mb-2"
               :followed-accounts="followedAccounts"
               style=" position: relative; height: 90px"
+              @click="getItem(video)"
             >
               <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
                 <video-card
@@ -161,39 +162,13 @@ import FeelingService from "@/services/FeelingService";
 import SigninModal from "@/components/SigninModal";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import "videojs-youtube";
-import { followMixin } from "@/mixins/follow.js";
+import { followMixin, videosMixin } from "@/mixins";
 import VideoCard from "@/components/VideoCard";
 import InfiniteLoading from "vue-infinite-loading";
 
 export default {
-  mixins: [followMixin],
+  mixins: [followMixin, videosMixin],
   data: () => ({
-    loading: false,
-    loaded: false,
-    errored: false,
-    after: null,
-    has_next_page: true,
-    videos: [],
-    service_id: process.env.VUE_APP_BYOTUBE_SERVICE_ID,
-    page: 1,
-    initialState: {
-      auth_token:
-        typeof window !== "undefined"
-          ? window.localStorage.getItem("token")
-          : null,
-      domain:
-        typeof window !== "undefined"
-          ? window.localStorage.getItem("domain")
-          : null,
-      isAuthenticated: null,
-      user: null,
-    },
-    followedAccounts: null,
-    filter: {
-      youtube: "Youtube Hosted",
-      byoda: "BYODA Hosted",
-    },
-    ingestStatus: [],
     videoLoading: true,
     subscribed: false,
     subscribeLoading: false,
@@ -207,7 +182,6 @@ export default {
     url: process.env.VUE_APP_URL,
     signinDialog: false,
     details: {},
-    asset: {},
     videoOptions: {},
     key_id: "",
     content_token: "",
@@ -219,116 +193,6 @@ export default {
     },
   },
   methods: {
-    async getServiceVideos($state) {
-      if (!this.loaded) {
-        this.loading = true;
-      }
-
-      if (!this.has_next_page) {
-        this.loading = false;
-        $state.complete();
-        this.loaded = true;
-        return;
-      }
-
-      const filter = {
-        first: 40,
-        after: (() => this.after)(),
-      };
-
-      const videos = await VideoService.getAll(filter)
-        .catch((err) => {
-          console.log(err);
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-
-      if (typeof videos === "undefined") return;
-
-      if (videos.data.edges.length) {
-        this.page += 1;
-        this.has_next_page = videos?.data?.page_info?.has_next_page;
-        if (this.has_next_page) {
-          this.after += videos?.data?.total_count;
-        }
-        this.videos.push(...videos.data.edges);
-        $state.loaded();
-        this.loaded = true;
-      } else {
-        $state.complete();
-      }
-    },
-    async getMemberVideos($state) {
-      if (!this.loaded) {
-        this.loading = true;
-      }
-
-      if (!this.has_next_page) {
-        this.loading = false;
-        $state.complete();
-        this.loaded = true;
-        return;
-      }
-
-      let host_url = "";
-      if (this.initialState.domain) {
-        host_url = `https://${this.initialState.domain}`;
-      }
-
-      const filter = {
-        first: 40,
-        after: (() => this.after)(),
-      };
-      console.log(
-        "OPt",
-        this.options.map((opt) => opt.name),
-        this.ingestStatus
-      );
-      if (
-        this.ingestStatus.length &&
-        !this.compareArrays(this.ingestStatus, this.options)
-      ) {
-        filter["filter"] = {
-          ingest_status: {
-            eq: this.ingestStatus[0].value,
-          },
-        };
-      }
-
-      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
-
-      const videos = await VideoService.getMemberVideos(data_url, filter)
-        .catch((err) => {
-          console.log(err);
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-
-      if (typeof videos === "undefined") return;
-
-      if (videos.data.edges.length) {
-        this.page += 1;
-        this.has_next_page = videos?.data?.page_info?.has_next_page;
-        if (this.has_next_page) {
-          this.after = videos?.data?.page_info?.end_cursor;
-        }
-        this.videos.push(...videos.data.edges);
-        $state?.loaded();
-        this.loaded = true;
-      } else {
-        $state.complete();
-      }
-    },
-    async getVideos($state) {
-      console.log("Inside methods");
-      this.initialState.auth_token
-        ? await this.getMemberVideos($state)
-        : await this.getServiceVideos($state);
-    },
     async getVideo() {
       let assetData =
         typeof window !== "undefined"

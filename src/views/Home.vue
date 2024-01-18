@@ -92,14 +92,11 @@
 import InfiniteLoading from "vue-infinite-loading";
 import moment from "moment";
 import VideoCard from "@/components/VideoCard";
-import VideoService from "@/services/VideoService";
-import { constants } from "@/globals/contants";
-import { followMixin } from "@/mixins/follow.js";
-import { helperMixin } from "@/mixins/helper.js";
+import { followMixin, helperMixin, videosMixin } from "@/mixins";
 
 export default {
   name: "Home",
-  mixins: [followMixin, helperMixin],
+  mixins: [followMixin, helperMixin, videosMixin],
   components: {
     VideoCard,
     InfiniteLoading,
@@ -109,190 +106,15 @@ export default {
       { name: "YouTube Hosted", value: "external" },
       { name: "BYODA Hosted", value: "published" },
     ],
-    loading: false,
-    loaded: false,
-    errored: false,
-    after: null,
-    has_next_page: true,
-    videos: [],
-    service_id: process.env.VUE_APP_BYOTUBE_SERVICE_ID,
-    page: 1,
-    initialState: {
-      auth_token:
-        typeof window !== "undefined"
-          ? window.localStorage.getItem("token")
-          : null,
-      domain:
-        typeof window !== "undefined"
-          ? window.localStorage.getItem("domain")
-          : null,
-      isAuthenticated: null,
-      user: null,
-    },
-    followedAccounts: null,
-    filter: {
-      youtube: "Youtube Hosted",
-      byoda: "BYODA Hosted",
-    },
-    ingestStatus: [],
+  
   }),
   methods: {
-    async getServiceVideos($state) {
-      if (!this.loaded) {
-        this.loading = true;
-      }
-
-      if (!this.has_next_page) {
-        this.loading = false;
-        $state.complete();
-        this.loaded = true;
-        return;
-      }
-
-      const filter = {
-        first: 40,
-        after: (() => this.after)(),
-      };
-
-      const videos = await VideoService.getAll(filter)
-        .catch((err) => {
-          console.log(err);
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-
-      if (typeof videos === "undefined") return;
-
-      if (videos.data.edges.length) {
-        this.page += 1;
-        this.has_next_page = videos?.data?.page_info?.has_next_page;
-        if (this.has_next_page) {
-          this.after += videos?.data?.page_info.end_cursor;
-        }
-        this.videos.push(...videos.data.edges);
-        $state.loaded();
-        this.loaded = true;
-      } else {
-        $state.complete();
-      }
-    },
-    async getMemberVideos($state) {
-      if (!this.loaded) {
-        this.loading = true;
-      }
-
-      if (!this.has_next_page) {
-        this.loading = false;
-        $state.complete();
-        this.loaded = true;
-        return;
-      }
-
-      let host_url = "";
-      if (this.initialState.domain) {
-        host_url = `https://${this.initialState.domain}`;
-      }
-
-      const filter = {
-        first: 40,
-        after: (() => this.after)(),
-      };
-      console.log(
-        "OPt",
-        this.options.map((opt) => opt.name),
-        this.ingestStatus
-      );
-      if (
-        this.ingestStatus.length &&
-        !this.compareArrays(this.ingestStatus, this.options)
-      ) {
-        filter["filter"] = {
-          ingest_status: {
-            eq: this.ingestStatus[0].value,
-          },
-        };
-      }
-
-      const data_url = `${host_url}/api/v1/data/${this.service_id}/feed_assets/query`;
-
-      const videos = await VideoService.getMemberVideos(data_url, filter)
-        .catch((err) => {
-          console.log(err);
-          this.errored = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-
-      if (typeof videos === "undefined") return;
-
-      if (videos.data.edges.length) {
-        this.page += 1;
-        this.has_next_page = videos?.data?.page_info?.has_next_page;
-        if (this.has_next_page) {
-          this.after = videos?.data?.page_info?.end_cursor;
-        }
-        this.videos.push(...videos.data.edges);
-        $state?.loaded();
-        this.loaded = true;
-      } else {
-        $state.complete();
-      }
-    },
-    async getVideos($state) {
-      console.log("Inside methods");
-      this.initialState.auth_token
-        ? await this.getMemberVideos($state)
-        : await this.getServiceVideos($state);
-    },
-    async followChannel(asset, origin) {
-      const { creator, created_timestamp } = asset;
-      const { data } = await this.follow(
-        creator,
-        origin,
-        this.service_id,
-        created_timestamp
-      );
-      if (data) {
-        this.setFollowed(origin);
-      }
-      this.followedAccounts = JSON.parse(
-        window.localStorage.getItem("followedAccounts")
-      );
-    },
+   
     dateFormatter(date) {
       return moment(date).fromNow();
     },
 
-    getItem(edge) {
-      const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
-      const SIGNED_TOKEN = "dummy";
-
-      let asset = edge.node;
-      asset.origin = edge.origin;
-      if (asset.ingest_status != "external") {
-        let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`;
-        fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {
-            asset = {
-              ...asset,
-              key_id: data.key_id,
-              content_token: data.content_token,
-            };
-            localStorage.setItem("watch", JSON.stringify(asset));
-            this.$router.push({ name: "Watch" });
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else {
-        localStorage.setItem("watch", JSON.stringify(asset));
-        this.$router.push({ name: "Watch" });
-      }
-    },
+ 
   },
   mounted() {
     this.followedAccounts =
