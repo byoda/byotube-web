@@ -26,7 +26,7 @@
             }}
           </h3>
         </div>
-        <div> 
+        <div>
           <div class="grid-layout">
             <div
               v-for="(video, i) in loading ? 12 : videos"
@@ -169,7 +169,7 @@ export default {
         this.page += 1;
         this.has_next_page = videos?.data?.page_info?.has_next_page;
         if (this.has_next_page) {
-          this.after += videos?.data?.total_count;
+          this.after += videos?.data?.page_info.end_cursor;
         }
         this.videos.push(...videos.data.edges);
         $state.loaded();
@@ -311,7 +311,7 @@ export default {
     this.$root.$off();
   },
 
-  
+
 };
 </script>
 
