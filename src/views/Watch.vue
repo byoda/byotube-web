@@ -96,7 +96,7 @@
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" md="3" class="pt-6"> 
+        <v-col cols="12" md="3" class="pt-6">
           <div
               v-for="(video, i) in loading ? 12 : videos"
               :key="i"
@@ -144,7 +144,7 @@
                 </v-alert>
               </div>
             </infinite-loading>
-        </v-col>  
+        </v-col>
       </v-row>
     </v-container>
     <signin-modal :openModal="signinDialog" :details="details" @closeModal="signinDialog = false" />
@@ -220,7 +220,7 @@ export default {
       }
 
       this.videoOptions = {
-        autoplay: false,
+        autoplay: true,
         controls: true,
         responsive: true,
 
@@ -461,13 +461,13 @@ button.v-btn.remove-hover-bg {
   text-transform: capitalize;
 }
 .dots-button{
-  background-color: #f2f2f2 !important; 
-  height: 37px !important; 
+  background-color: #f2f2f2 !important;
+  height: 37px !important;
   width: 37px !important;
 }
 
 .grey-background{
-  background-color: #f2f2f2 !important; 
+  background-color: #f2f2f2 !important;
 }
 
 .recommended-videos{
