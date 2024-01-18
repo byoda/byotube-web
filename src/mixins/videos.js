@@ -157,7 +157,6 @@ export const videosMixin = {
       );
     },
     async changeVideo(assetData) {
-      console.log("Asset", assetData);
       if (!assetData) return;
 
       this.asset = {
@@ -215,6 +214,9 @@ export const videosMixin = {
             };
             localStorage.setItem("watch", JSON.stringify(asset));
             this.changeVideo(asset);
+            if (this.$route.name !== "Watch") {
+              this.$router.push({ name: "Watch" });
+            }
           })
           .catch((error) => {
             console.error(error);
@@ -222,6 +224,9 @@ export const videosMixin = {
       } else {
         localStorage.setItem("watch", JSON.stringify(asset));
         this.changeVideo(asset);
+        if (this.$route.name !== "Watch") {
+          this.$router.push({ name: "Watch" });
+        }
       }
 
       this.pageKey++;
