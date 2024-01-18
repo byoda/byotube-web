@@ -64,7 +64,7 @@ export const videosMixin = {
         this.page += 1;
         this.has_next_page = videos?.data?.page_info?.has_next_page;
         if (this.has_next_page) {
-          this.after += videos?.data?.page_info.end_cursor;
+          this.after = videos?.data?.page_info.end_cursor;
         }
         this.videos.push(...videos.data.edges);
         $state.loaded();
