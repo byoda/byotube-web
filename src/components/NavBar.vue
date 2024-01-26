@@ -3,21 +3,19 @@
     <v-app-bar class="white" flat app clipped-left>
       <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
       <v-toolbar-title class="font-weight-bold d-flex align-items-center">
-        <v-img
-          src="~@/assets/byotube-orange-logo.png"
-          :width="68"
-          :height="39"
-          contain
-        />
+       
         <div class="d-flex align-items-center">
           <router-link
             to="/"
             class="black--text font-weight-bold d-flex align-items-center"
             style="text-decoration: none"
           >
-            <p class="mb-0 " style="display: flex; align-items: center;">
-              BYO.Tube
-            </p>
+          <v-img
+          src="~@/assets/byotube-logo.svg"
+          :width="170"
+          :height="39"
+          contain
+        />
           </router-link>
         </div>
       </v-toolbar-title>

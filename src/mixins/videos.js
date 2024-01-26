@@ -49,6 +49,15 @@ export const videosMixin = {
         after: (() => this.after)(),
       };
 
+      if (
+        this.ingestStatus.length &&
+        !this.compareArrays(this.ingestStatus, this.options)
+      ) {
+        filter["ingest_status"] = this.ingestStatus[0].value;
+      }
+
+      console.log("Filter", filter, this.ingestStatus);
+
       const videos = await VideoService.getAll(filter)
         .catch((err) => {
           console.log(err);
@@ -74,6 +83,7 @@ export const videosMixin = {
       }
     },
     async getMemberVideos($state) {
+      console.log("Member videos");
       if (!this.loaded) {
         this.loading = true;
       }
@@ -94,11 +104,6 @@ export const videosMixin = {
         first: 40,
         after: (() => this.after)(),
       };
-      console.log(
-        "OPt",
-        this.options.map((opt) => opt.name),
-        this.ingestStatus
-      );
       if (
         this.ingestStatus.length &&
         !this.compareArrays(this.ingestStatus, this.options)
