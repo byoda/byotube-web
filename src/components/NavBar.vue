@@ -3,20 +3,8 @@
     <v-app-bar class="white" flat app clipped-left>
       <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
       <v-toolbar-title class="font-weight-bold d-flex align-items-center">
-       
         <div class="d-flex align-items-center">
-          <router-link
-            to="/"
-            class="black--text font-weight-bold d-flex align-items-center"
-            style="text-decoration: none"
-          >
-          <v-img
-          src="~@/assets/byotube-logo.svg"
-          :width="170"
-          :height="39"
-          contain
-        />
-          </router-link>
+          <v-img src="~@/assets/byotube-logo.svg" :width="170" :height="39" contain @click="openAbout" />
         </div>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -69,24 +57,9 @@
         <span>Notifications</span>
       </v-tooltip> -->
 
-      <v-menu
-        offset-y
-        left
-        origin="right right"
-        transition="slide-x-transition"
-        :close-on-content-click="false"
-      >
+      <v-menu offset-y left origin="right right" transition="slide-x-transition" :close-on-content-click="false">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            class="mx-2"
-            fab
-            dark
-            small
-            v-bind="attrs"
-            v-on="on"
-            outlined
-            color="primary"
-          >
+          <v-btn class="mx-2" fab dark small v-bind="attrs" v-on="on" outlined color="secondary">
             <v-icon dark>
               mdi-tune-variant
             </v-icon>
@@ -95,31 +68,18 @@
         <v-list>
           <v-list-item v-for="(item, index) in options" :key="index">
             <v-list-item-title>
-              <v-checkbox :key="index" v-model="filter" :value="item" class="mt-0" hide-details :label="item.name" @change="$root.$emit('filter-changed', filter)" />
-          </v-list-item-title>
+              <v-checkbox :key="index" v-model="filter" :value="item" class="mt-0" hide-details :label="item.name"
+                @change="$root.$emit('filter-changed', filter)" />
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-btn
-        tile
-        outlined
-        color="blue"
-        class="font-weight-bold auth-btn"
-        v-if="!$store.getters.isAuthenticated"
-        router
-        to="/signin"
-      >
+      <v-btn tile outlined color="blue" class="font-weight-bold auth-btn secondary--text" v-if="!$store.getters.isAuthenticated" router
+        to="/signin">
         <v-icon left size="26">mdi-account-circle</v-icon> Sign in
       </v-btn>
-      <v-btn
-        tile
-        outlined
-        color="blue"
-        class="font-weight-bold auth-btn"
-        v-else-if="$store.getters.isAuthenticated"
-        router
-        @click="logout"
-      >
+      <v-btn tile outlined color="blue" class="font-weight-bold auth-btn secondary--text" v-else-if="$store.getters.isAuthenticated"
+        router @click="logout">
         <v-icon left size="26">mdi-account-circle</v-icon> Sign out
       </v-btn>
 
@@ -332,7 +292,7 @@ import HistoryService from "@/services/HistoryService";
 export default {
   data: () => ({
     drawer: true,
-    filter:[],
+    filter: [],
     options: [
       { name: "YouTube Hosted", value: "external" },
       { name: "BYODA Hosted", value: "published" },
@@ -518,6 +478,9 @@ export default {
       this.$store.dispatch("signOut");
       // this.$router.push('/')
     },
+    openAbout(){
+      window.open('https://about.byo.tube/')
+    }
   },
   // beforeRouteLeave(to, from, next) {
   //   this.searchText = ''
@@ -590,13 +553,13 @@ export default {
     background: #dfe9fe;
   }
 
-  .vb > .vb-dragger {
+  .vb>.vb-dragger {
     z-index: 5;
     width: 10px;
     right: 0;
   }
 
-  .vb > .vb-dragger > .vb-dragger-styler {
+  .vb>.vb-dragger>.vb-dragger-styler {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-transform: rotate3d(0, 0, 0, 0);
@@ -612,28 +575,28 @@ export default {
     display: block;
   }
 
-  .v-navigation-drawer__content:hover .vb > .vb-dragger > .vb-dragger-styler {
+  .v-navigation-drawer__content:hover .vb>.vb-dragger>.vb-dragger-styler {
     width: 10px;
     background-color: #e0e0e0;
   }
 
-  .vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-scrolling-phantom>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.3);
     background-color: rgba(255, 255, 255, 0.3);
   }
 
-  .vb > .vb-dragger:hover > .vb-dragger-styler {
+  .vb>.vb-dragger:hover>.vb-dragger-styler {
     margin: 0px;
     width: 10px;
   }
 
-  .vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-dragging>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
     margin: 0px;
     height: 100%;
   }
 
-  .vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-dragging-phantom>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
   }
 

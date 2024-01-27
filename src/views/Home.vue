@@ -16,8 +16,8 @@
         </v-row>
       </v-alert>
 
-      <main v-else>
-        <div class="d-flex justify-space-between">
+      <main>
+        <!-- <div class="d-flex justify-space-between">
           <h3 class="headline font-weight-medium">
             {{
               $store.getters.isAuthenticated
@@ -25,32 +25,43 @@
                 : "Recommended"
             }}
           </h3>
+        </div> -->
+        <div class="text-center">
+          <v-progress-circular indeterminate v-if="loadAllVideos" color="red"></v-progress-circular>
         </div>
-        <div>
-          <div class="grid-layout">
-            <div
-              v-for="(video, i) in loading ? 12 : videos"
-              :key="i"
-              class="py-6"
-              @click="getItem(video)"
-              :followed-accounts="followedAccounts"
-              style=" position: relative;"
-            >
-              <v-skeleton-loader style="" type="card-avatar" :loading="loading">
-                <video-card
-                  :card="{ maxWidth: 370 }"
-                  :video="video.node"
-                  :channel="video.origin"
-                  @follow="followChannel(video.node, video.origin)"
-                  style="position: absolute; width: 100%;"
-                ></video-card>
-              </v-skeleton-loader>
+        <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+          <div v-if="section.videos.length">
+            <h2 class="text-h1 secondary--text font-weight-medium">
+              {{ section.title }}
+            </h2>
+            <div class="grid-layout">
+              <div v-for="(video, i) in section.videos" :key="i" class="py-6" @click="getItem(video)"
+                :followed-accounts="followedAccounts" style="position: relative;">
+                <!-- <v-skeleton-loader style="" type="card-avatar" :loading="section.loading"> -->
+                  <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
+                    @follow="followChannel(video.node, video.origin)"
+                    style="position: absolute; width: 100%;"></video-card>
+                <!-- </v-skeleton-loader> -->
+              </div>
+            </div>
+            <div v-if="section.has_next_page" class="mt-10">
+              <hr>
+              <div class="text-center show-more-btn">
+                <v-btn :loading="section.loading" elevation="0" rounded
+                  class="auth-btn show-more-btn font-weight-normal light-gray--text mt-n8"
+                  @click="mapSegmentedVideos(section, sectionIndex, 24)">
+                  Show More <v-icon left size="26" class="ml-2 font-weight-light">mdi-chevron-down</v-icon>
+                </v-btn>
+              </div>
+            </div>
+            <div class="text-center" v-else-if="!section.has_next_page">
+              <p>No more videos</p>
             </div>
           </div>
-          <div class="text-center" v-if="videos.length === 0 && !loading">
+          <!-- <div class="text-center" v-if="videos.length === 0 && !loading">
             <p>No videos yet</p>
-          </div>
-          <div cols="12" sm="12" md="12" lg="12">
+          </div> -->
+          <!-- <div cols="12" sm="12" md="12" lg="12">
             <infinite-loading @infinite="getVideos($event, '')">
               <div slot="spinner">
                 <v-progress-circular
@@ -78,18 +89,18 @@
                 </v-alert>
               </div>
             </infinite-loading>
-          </div>
+          </div> -->
         </div>
-        <v-col class="text-center" v-if="!has_next_page">
+        <!-- <v-col class="text-center" v-if="!has_next_page">
           <p>No more videos</p>
-        </v-col>
+        </v-col> -->
       </main>
     </v-container>
   </div>
 </template>
 
 <script>
-import InfiniteLoading from "vue-infinite-loading";
+// import InfiniteLoading from "vue-infinite-loading";
 import moment from "moment";
 import VideoCard from "@/components/VideoCard";
 import { followMixin, helperMixin, videosMixin } from "@/mixins";
@@ -99,22 +110,75 @@ export default {
   mixins: [followMixin, helperMixin, videosMixin],
   components: {
     VideoCard,
-    InfiniteLoading,
+    // InfiniteLoading,
   },
   data: () => ({
     options: [
       { name: "YouTube Hosted", value: "external" },
       { name: "BYODA Hosted", value: "published" },
     ],
-  
+    sections: [
+      {
+        title: "From your network",
+        loading: true,
+        videos: [],
+        after: null,
+        has_next_page: null
+      },
+      {
+        title: "Recommended",
+        loading: true,
+        videos: [],
+        after: null,
+        has_next_page: null
+      },
+      {
+        title: "Entertainment",
+        loading: true,
+        videos: [],
+        after: null,
+        has_next_page: null
+      },
+      {
+        title: "Education",
+        loading: true,
+        videos: [],
+        after: null,
+        has_next_page: null
+      },
+    ],
+    loadAllVideos: false,
   }),
   methods: {
-   
+
     dateFormatter(date) {
       return moment(date).fromNow();
     },
 
- 
+    getAllSegmentedVideos() {
+      this.loadAllVideos = true
+      this.sections?.forEach(async (section, index) => {
+        await this.mapSegmentedVideos(section, index)
+        this.loadAllVideos = false
+        console.log("Loading", this.loadAllVideos);
+      })
+
+
+    },
+
+    async mapSegmentedVideos(section, index, first) {
+      section.loading = true
+      const videosData = await this.getSegmentedVideos(section?.title, section?.after, first ? first : 8)
+      section.videos.push(...videosData?.edges)
+      section.has_next_page = videosData?.page_info?.has_next_page;
+      if (section.has_next_page) {
+        section.after = videosData?.page_info.end_cursor;
+      }
+      section.loading = false
+      this.sections[index] = section
+    }
+
+
   },
   mounted() {
     this.followedAccounts =
@@ -123,11 +187,13 @@ export default {
         : null;
     this.$root.$on("filter-changed", ($event) => {
       (this.ingestStatus = $event)
-        this.after = null
-        this.loaded = false
-        this.videos = []
-        this.getVideos();
+      this.after = null
+      this.loaded = false
+      this.videos = []
+      this.getVideos();
     });
+
+    this.getAllSegmentedVideos()
   },
   beforeUnmount() {
     this.$root.$off();
@@ -150,8 +216,25 @@ export default {
   }
 }
 
+.show-more-btn {
+  button {
+    border: 1px solid #9a9a9a;
+    text-transform: capitalize;
+    background-color: red;
+    padding-inline: 80px !important;
 
-.grid-layout{
+    span {
+      font-weight: 500 !important;
+    }
+
+    i {
+      padding-top: 2px;
+    }
+  }
+}
+
+
+.grid-layout {
   margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -159,43 +242,59 @@ export default {
   column-gap: 15px;
   row-gap: 15px;
   max-width: 3072px;
-  .thumbnail{
-        max-height: 220px !important;
+
+  .thumbnail {
+    max-height: 220px !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .grid-layout {
+    grid-template-columns: repeat(1, 1fr);
+
+    .thumbnail {
+      max-height: 220px !important;
+    }
   }
 }
 
 @media (min-width: 1440px) {
-    .grid-layout{
-      grid-template-columns: repeat(4, 1fr);
-      .thumbnail{
-        max-height: 220px !important;
-      }
+  .grid-layout {
+    grid-template-columns: repeat(4, 1fr);
+
+    .thumbnail {
+      max-height: 220px !important;
     }
+  }
 }
+
 @media (min-width: 1800px) {
-    .grid-layout{
-      grid-template-columns: repeat(5, 1fr);
-      .thumbnail{
-        max-height: 230px !important;
-      }
+  .grid-layout {
+    grid-template-columns: repeat(5, 1fr);
+
+    .thumbnail {
+      max-height: 230px !important;
     }
+  }
 }
+
 @media (min-width: 2160px) {
-    .grid-layout{
-      grid-template-columns: repeat(6, 1fr);
-      .thumbnail{
-        max-height: 240px !important;
-      }
+  .grid-layout {
+    grid-template-columns: repeat(6, 1fr);
+
+    .thumbnail {
+      max-height: 240px !important;
     }
+  }
 }
+
 @media (min-width: 4320px) {
-    .grid-layout{
-      grid-template-columns: repeat(6, 1fr);
-      .thumbnail{
-        max-height: 281px !important;
-      }
+  .grid-layout {
+    grid-template-columns: repeat(6, 1fr);
+
+    .thumbnail {
+      max-height: 281px !important;
     }
+  }
 }
-
-
 </style>

@@ -3,8 +3,12 @@ import Api from "@/services/Api";
 export default {
   getAll(filter) {
     return Api().get(
-      `service/data?${filter.after ? "after=" + filter.after : ""}${
-        filter.ingest_status ? "&ingest_status=" + filter.ingest_status : ""
+      `service/data?${filter.first ? "first=" + filter.first + "&" : ""}${
+        filter.list_name ? "list_name=" + filter.list_name + "&" : ""
+      }${filter.after ? "after=" + filter.after + "&" : ""}${
+        filter.ingest_status
+          ? "ingest_status=" + filter.ingest_status + "&"
+          : ""
       }`
     );
   },
