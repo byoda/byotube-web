@@ -31,7 +31,7 @@
         </div>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <div v-if="section.videos.length">
-            <h2 class="text-h1 secondary--text font-weight-medium">
+            <h2 class="text-h1 section-title secondary--text font-weight-medium">
               {{ section.title }}
             </h2>
             <div class="grid-layout">
@@ -214,6 +214,14 @@ export default {
   .v-input {
     height: 36px;
   }
+}
+
+.section-title::after{
+  content: "";
+  display: block;
+    height: 4px;
+    width: 40px;
+    background-color: #00579d;
 }
 
 .show-more-btn {
