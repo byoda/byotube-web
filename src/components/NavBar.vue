@@ -8,10 +8,11 @@
           <div class="d-flex align-items-center">
             <v-img src="~@/assets/byotube-logo.svg" :width="170" :height="39" contain @click="openAbout" />
           </div>
+          <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="primary"></v-progress-linear>
         </v-toolbar-title>
         <div class="search-field">
-          <v-text-field  v-model="searchText" flat rounded hide-details append-icon="mdi-magnify" placeholder="Search" outlined dense
-            @click:append="search" @keyup.enter="search"></v-text-field>
+          <v-text-field v-model="searchText" flat rounded hide-details append-icon="mdi-magnify" placeholder="Search"
+            outlined dense @click:append="search" @keyup.enter="search"></v-text-field>
         </div>
 
         <!-- <v-spacer></v-spacer> -->
@@ -288,6 +289,12 @@ import SubscriptionService from "@/services/SubscriptionService";
 import HistoryService from "@/services/HistoryService";
 
 export default {
+  props: {
+    loading: {
+      default:false,
+      type:Boolean
+    }
+  },
   data: () => ({
     drawer: true,
     filter: [],
@@ -454,7 +461,8 @@ export default {
         await HistoryService.createHistory(data).catch((err) =>
           console.log(err)
         );
-
+      
+      this.$emit('search')
       this.$router.push({
         name: "Search",
         query: { "search_query": this.searchText },

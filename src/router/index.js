@@ -20,7 +20,6 @@ const routes = [
     path: "/results",
     name: "Search",
     components: {
-      NavBar,
       default: () =>
         import(/* webpackChunkName: "about" */ "../views/Search/Search.vue"),
     },

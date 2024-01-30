@@ -1,20 +1,22 @@
 <template>
     <div>
+        <NavBar :loading="queryChangeLoaded" @search="queryChangeLoaded = true" />
         <v-container>
-            <div v-for="(video, i) in videos" :key="i" class="py-3" @click="getItem(video)">
+            <div v-for="(video, i) in videos" :key="i" class="py-3" @click="getItem(video)" style="cursor: pointer;">
                 <video-card search-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
                     @follow="followChannel(video.node, video.origin)"></video-card>
             </div>
-            <infinite-loading :distance="1" @infinite="getSearchResults($event)">
+            <p v-if="noMoreResults">
+                <v-alert dense type="info" color="primary" >
+                  End of search results
+                </v-alert>
+            </p>
+            <infinite-loading v-else :distance="1" @infinite="getSearchResults($event)">
                 <div slot="spinner">
-                    <v-progress-circular
-                  indeterminate
-                  color="red"
-                  :loading="loaded"
-                ></v-progress-circular>
+                    <v-progress-circular indeterminate color="red" :loading="loaded"></v-progress-circular>
                 </div>
                 <div slot="no-results"></div>
-                <span slot="no-more"></span>
+                <span slot="no-more"> End of search results </span>
                 <div slot="error">
                     <v-alert prominent type="error">
                         <v-row align="center">
@@ -41,21 +43,26 @@
 import VideoCard from "@/components/VideoCard";
 import VideoService from "@/services/VideoService";
 import InfiniteLoading from "vue-infinite-loading";
+import NavBar from "@/components/NavBar.vue";
+import { videosMixin } from "@/mixins";
 
 
 export default {
     name: "Search",
-    mixins: [],
+    mixins: [ videosMixin ],
     components: {
         VideoCard,
-        InfiniteLoading
+        InfiniteLoading,
+        NavBar
     },
     data: (vm) => ({
         videos: [],
         offset: 0,
         num: 30,
         text: vm.$route.query?.search_query,
-        loaded:false
+        loaded: false,
+        queryChangeLoaded: null,
+        noMoreResults: false
     }),
     methods: {
         async getSearchResults($state) {
@@ -70,23 +77,29 @@ export default {
                     num
                 }
                 this.loaded = true
-                const {data, status} = await VideoService.searchAssets(filter)
-                if(data && status ){    
-                   
+                const { data, status } = await VideoService.searchAssets(filter)
+                console.log("Data length", data.length);
+                if (data && status) {
                     this.offset = this.offset + 30
                     const currentScrollPosition = window.scrollY
                     window.scrollBy(currentScrollPosition, -100);
-                    await this.$nextTick(()=>{
+                    await this.$nextTick(() => {
                         this.videos = [...this.videos, ...data]
-                        $state.loaded()
                     })
                 }
+
+                if (!data.length) {
+                    this.noMoreResults = true
+                }
+                $state?.loaded()
+
             } catch (error) {
                 console.error("Error", error);
-                $state?.complete()
-            }finally{
+                $state?.error()
+            } finally {
                 this.loaded = false
                 $state?.loaded()
+                this.queryChangeLoaded = false
             }
         }
     },
@@ -97,8 +110,10 @@ export default {
     watch: {
         '$route.query.search_query': {
             handler: async function () {
-               await this.getSearchResults()
-               console.log("Calling");
+                console.log("Caalinng");
+                this.videos = []
+                this.queryChangeLoaded = true
+                await this.getSearchResults()
             },
             deep: true,
             immediate: false
