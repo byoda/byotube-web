@@ -1,51 +1,22 @@
 <template>
-  <v-card
-    class="content-bg card rounded-lg"
-    flat
-    tile
-    router
-    :class="{'d-flex':smallCard}"
-  >
-  <div>
-    <v-img
-      :src="`${thumbnail.url}`"
-      :min-height="203"
-      :max-height="281"
-      class="thumbnail"
-    ></v-img>
-  </div>
+  <v-card class="content-bg card rounded-lg" flat tile router :class="{ 'd-flex': smallCard || searchCard }">
+    <div>
+      <v-img :src="`${thumbnail.url}`" :min-height="203" :max-height="searchCard ? 202 : 281" class="thumbnail"
+        :class="{ 'search-thumbnail': searchCard }"></v-img>
+    </div>
     <v-row no-gutters>
-      <v-col
-        cols="1"
-        v-if="card.type != 'noAvatar' && !smallCard"
-      >
+      <v-col cols="1" v-if="card.type != 'noAvatar' && !smallCard && !searchCard">
         <div class="pl-0 pt-1" router :to="`/channels/${channel._id}`">
-          <v-menu
-            v-if="$store.getters.isAuthenticated"
-            v-model="showMenu"
-            offset-y
-            origin="center center"
-            :min-width="150"
-            rounded
-            transition="scale-transition"
-            style="max-width: 600px;"
-            :nudge-bottom="10"
-            :close-on-content-click="false"
-            :elevated="false"
-          >
+          <v-menu v-if="$store.getters.isAuthenticated" v-model="showMenu" offset-y origin="center center"
+            :min-width="150" rounded transition="scale-transition" style="max-width: 600px;" :nudge-bottom="10"
+            :close-on-content-click="false" :elevated="false">
             <template v-slot:activator="{ on, attrs }">
               <v-list-item-avatar v-on="on" v-bind="attrs" class="">
-                <v-img
-                  height="36"
-                  max-width="36"
-                  v-if="video.creator_thumbnail"
-                  class="elevation-6"
-                  :src="video.creator_thumbnail"
-                ></v-img>
+                <v-img height="36" max-width="36" v-if="video.creator_thumbnail" class="elevation-6"
+                  :src="video.creator_thumbnail"></v-img>
                 <v-avatar v-else color="red">
                   <span class="white--text headline ">
-                    {{ video.creator.split("")[0].toUpperCase() }}</span
-                  >
+                    {{ video.creator.split("")[0].toUpperCase() }}</span>
                 </v-avatar>
               </v-list-item-avatar>
             </template>
@@ -62,17 +33,11 @@
               </v-list> -->
           </v-menu>
           <v-list-item-avatar v-else>
-            <v-img
-              height="36"
-              max-width="36"
-              v-if="video.creator_thumbnail"
-              class="elevation-6"
-              :src="video.creator_thumbnail"
-            ></v-img>
+            <v-img height="36" max-width="36" v-if="video.creator_thumbnail" class="elevation-6"
+              :src="video.creator_thumbnail"></v-img>
             <v-avatar v-else color="red">
               <span class="white--text headline ">
-                {{ video.creator.split("")[0].toUpperCase() }}</span
-              >
+                {{ video.creator.split("")[0].toUpperCase() }}</span>
             </v-avatar>
           </v-list-item-avatar>
         </div>
@@ -80,21 +45,36 @@
             {{ video.creator }}
           </p> -->
       </v-col>
-      <v-col :cols="smallCard ? 12 : 10" :class="{'pl-3':!smallCard}">
-        <v-card-title
-          class="pl-2 font-weight-bold whitespace-wrap"
-          :class="{'text-sm': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'pt-0':smallCard}"
-          style="line-height: 1.2rem"
-        >
-        <!-- {{ video.title.slice(0,10) }} -->
-          {{ smallCard ?  `${video.title.length > 35 ? `${video.title.slice(0,35)}...` : video.title }` : video.title }}
+      <v-col :cols="smallCard ? 12 : (searchCard ? 9 : 10)" :class="{ 'pl-3': !smallCard }">
+        <v-card-title class="pl-2 font-weight-bold whitespace-wrap"
+          :class="{ 'text-sm': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'pt-0': smallCard, 'pb-1':searchCard }"
+          style="line-height: 1.2rem" :style="{'font-size': searchCard ? '18px !important' :'16px'}" >
+          {{ smallCard ? `${video.title.length > 35 ? `${video.title.slice(0, 35)}...` : video.title}` : video.title }}
         </v-card-title>
-
-        <v-card-subtitle class="pl-2 pb-0" :class="{'text-xs':smallCard}">
+        
+        <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0" :class="{ 'text-xs': smallCard }">
           {{ video.creator }}
         </v-card-subtitle>
         <v-card-subtitle class="pl-2 pb-0 pt-0 mt-n1">
           {{ convertDateToDuration(video.published_timestamp) }}
+        </v-card-subtitle>
+        <div v-if="searchCard" class="d-flex items-center py-3 pl-2">
+          <v-list-item-avatar height="28" max-width="28" min-width="28" class="mt-0 mb-0 mr-0">
+            <v-img height="28" max-width="28" v-if="video.creator_thumbnail" class="elevation-6"
+              :src="video.creator_thumbnail"></v-img>
+            <v-avatar v-else color="red">
+              <span class="white--text headline ">
+                {{ video.creator.split("")[0].toUpperCase() }}</span>
+            </v-avatar>
+          </v-list-item-avatar>
+          <v-card-subtitle class="pl-2 pb-0 pt-0 d-flex align-center" :class="{ 'text-xs': smallCard }">
+            {{ video.creator }}
+          </v-card-subtitle>
+          
+        </div>
+
+        <v-card-subtitle v-if="searchCard" class="pl-2 pb-0 pt-0 mt-n1 description-ellipses">
+          {{ video.contents }}
         </v-card-subtitle>
       </v-col>
       <v-col v-if="video.ingest_status === EXTERNAL && !smallCard" cols="1" class="pt-2">
@@ -121,9 +101,13 @@ export default {
       type: [Array, String],
       required: false,
     },
-    smallCard:{
-      type:Boolean,
-      default:false
+    smallCard: {
+      type: Boolean,
+      default: false
+    },
+    searchCard: {
+      type: Boolean,
+      default: false
     },
     card: Object,
   },
@@ -137,7 +121,7 @@ export default {
   computed: {
     thumbnail() {
       const findWithSize = this.video?.video_thumbnails?.find(tn => tn.size == "480x360")
-      || this.video?.video_thumbnails?.find(tn => tn.size == "640x480")
+        || this.video?.video_thumbnails?.find(tn => tn.size == "640x480")
         || this.video?.video_thumbnails?.find(tn => tn.size == "1280x720")
         || this.video?.video_thumbnails?.find(tn => tn.size == "1920x1080")
       return findWithSize ? findWithSize : this.video?.video_thumbnails?.reduce((maxObject, currentObject) => {
@@ -193,17 +177,29 @@ export default {
   font-size: 14px !important;
   line-height: 16px;
 }
+
 .text-xs {
   font-size: 12px !important;
   line-height: 16px;
 }
 
-.whitespace-wrap{
+.whitespace-wrap {
   word-break: keep-all;
 }
 
-.thumbnail{
+.thumbnail {
   max-width: 100%;
   border-radius: 10px;
+}
+
+.search-thumbnail {
+  max-width: 360px;
+}
+
+.description-ellipses{
+  max-width: 798px;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>

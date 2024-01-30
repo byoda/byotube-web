@@ -26,6 +26,11 @@ export default {
   getById(url, filter) {
     return Api().post(url, filter);
   },
+  searchAssets(filter) {
+    return Api().get(
+      `service/search/asset?text=${filter.text}&num=${filter.num}&offset=${filter.offset}`
+    );
+  },
   uploadVideo(data, optional) {
     return Api().post("videos", data, optional);
   },

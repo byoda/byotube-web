@@ -54,9 +54,9 @@
                 </v-btn>
               </div>
             </div>
-            <div class="text-center" v-else-if="!section.has_next_page">
+            <!-- <div class="text-center" v-else-if="!section.has_next_page">
               <p>No more videos</p>
-            </div>
+            </div> -->
           </div>
           <!-- <div class="text-center" v-if="videos.length === 0 && !loading">
             <p>No videos yet</p>
@@ -119,7 +119,8 @@ export default {
     ],
     sections: [
       {
-        title: "From your network",
+        title: "Recent Uploads",
+        key:'recent_uploads',
         loading: true,
         videos: [],
         after: null,
@@ -127,6 +128,7 @@ export default {
       },
       {
         title: "Recommended",
+        key:"Recommended",
         loading: true,
         videos: [],
         after: null,
@@ -134,6 +136,7 @@ export default {
       },
       {
         title: "Entertainment",
+        key:'Entertainment',
         loading: true,
         videos: [],
         after: null,
@@ -141,6 +144,7 @@ export default {
       },
       {
         title: "Education",
+        key:'Education',
         loading: true,
         videos: [],
         after: null,
@@ -168,7 +172,7 @@ export default {
 
     async mapSegmentedVideos(section, index, first) {
       section.loading = true
-      const videosData = await this.getSegmentedVideos(section?.title, section?.after, first ? first : 8)
+      const videosData = await this.getSegmentedVideos(section?.key, section?.after, first ? first : 8)
       section.videos.push(...videosData?.edges)
       section.has_next_page = videosData?.page_info?.has_next_page;
       if (section.has_next_page) {
