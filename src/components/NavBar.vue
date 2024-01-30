@@ -286,7 +286,7 @@
 <script>
 import { mapGetters } from "vuex";
 import SubscriptionService from "@/services/SubscriptionService";
-import HistoryService from "@/services/HistoryService";
+// import HistoryService from "@/services/HistoryService";
 
 export default {
   props: {
@@ -452,15 +452,15 @@ export default {
       // console.log(this.searchText == this.$route.query['search-query'])
       if (this.searchText == this.$route.query["search_query"]) return;
       // this.searchText = this.$route.query['search-query']
-      const data = {
-        type: "search",
-        searchText: this.searchText,
-      };
+      // const data = {
+      //   type: "search",
+      //   searchText: this.searchText,
+      // };
 
-      if (this.isAuthenticated)
-        await HistoryService.createHistory(data).catch((err) =>
-          console.log(err)
-        );
+      // if (this.isAuthenticated)
+      //   await HistoryService.createHistory(data).catch((err) =>
+      //     console.log(err)
+      //   );
       
       this.$emit('search')
       this.$router.push({
