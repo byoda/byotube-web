@@ -1,8 +1,8 @@
 import Api from '@/services/Api'
 
 export default {
-  signIn(credentials) {
-    return Api().post('auth/login', credentials)
+  signIn(url,credentials) {
+    return Api().post(url, credentials)
   },
   signUp(data) {
     return Api().post('auth/register', data)

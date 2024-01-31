@@ -1,27 +1,49 @@
-import Api from '@/services/Api'
+import Api from "@/services/Api";
 
 export default {
-  getAll(data, params) {
-    return Api().get(`videos/${data}`, {
-      params
-    })
+  getAll(filter) {
+    return Api().get(
+      `service/data?${filter.first ? "first=" + filter.first + "&" : ""}${
+        filter.list_name ? "list_name=" + filter.list_name + "&" : ""
+      }${filter.after ? "after=" + filter.after + "&" : ""}${
+        filter.ingest_status
+          ? "ingest_status=" + filter.ingest_status + "&"
+          : ""
+      }`
+    );
   },
-  getById(id) {
-    return Api().get(`videos/${id}`)
+  getMemberVideos(url, body = {}) {
+    return Api().post(url, body);
+  },
+
+  follow({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/network_invites/append`,
+      body
+    );
+  },
+
+  getById(url, filter) {
+    return Api().post(url, filter);
+  },
+  searchAssets(filter) {
+    return Api().get(
+      `service/search/asset?text=${filter.text}&num=${filter.num}&offset=${filter.offset}`
+    );
   },
   uploadVideo(data, optional) {
-    return Api().post('videos', data, optional)
+    return Api().post("videos", data, optional);
   },
   updateVideo(id, data) {
-    return Api().put(`videos/${id}`, data)
+    return Api().put(`videos/${id}`, data);
   },
   updateViews(id) {
-    return Api().put(`videos/${id}/views`)
+    return Api().put(`videos/${id}/views`);
   },
   uploadThumbnail(id, data) {
-    return Api().put(`videos/${id}/thumbnails`, data)
+    return Api().put(`videos/${id}/thumbnails`, data);
   },
   deleteById(id) {
-    return Api().delete(`videos/${id}`)
-  }
-}
+    return Api().delete(`videos/${id}`);
+  },
+};

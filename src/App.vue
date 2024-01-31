@@ -34,3 +34,5 @@ export default {
   background: #f9f9f9 !important;
 }
 </style>
+
+<style src="../src/assets/main.css" />

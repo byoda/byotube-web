@@ -4,7 +4,7 @@
       <v-col cols="12" xs="12" sm="6" md="5" lg="4" class="ma-auto">
         <v-card outlined :loading="loading">
           <div class="px-8 pt-6 pb-12">
-            <v-card-title class="text-center">VueTube</v-card-title>
+            <v-card-title class="text-center">BYO.Tube</v-card-title>
             <v-card-subtitle class="mb-5">Sign in</v-card-subtitle>
             <v-card-text>
               <ValidationObserver ref="form" v-slot="{ handleSubmit, reset }">
@@ -14,13 +14,13 @@
                 >
                   <ValidationProvider
                     v-slot="{ errors }"
-                    name="Email"
-                    rules="required|email"
+                    name="Username"
+                    rules="required"
                   >
                     <v-text-field
                       v-model="email"
                       :error-messages="errors"
-                      label="Email"
+                      label="Username"
                       outlined
                     ></v-text-field>
                   </ValidationProvider>
@@ -47,8 +47,21 @@
                       outlined
                     ></v-text-field>
                   </ValidationProvider>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    name="Email"
+                    rules="required"
+                  >
+                    <v-text-field
+                      v-model="domain"
+                      :error-messages="errors"
+                      label="Domain"
+                      outlined
+                      class="mt-3"
+                    ></v-text-field>
+                  </ValidationProvider>
                   <div class="mt-6 d-flex justify-space-between">
-                    <v-btn
+                    <!-- <v-btn
                       text
                       small
                       class="pl-0 text-capitalize"
@@ -56,7 +69,7 @@
                       router
                       to="signup"
                       >Create account</v-btn
-                    >
+                    > -->
                     <v-btn
                       type="submit"
                       class="primary"
@@ -81,33 +94,37 @@ export default {
   data: () => ({
     email: '',
     password: '',
+    domain:'',
+    service_id : process.env.VUE_APP_BYOTUBE_SERVICE_ID,
     loading: false
   }),
   methods: {
     async signin() {
       if (this.loading) return
       this.loading = true
-
-      const data = await this.$store
-        .dispatch('signIn', { email: this.email, password: this.password })
-        .catch((err) => {
-          this.loading = false
-          console.log(err)
-          this.$refs.form.setErrors({
-            Email: ["We don't reconize, this email"],
-            Password: ["We don't reconize, this password"]
+      try{
+  
+        const data = await this.$store
+          .dispatch('signIn', { username: this.email, password: this.password, domain: this.domain, service_id: this.service_id })
+          .catch((err) => {
+            this.loading = false
+            console.log(err)
+            this.$refs.form.setErrors({
+              Email: ["We don't reconize, this email"],
+              Password: ["We don't reconize, this password"]
+            })
           })
-        })
+  
+        if (!data) return
+        this.loading = false
+        this.$router.push({ name: 'Home' })
 
-      if (!data) return
-      const user = await this.$store
-        .dispatch('getCurrentUser', data.token)
-        .catch((err) => console.log(err))
+      }catch(error){
+        console.error("Error:", error)
+      }finally{
+        this.loading = false
+      }
 
-      if (!user) return
-
-      this.loading = false
-      this.$router.push({ name: 'Home' })
     }
   }
 }

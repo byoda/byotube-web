@@ -1,158 +1,166 @@
 <template>
   <nav id="navbar">
     <v-app-bar class="white" flat app clipped-left>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="font-weight-bold"
-        ><router-link to="/" class="black--text" style="text-decoration: none"
-          >VueTube</router-link
-        ></v-toolbar-title
-      >
-      <v-spacer></v-spacer>
-      <v-text-field
-        flat
-        hide-details
-        append-icon="mdi-magnify"
-        placeholder="Search"
-        outlined
-        dense
-        v-model="searchText"
-        @click:append="search"
-      ></v-text-field>
+      <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
+      <div class="d-flex justify-space-between toolbar-container">
 
-      <v-spacer></v-spacer>
+        <v-toolbar-title class="font-weight-bold d-flex align-items-center">
+          <div class="d-flex align-items-center">
+            <v-img src="~@/assets/byotube-logo.svg" :width="170" :height="39" contain @click="openAbout" />
+          </div>
+          <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="primary"></v-progress-linear>
+        </v-toolbar-title>
+        <div class="search-field">
+          <v-text-field v-model="searchText" flat rounded hide-details append-icon="mdi-magnify" placeholder="Search"
+            outlined dense @click:append="search" @keyup.enter="search"></v-text-field>
+        </div>
 
-      <v-menu offsetY>
-        <template v-slot:activator="{ on: menu }">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on: tooltip }">
-              <v-btn icon class="mr-7" v-on="{ ...tooltip, ...menu }"
-                ><v-icon size="25">mdi-video-plus</v-icon></v-btn
-              >
-            </template>
-            <span>Create a video and more</span>
-          </v-tooltip>
-        </template>
-        <v-list>
-          <v-list-item router to="/studio">
-            <v-list-item-icon class="mr-3"
-              ><v-icon>mdi-play-box-outline</v-icon></v-list-item-icon
-            >
-            <v-list-item-title>Upload video</v-list-item-title>
-          </v-list-item>
-          <!-- <v-list-item>
-            <v-list-item-icon class="mr-3"
-              ><v-icon>mdi-access-point</v-icon></v-list-item-icon
-            >
-            <v-list-item-title>Go live</v-list-item-title>
-          </v-list-item> -->
-        </v-list>
-      </v-menu>
-      <!-- <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on"> <v-icon size="25">mdi-apps</v-icon></v-btn>
-        </template>
-        <span>VueTube apps</span>
-      </v-tooltip> -->
+        <!-- <v-spacer></v-spacer> -->
 
-      <!-- <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on" class="mr-7">
-            <v-icon size="25">mdi-bell</v-icon></v-btn
-          >
-        </template>
-        <span>Notifications</span>
-      </v-tooltip> -->
-      <v-btn
-        tile
-        outlined
-        color="blue"
-        class="font-weight-bold"
-        v-if="!$store.getters.isAuthenticated"
-        router
-        to="/signin"
-      >
-        <v-icon left size="26">mdi-account-circle</v-icon> Sign in
-      </v-btn>
-
-      <v-menu offset-y left v-else>
-        <template v-slot:activator="{ on }">
-          <v-btn small color="red" depressed fab v-on="on" class="white--text">
-            <v-avatar v-if="currentUser.photoUrl !== 'no-photo.jpg'">
-              <img
-                :src="`${getUrl}/uploads/avatars/${currentUser.photoUrl}`"
-                :alt="`${currentUser.channelName} avatar`"
-              />
-            </v-avatar>
-            <template v-else>
-              <span class="headline">
-                {{ currentUser.channelName.split('')[0].toUpperCase() }}
-              </span>
-            </template>
-          </v-btn>
-        </template>
-
-        <v-card>
+        <!-- <v-menu offsetY>
+          <template v-slot:activator="{ on: menu }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-btn icon class="mr-7" v-on="{ ...tooltip, ...menu }"
+                  ><v-icon size="25">mdi-video-plus</v-icon></v-btn
+                >
+              </template>
+              <span>Create a video and more</span>
+            </v-tooltip>
+          </template>
           <v-list>
-            <v-list-item>
-              <v-list-item-avatar>
-                <v-avatar v-if="currentUser.photoUrl !== 'no-photo.jpg'">
-                  <img
-                    :src="`${getUrl}/uploads/avatars/${currentUser.photoUrl}`"
-                    :alt="`${currentUser.channelName} avatar`"
-                  />
-                </v-avatar>
-                <template v-else>
-                  <v-avatar color="red">
-                    <span class="white--text headline ">
-                      {{
-                        currentUser.channelName.split('')[0].toUpperCase()
-                      }}</span
-                    >
-                  </v-avatar>
-                </template>
-              </v-list-item-avatar>
-
-              <v-list-item-content>
-                <v-list-item-title class="text-capitalize">{{
-                  currentUser.channelName
-                }}</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  currentUser.email
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-
-          <v-divider></v-divider>
-
-          <v-list>
-            <v-list-item
-              router
-              :to="`/channels/${$store.getters.currentUser._id}`"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account-box</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Your channel</v-list-item-title>
-            </v-list-item>
             <v-list-item router to="/studio">
-              <v-list-item-icon>
-                <v-icon>mdi-youtube-studio</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>VueTube Studio</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="signOut">
-              <v-list-item-icon>
-                <v-icon>mdi-login-variant</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Sign out</v-list-item-title>
+              <v-list-item-icon class="mr-3"
+                ><v-icon>mdi-play-box-outline</v-icon></v-list-item-icon
+              >
+              <v-list-item-title>Upload video</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-card>
-      </v-menu>
+        </v-menu> -->
+        <!-- <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on"> <v-icon size="25">mdi-apps</v-icon></v-btn>
+          </template>
+          <span>VueTube apps</span>
+        </v-tooltip> -->
+
+        <!-- <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" class="mr-7">
+              <v-icon size="25">mdi-bell</v-icon></v-btn
+            >
+          </template>
+          <span>Notifications</span>
+        </v-tooltip> -->
+        <div>
+
+          <v-menu offset-y left origin="right right" transition="slide-x-transition" :close-on-content-click="false">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn class="mx-2" fab dark small v-bind="attrs" v-on="on" outlined color="secondary">
+                <v-icon dark>
+                  mdi-tune-variant
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item v-for="(item, index) in options" :key="index">
+                <v-list-item-title>
+                  <v-checkbox :key="index" v-model="filter" :value="item" class="mt-0" hide-details :label="item.name"
+                    @change="$root.$emit('filter-changed', filter)" />
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-btn tile outlined color="blue" class="font-weight-bold auth-btn secondary--text"
+            v-if="!$store.getters.isAuthenticated" router to="/signin">
+            <v-icon left size="26">mdi-account-circle</v-icon> Sign in
+          </v-btn>
+          <v-btn tile outlined color="blue" class="font-weight-bold auth-btn secondary--text"
+            v-else-if="$store.getters.isAuthenticated" router @click="logout">
+            <v-icon left size="26">mdi-account-circle</v-icon> Sign out
+          </v-btn>
+        </div>
+
+        <!-- <v-menu offset-y left v-else>
+          <template v-slot:activator="{ on }">
+            <v-btn small color="red" depressed fab v-on="on" class="white--text">
+              <v-avatar v-if="currentUser.photoUrl !== 'no-photo.jpg'">
+                <img
+                  :src="`${getUrl}/uploads/avatars/${currentUser.photoUrl}`"
+                  :alt="`${currentUser.channelName} avatar`"
+                />
+              </v-avatar>
+              <template v-else>
+                <span class="headline">
+                  {{ currentUser.channelName.split('')[0].toUpperCase() }}
+                </span>
+              </template>
+            </v-btn>
+          </template>
+  
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-list-item-avatar>
+                  <v-avatar v-if="currentUser.photoUrl !== 'no-photo.jpg'">
+                    <img
+                      :src="`${getUrl}/uploads/avatars/${currentUser.photoUrl}`"
+                      :alt="`${currentUser.channelName} avatar`"
+                    />
+                  </v-avatar>
+                  <template v-else>
+                    <v-avatar color="red">
+                      <span class="white--text headline ">
+                        {{
+                          currentUser.channelName.split('')[0].toUpperCase()
+                        }}</span
+                      >
+                    </v-avatar>
+                  </template>
+                </v-list-item-avatar>
+  
+                <v-list-item-content>
+                  <v-list-item-title class="text-capitalize">{{
+                    currentUser.channelName
+                  }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    currentUser.email
+                  }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+  
+            <v-divider></v-divider>
+  
+            <v-list>
+              <v-list-item
+                router
+                :to="`/channels/${$store.getters.currentUser._id}`"
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-account-box</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Your channel</v-list-item-title>
+              </v-list-item>
+              <v-list-item router to="/studio">
+                <v-list-item-icon>
+                  <v-icon>mdi-youtube-studio</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>VueTube Studio</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="signOut">
+                <v-list-item-icon>
+                  <v-icon>mdi-login-variant</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Sign out</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-menu> -->
+      </div>
     </v-app-bar>
 
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       app
       :clipped="$route.name !== 'Watch'"
@@ -271,30 +279,41 @@
           </span>
         </v-list>
       </div>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
   </nav>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import SubscriptionService from '@/services/SubscriptionService'
-import HistoryService from '@/services/HistoryService'
+import { mapGetters } from "vuex";
+import SubscriptionService from "@/services/SubscriptionService";
+// import HistoryService from "@/services/HistoryService";
 
 export default {
+  props: {
+    loading: {
+      default:false,
+      type:Boolean
+    }
+  },
   data: () => ({
     drawer: true,
+    filter: [],
+    options: [
+      { name: "YouTube Hosted", value: "external" },
+      { name: "BYODA Hosted", value: "published" },
+    ],
     items: [
       {
         header: null,
         pages: [
-          { title: 'Home', link: '/', icon: 'mdi-home' },
-          { title: 'Trending', link: '/trending', icon: 'mdi-fire' },
+          { title: "Home", link: "/", icon: "mdi-home" },
+          { title: "Trending", link: "/trending", icon: "mdi-fire" },
           {
-            title: 'Subscriptions',
-            link: '/subscriptions',
-            icon: 'mdi-youtube-subscription'
-          }
-        ]
+            title: "Subscriptions",
+            link: "/subscriptions",
+            icon: "mdi-youtube-subscription",
+          },
+        ],
       },
       {
         header: null,
@@ -305,9 +324,9 @@ export default {
           //   icon: 'mdi-play-box-multiple'
           // },
           {
-            title: 'History',
-            link: '/history',
-            icon: 'mdi-history'
+            title: "History",
+            link: "/history",
+            icon: "mdi-history",
           },
           // {
           //   title: 'Your videos',
@@ -322,14 +341,14 @@ export default {
           // },
 
           {
-            title: 'Liked videos',
-            link: '/liked-videos',
-            icon: 'mdi-thumb-up'
-          }
-        ]
+            title: "Liked videos",
+            link: "/liked-videos",
+            icon: "mdi-thumb-up",
+          },
+        ],
       },
       {
-        header: 'Subscriptions',
+        header: "Subscriptions",
         pages: [
           // {
           //   title: 'Traversy Media',
@@ -351,110 +370,122 @@ export default {
           //   link: '#ch',
           //   icon: 'mdi-badge-account'
           // }
-        ]
+        ],
       },
       {
-        header: 'MORE FROM VUETUBE',
+        header: "MORE FROM VUETUBE",
         pages: [
           {
-            title: 'VueTube Premium',
-            link: '#vp',
-            icon: 'mdi-youtube'
+            title: "VueTube Premium",
+            link: "#vp",
+            icon: "mdi-youtube",
           },
           {
-            title: 'Gaming',
-            link: '#g',
-            icon: 'mdi-youtube-gaming'
+            title: "Gaming",
+            link: "#g",
+            icon: "mdi-youtube-gaming",
           },
           {
-            title: 'Live',
-            link: '#li',
-            icon: 'mdi-access-point'
-          }
-        ]
+            title: "Live",
+            link: "#li",
+            icon: "mdi-access-point",
+          },
+        ],
       },
       {
         header: null,
         pages: [
           {
-            title: 'Setting',
-            link: '#sg',
-            icon: 'mdi-cog'
+            title: "Setting",
+            link: "#sg",
+            icon: "mdi-cog",
           },
           {
-            title: 'Report history',
-            link: '#rh',
-            icon: 'mdi-flag'
+            title: "Report history",
+            link: "#rh",
+            icon: "mdi-flag",
           },
           {
-            title: 'Help',
-            link: '#hp',
-            icon: 'mdi-help-circle'
+            title: "Help",
+            link: "#hp",
+            icon: "mdi-help-circle",
           },
           {
-            title: 'Send feedback',
-            link: '#f',
-            icon: 'mdi-message-alert'
-          }
-        ]
-      }
+            title: "Send feedback",
+            link: "#f",
+            icon: "mdi-message-alert",
+          },
+        ],
+      },
     ],
     links: [
-      { text: 'About', link: '#' },
-      { text: 'Press', link: '#' },
-      { text: 'Copyrignt', link: '#' },
-      { text: 'Contact us', link: '#' },
-      { text: 'Creators', link: '#' },
-      { text: 'Advertise', link: '#' },
-      { text: 'Developers', link: '#' },
-      { text: 'Terms', link: '#' },
-      { text: 'Privacy', link: '#' },
-      { text: 'Policy & Safety', link: '#' },
-      { text: 'Test new features', link: '#' }
+      { text: "About", link: "#" },
+      { text: "Press", link: "#" },
+      { text: "Copyrignt", link: "#" },
+      { text: "Contact us", link: "#" },
+      { text: "Creators", link: "#" },
+      { text: "Advertise", link: "#" },
+      { text: "Developers", link: "#" },
+      { text: "Terms", link: "#" },
+      { text: "Privacy", link: "#" },
+      { text: "Policy & Safety", link: "#" },
+      { text: "Test new features", link: "#" },
     ],
     channelLength: 0,
-    searchText: ''
+    searchText: "",
     // user: null
   }),
   computed: {
-    ...mapGetters(['currentUser', 'getUrl', 'isAuthenticated'])
+    ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
   },
   methods: {
+    // filerItems(item){
+    //   const itemExist = this.filter.map(filteItem => JSON.stringify(this.filerItems) === JSON.stringify(item))
+    // },
+    logout() {
+      localStorage.removeItem("token");
+      // this.$router.push('/signin')
+      window.location.reload();
+    },
     async search() {
-      if (!this.searchText) return
+      if (!this.searchText) return;
       // console.log(this.searchText == this.$route.query['search-query'])
-      if (this.searchText == this.$route.query['search-query']) return
+      if (this.searchText == this.$route.query["search_query"]) return;
       // this.searchText = this.$route.query['search-query']
-      const data = {
-        type: 'search',
-        searchText: this.searchText
-      }
+      // const data = {
+      //   type: "search",
+      //   searchText: this.searchText,
+      // };
 
-      if (this.isAuthenticated)
-        await HistoryService.createHistory(data).catch((err) =>
-          console.log(err)
-        )
-
+      // if (this.isAuthenticated)
+      //   await HistoryService.createHistory(data).catch((err) =>
+      //     console.log(err)
+      //   );
+      
+      this.$emit('search')
       this.$router.push({
-        name: 'Search',
-        query: { 'search-query': this.searchText }
-      })
+        name: "Search",
+        query: { "search_query": this.searchText },
+      });
     },
     async getSubscribedChannels() {
       const channels = await SubscriptionService.getSubscribedChannels(
         this.currentUser._id
-      ).catch((err) => console.log(err))
-      this.items[2].pages = channels.data.data
-      this.channelLength = 3
+      ).catch((err) => console.log(err));
+      this.items[2].pages = channels.data.data;
+      this.channelLength = 3;
     },
     moreChannels() {
       if (this.channelLength === 3)
-        this.channelLength = this.items[2].pages.length
-      else this.channelLength = 3
+        this.channelLength = this.items[2].pages.length;
+      else this.channelLength = 3;
     },
     signOut() {
-      this.$store.dispatch('signOut')
+      this.$store.dispatch("signOut");
       // this.$router.push('/')
+    },
+    openAbout() {
+      window.open('https://about.byo.tube/')
     }
   },
   // beforeRouteLeave(to, from, next) {
@@ -468,37 +499,38 @@ export default {
   // },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      if (!to.query['search-query'] === '') return
-      vm.searchText = to.query['search-query']
+      if (!to.query["search-query"] === "") return;
+      vm.searchText = to.query["search-query"];
       // vm.getSearchResults(to.query['search-query'])
-    })
+    });
   },
   mounted() {
     // if (this.$route.query['search-query'])
     //   this.searchText = this.$route.query['search-query']
 
-    if (this.currentUser) this.getSubscribedChannels()
+    if (this.currentUser) this.getSubscribedChannels();
     // this.user = this.$store.getters.currentUser
     // console.log(this.user)
-    this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true
+    this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true;
     // console.log(this.$route.name)
-    this.drawer = this.$route.name === 'Watch' ? false : this.drawer
+    this.drawer = this.$route.name === "Watch" ? false : this.drawer;
   },
   created() {
-    this.drawer = this.$route.name === 'Watch' ? false : this.drawer
+    this.drawer = this.$route.name === "Watch" ? false : this.drawer;
 
     if (!this.isAuthenticated) {
-      this.items[2].header = false
-      this.items[0].pages.pop()
+      this.items[2].header = false;
+      this.items[0].pages.pop();
     }
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss">
 .v-list-item__avatar {
   justify-content: center !important;
 }
+
 #showBtn {
   .v-btn__content {
     justify-content: flex-start;
@@ -508,12 +540,14 @@ export default {
     }
   }
 }
+
 #navbar {
   .active-item {
     .v-list-item__icon {
       color: red !important;
     }
   }
+
   .v-navigation-drawer__border {
     width: 0 !important;
   }
@@ -525,13 +559,13 @@ export default {
     background: #dfe9fe;
   }
 
-  .vb > .vb-dragger {
+  .vb>.vb-dragger {
     z-index: 5;
     width: 10px;
     right: 0;
   }
 
-  .vb > .vb-dragger > .vb-dragger-styler {
+  .vb>.vb-dragger>.vb-dragger-styler {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-transform: rotate3d(0, 0, 0, 0);
@@ -547,29 +581,42 @@ export default {
     display: block;
   }
 
-  .v-navigation-drawer__content:hover .vb > .vb-dragger > .vb-dragger-styler {
+  .v-navigation-drawer__content:hover .vb>.vb-dragger>.vb-dragger-styler {
     width: 10px;
     background-color: #e0e0e0;
   }
 
-  .vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-scrolling-phantom>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.3);
     background-color: rgba(255, 255, 255, 0.3);
   }
 
-  .vb > .vb-dragger:hover > .vb-dragger-styler {
+  .vb>.vb-dragger:hover>.vb-dragger-styler {
     margin: 0px;
     width: 10px;
   }
 
-  .vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-dragging>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
     margin: 0px;
     height: 100%;
   }
 
-  .vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+  .vb.vb-dragging-phantom>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
+  }
+
+  .auth-btn {
+    height: 40px;
+    border-radius: 4px;
+  }
+
+  .search-field {
+    min-width: 600px;
+  }
+
+  .toolbar-container {
+    width: 100%;
   }
 }
 </style>

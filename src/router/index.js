@@ -1,160 +1,172 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import NavBar from '@/components/NavBar.vue'
-import StudioNavBar from '@/components/StudioNavBar.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import NavBar from "@/components/NavBar.vue";
+import StudioNavBar from "@/components/StudioNavBar.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    components: {
-      NavBar,
-      default: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
-    }
-  },
-  {
-    path: '/subscriptions',
-    name: 'Subscription',
+    path: "/",
+    alias: "/byotube",
+    name: "Home",
     components: {
       NavBar,
       default: () =>
-        import(/* webpackChunkName: "about" */ '../views/Subscription.vue')
+        import(/* webpackChunkName: "about" */ "../views/Home.vue"),
     },
-    meta: { requiresAuth: true }
   },
   {
-    path: '/liked-videos',
-    name: 'LikedVideos',
+    path: "/results",
+    name: "Search",
     components: {
-      NavBar,
       default: () =>
-        import(/* webpackChunkName: "about" */ '../views/LikedVideo.vue')
+        import(/* webpackChunkName: "about" */ "../views/Search/Search.vue"),
     },
-    meta: { requiresAuth: true }
   },
   {
-    path: '/signin',
-    name: 'SignIn',
-    component: () =>
-      import(/* webpackChunkName: "signin" */ '../views/Auth/SignIn.vue'),
-    meta: { requiresVisitor: true }
-  },
-  {
-    path: '/signup',
-    name: 'SignUp',
-    component: () =>
-      import(/* webpackChunkName: "signup" */ '../views/Auth/SignUp.vue'),
-    meta: { requiresVisitor: true }
-  },
-  {
-    path: '/trending',
-    name: 'Trending',
+    path: "/subscriptions",
+    name: "Subscription",
     components: {
       NavBar,
       default: () =>
-        import(/* webpackChunkName: "trending" */ '../views/Trending.vue')
-    }
+        import(/* webpackChunkName: "about" */ "../views/Subscription.vue"),
+    },
+    meta: { requiresAuth: true },
   },
   {
-    path: '/studio',
+    path: "/liked-videos",
+    name: "LikedVideos",
+    components: {
+      NavBar,
+      default: () =>
+        import(/* webpackChunkName: "about" */ "../views/LikedVideo.vue"),
+    },
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/signin",
+    name: "SignIn",
+    component: () =>
+      import(/* webpackChunkName: "signin" */ "../views/Auth/SignIn.vue"),
+    meta: { requiresVisitor: true },
+  },
+  {
+    path: "/signup",
+    name: "SignUp",
+    component: () =>
+      import(/* webpackChunkName: "signup" */ "../views/Auth/SignUp.vue"),
+    meta: { requiresVisitor: true },
+  },
+  {
+    path: "/trending",
+    name: "Trending",
+    components: {
+      NavBar,
+      default: () =>
+        import(/* webpackChunkName: "trending" */ "../views/Trending.vue"),
+    },
+  },
+  {
+    path: "/studio",
     components: {
       StudioNavBar,
       default: () =>
-        import(/* webpackChunkName: "dashboard" */ '../views/Studio/Index.vue')
+        import(/* webpackChunkName: "dashboard" */ "../views/Studio/Index.vue"),
     },
     children: [
       {
-        path: '/',
-        name: 'Dashboard',
+        path: "/",
+        name: "Dashboard",
         component: () =>
           import(
-            /* webpackChunkName: "dashboard" */ '../views/Studio/Dashboard.vue'
-          )
+            /* webpackChunkName: "dashboard" */ "../views/Studio/Dashboard.vue"
+          ),
       },
       {
-        path: 'videos',
-        name: 'Video',
+        path: "videos",
+        name: "Video",
         component: () =>
-          import(/* webpackChunkName: "video" */ '../views/Studio/Video.vue')
+          import(/* webpackChunkName: "video" */ "../views/Studio/Video.vue"),
       },
       {
-        path: 'details/:id',
-        name: 'Detail',
+        path: "details/:id",
+        name: "Detail",
         component: () =>
-          import(/* webpackChunkName: "video" */ '../views/Studio/Details.vue')
-      }
+          import(/* webpackChunkName: "video" */ "../views/Studio/Details.vue"),
+      },
     ],
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
-    path: '/channels/:id',
+    path: "/channels/:id",
     components: {
       NavBar,
       default: () =>
-        import(/* webpackChunkName: "dashboard" */ '../views/Channel/Index.vue')
+        import(
+          /* webpackChunkName: "dashboard" */ "../views/Channel/Index.vue"
+        ),
     },
     children: [
       {
-        path: '/',
-        name: 'ChannelHome',
+        path: "/",
+        name: "ChannelHome",
         component: () =>
           import(
-            /* webpackChunkName: "dashboard" */ '../views/Channel/Home.vue'
-          )
-      }
-    ]
+            /* webpackChunkName: "dashboard" */ "../views/Channel/Home.vue"
+          ),
+      },
+    ],
   },
   {
-    path: '/watch/:id',
-    name: 'Watch',
+    path: "/watch",
+    name: "Watch",
     components: {
       NavBar,
       default: () =>
-        import(/* webpackChunkName: "video" */ '../views/Watch.vue')
-    }
-  },
-  {
-    path: '/history',
-    name: 'History',
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "video" */ '../views/History.vue')
+        import(/* webpackChunkName: "video" */ "../views/Watch.vue"),
     },
-    meta: { requiresAuth: true }
   },
   {
-    path: '/search',
-    name: 'Search',
+    path: "/history",
+    name: "History",
     components: {
       NavBar,
       default: () =>
-        import(/* webpackChunkName: "video" */ '../views/Search.vue')
-    }
-  }
-]
+        import(/* webpackChunkName: "video" */ "../views/History.vue"),
+    },
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/search",
+    name: "Search",
+    components: {
+      NavBar,
+      default: () =>
+        import(/* webpackChunkName: "video" */ "../views/Search.vue"),
+    },
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem('user')
+  const loggedIn = localStorage.getItem("user");
 
   if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-    next('/')
+    next("/");
   } else if (
     to.matched.some((record) => record.meta.requiresVisitor) &&
     loggedIn
   ) {
-    next('/')
+    next("/");
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

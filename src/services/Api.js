@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default () => {
   const axiosInstance = axios.create({
-    baseURL: `${process.env.VUE_APP_URL}/api/v1`
+    baseURL: `${process.env.VUE_APP_URL}/api/v1/`
   })
 
   const token = localStorage.getItem('token')
@@ -16,7 +16,7 @@ export default () => {
       if (error.response.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        location.reload()
+        // location.reload()
       }
       return Promise.reject(error)
     }
