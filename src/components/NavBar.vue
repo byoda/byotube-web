@@ -6,7 +6,7 @@
 
         <v-toolbar-title class="font-weight-bold d-flex align-items-center">
           <div class="d-flex align-items-center">
-            <v-img src="~@/assets/byotube-logo.svg" :width="170" :height="39" contain @click="openAbout" />
+            <v-img src="~@/assets/byotube-logo.png" :width="170" :height="39" contain @click="openAbout" />
           </div>
           <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="primary"></v-progress-linear>
         </v-toolbar-title>

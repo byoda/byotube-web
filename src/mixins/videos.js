@@ -33,17 +33,6 @@ export const videosMixin = {
   }),
   methods: {
     async getSegmentedVideos(listName = null, after = null, first = 8) {
-      // if (!this.loaded) {
-      //   this.loading = true;
-      // }
-
-      // if (!this.has_next_page) {
-      //   this.loading = false;
-      //   // $state.complete();
-      //   this.loaded = true;
-      //   return;
-      // }
-
       const filter = {
         first: first,
         list_name: listName,
@@ -53,12 +42,12 @@ export const videosMixin = {
         filter["after"] = after;
       }
 
-      // if (
-      //   this.ingestStatus.length &&
-      //   !this.compareArrays(this.ingestStatus, this.options)
-      // ) {
-      //   filter["ingest_status"] = this.ingestStatus[0].value;
-      // }
+      if (
+        this.ingestStatus.length &&
+        !this.compareArrays(this.ingestStatus, this.options)
+      ) {
+        filter["ingest_status"] = this.ingestStatus[0].value;
+      }
 
       const videos = await VideoService.getAll(filter)
         .catch((err) => {
@@ -70,22 +59,6 @@ export const videosMixin = {
         });
 
       if (typeof videos === "undefined") return;
-
-      // if (videos.data.edges.length) {
-      //   this.page += 1;
-      //   this.has_next_page = videos?.data?.page_info?.has_next_page;
-      //   if (this.has_next_page) {
-      //     this.after = videos?.data?.page_info.end_cursor;
-      //   }
-      //   // this.videos.push(...videos.data.edges);
-      //   // $state.loaded();
-      //   this.loaded = true;
-      // } else {
-      //   // $state.complete();
-      // }
-
-      console.log("Vieeos", videos.data.edges);
-
       return videos.data;
     },
     async getServiceVideos($state, listName = null) {
@@ -162,6 +135,7 @@ export const videosMixin = {
         first: 40,
         after: (() => this.after)(),
       };
+
       if (
         this.ingestStatus.length &&
         !this.compareArrays(this.ingestStatus, this.options)

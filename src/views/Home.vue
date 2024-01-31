@@ -164,7 +164,6 @@ export default {
       this.sections?.forEach(async (section, index) => {
         await this.mapSegmentedVideos(section, index)
         this.loadAllVideos = false
-        console.log("Loading", this.loadAllVideos);
       })
 
 
@@ -180,10 +179,19 @@ export default {
       }
       section.loading = false
       this.sections[index] = section
+    },
+
+    emptySectionVideos(){
+      this.sections.forEach(section=>{
+        section.videos = []
+        section.after = null
+        section.has_next_page = null
+      })
     }
 
 
   },
+
   mounted() {
     this.followedAccounts =
       typeof window !== "undefined"
@@ -194,7 +202,9 @@ export default {
       this.after = null
       this.loaded = false
       this.videos = []
-      this.getVideos();
+      // this.getVideos();
+      this.emptySectionVideos()
+      this.getAllSegmentedVideos()
     });
 
     this.getAllSegmentedVideos()
