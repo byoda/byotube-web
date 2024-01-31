@@ -102,8 +102,8 @@
               :key="i"
               class="recommended-videos mb-2"
               :followed-accounts="followedAccounts"
-              style=" position: relative; height: 90px"
-              @click="getItem(video)"
+              style=" position: relative; height: 90px; cursor: pointer;"
+              @click="getItem(video); videoOptions.autoplay = 'play'"
             >
               <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
                 <video-card
