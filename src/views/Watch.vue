@@ -70,7 +70,7 @@
                             <v-btn @click="like">
                               <v-icon size="24">mdi-thumb-up-outline</v-icon>
                             </v-btn>
-                            <v-btn>
+                            <v-btn @click="dislike">
                               <v-icon size="24">mdi-thumb-down-outline</v-icon>
                             </v-btn>
                           </v-btn-toggle>
@@ -252,11 +252,13 @@ export default {
 
     async like() {
       const { data } = await this.likeVideo(
+        'like',
         this.asset.origin,
         this.service_id,
-        this.asset.created_timestamp
+        this.asset.created_timestamp,
+        this.asset.asset_id
       );
-      console.log("ASset", this.asset);
+
       if (data) {
         this.informPodAboutLike(
           {
@@ -271,6 +273,51 @@ export default {
         )
       }
     },
+    async dislike() {
+      const { data } = await this.likeVideo(
+        'dislike',
+        this.asset.origin,
+        this.service_id,
+        this.asset.created_timestamp,
+        this.asset.asset_id
+      );
+
+      if (data) {
+        this.informPodAboutLike(
+          {
+            remote_member_id: this.asset.origin,
+            depth: 1,
+            serviceId: this.service_id,
+            query_id: uuid.v4(),
+            asset_id: this.asset.asset_id,
+            created_timestamp: this.asset.created_timestamp,
+            member_id: this.asset.origin,
+          }
+        )
+      }
+    },
+
+    async getVideoByid() {
+      try{
+        const filter = 
+          {
+            filter:{
+              asset_id : 
+              {
+                eq: 'd3902755-a1fb-4f99-aece-5bd1b0359e90'
+              }
+            }
+          }
+        const { data } = await this.getAssetById(
+          this.service_id, filter
+        );
+  
+        console.log("Data", data);
+      }catch(error){
+        console.error("Error", error);
+      }
+    },
+
     async checkSubscription(id) {
       if (!this.isAuthenticated) return;
 
@@ -431,6 +478,7 @@ export default {
   },
   created() {
     this.getVideo();
+    this.getVideoByid()
   },
   mounted() {
     this.followedAccounts =

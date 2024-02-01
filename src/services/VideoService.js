@@ -32,7 +32,7 @@ export default {
 
   likeVideo({ domain, serviceId }, body) {
     return Api().post(
-      `https://${domain}/api/v1/data/${serviceId}/asset_links/append`,
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/append`,
       body
     );
   },
@@ -44,8 +44,11 @@ export default {
     );
   },
 
-  getById(url, filter) {
-    return Api().post(url, filter);
+  getById({ domain, serviceId }, filter) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/query`,
+      filter
+    );
   },
   searchAssets(filter) {
     return Api().get(

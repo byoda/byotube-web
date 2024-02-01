@@ -37,11 +37,18 @@ export const followMixin = {
       );
     },
 
-    likeVideo: function(origin, serviceId, createdTimestamp) {
+    likeVideo: function(
+      relation,
+      origin,
+      serviceId,
+      createdTimestamp,
+      assetId
+    ) {
       const body = {
-        relation: "like",
+        relation,
         member_id: origin,
         created_timestamp: createdTimestamp,
+        asset_id: assetId,
       };
       return VideoService.likeVideo(
         { domain: this.initialState.domain, serviceId: serviceId },
@@ -92,8 +99,17 @@ export const followMixin = {
           JSON.stringify(followedAccounts)
         );
       }
+    },
 
-      console.log("Member", memberId, alreadyFollowed);
+    getAssetById(serviceId, filter) {
+      console.log("Inside");
+      return VideoService.getById(
+        {
+          domain: this.initialState.domain,
+          serviceId: serviceId,
+        },
+        filter
+      );
     },
   },
 };
