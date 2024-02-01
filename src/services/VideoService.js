@@ -23,6 +23,27 @@ export default {
     );
   },
 
+  informPodAboutFollow({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/network_links_inbound/query`,
+      body
+    );
+  },
+
+  likeVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_links/append`,
+      body
+    );
+  },
+
+  informPodAboutLike({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions_received/append`,
+      body
+    );
+  },
+
   getById(url, filter) {
     return Api().post(url, filter);
   },
