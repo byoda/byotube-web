@@ -66,7 +66,7 @@
                           </v-btn>
                         </div>
                         <div class="d-flex align-center">
-                          <v-btn-toggle style="background-color: #f2f2f2 !important;" dense rounded>
+                          <v-btn-toggle active-class="active-btn" class="toggle-btn-class" background-color="#f2f2f2"  dense rounded>
                             <v-btn @click="likeOrDislike(LIKE)">
                               <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon> 
                               <v-icon v-else size="24">mdi-thumb-up-outline</v-icon> 
@@ -592,6 +592,15 @@ button.v-btn.remove-hover-bg {
 
   &:hover {
     background-color: #f9f9f9;
+  }
+}
+
+.active-btn{
+  background-color: #f2f2f2 !important;
+}
+.toggle-btn-class{
+  .v-btn:before{
+    background-color: #f2f2f2 !important;
   }
 }
 
