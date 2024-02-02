@@ -82,6 +82,13 @@ export const followMixin = {
       );
     },
 
+    deleteReaction: function({ serviceId, depth, query_id, filter }) {
+      return VideoService.deleteLikedVideo(
+        { domain: this.initialState.domain, serviceId: serviceId },
+        { depth, query_id, filter }
+      );
+    },
+
     setFollowed(memberId) {
       let alreadyFollowed = JSON.parse(
         localStorage.getItem("followedAccounts")

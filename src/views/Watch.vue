@@ -72,7 +72,7 @@
                               <v-icon v-else size="24">mdi-thumb-up-outline</v-icon> 
                             </v-btn>
                             <v-btn @click="likeOrDislike(DISLIKE)">
-                              <v-icon v-if="isVideosDisikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
+                              <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
                               <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
                             </v-btn>
                           </v-btn-toggle>
@@ -187,7 +187,7 @@ export default {
     isVideosLikedByCurrentUser(){
       return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset?.node?.relation == this.LIKE)
     },
-    isVideosDisikedByCurrentUser(){
+    isVideoDislikedByCurrentUser(){
       return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset.node.relation == this.DISLIKE)
     }
   },
@@ -267,7 +267,15 @@ export default {
 
       const {asset_id, origin, created_timestamp} = this.asset
       const serviceId = this.service_id
-      if(this.isVideosLikedByCurrentUser || this.isVideosDisikedByCurrentUser){
+      if(this.isVideosLikedByCurrentUser || this.isVideoDislikedByCurrentUser){
+        console.log("Conf", this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE );
+        if(this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE ){
+          this.deleteAssetReaction()
+          console.log("Insode cont");
+          this.assetReactions = []
+          this.assetReactions = await this.getVideoByid(asset_id)
+          return
+        }
         const existingRelation = this.isVideosLikedByCurrentUser ? 'dislike' : 'like'
         const filter = 
           {
@@ -302,14 +310,14 @@ export default {
 
         newData = data
         this.assetReactions = []
-        this.assetReactions =await this.getVideoByid(asset_id)
+        this.assetReactions = await this.getVideoByid(asset_id)
       }
 
       if (newData || updatedData) {
         this.informPodAboutLike(
           {
             remote_member_id: this.asset.origin,
-            depth: 1,
+            depth: 0,
             serviceId: this.service_id,
             query_id: uuid.v4(),
             asset_id: this.asset.asset_id,
@@ -359,6 +367,29 @@ export default {
         );
   
         return data?.edges
+      }catch(error){
+        console.error("Error", error);
+        return []
+      }
+    },
+    async deleteAssetReaction() {
+      const { asset_id } = this.asset
+      try{
+        const filter = {
+              asset_id : 
+              {
+                eq: asset_id
+              }
+          }
+        const { data } = await this.deleteReaction({
+          serviceId: this.service_id,
+          depth: 0,
+          query_id: uuid.v4(),
+          filter
+        }
+        );
+  
+      console.log("Data", data);
       }catch(error){
         console.error("Error", error);
         return []

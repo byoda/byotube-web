@@ -43,6 +43,12 @@ export default {
       body
     );
   },
+  deleteLikedVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/delete`,
+      body
+    );
+  },
 
   informPodAboutLike({ domain, serviceId }, body) {
     return Api().post(
