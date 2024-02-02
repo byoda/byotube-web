@@ -268,10 +268,8 @@ export default {
       const {asset_id, origin, created_timestamp} = this.asset
       const serviceId = this.service_id
       if(this.isVideosLikedByCurrentUser || this.isVideoDislikedByCurrentUser){
-        console.log("Conf", this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE );
         if(this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE ){
           this.deleteAssetReaction()
-          console.log("Insode cont");
           this.assetReactions = []
           this.assetReactions = await this.getVideoByid(asset_id)
           return
