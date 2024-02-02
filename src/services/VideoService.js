@@ -23,8 +23,45 @@ export default {
     );
   },
 
-  getById(url, filter) {
-    return Api().post(url, filter);
+  informPodAboutFollow({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/network_links_inbound/query`,
+      body
+    );
+  },
+
+  likeVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/append`,
+      body
+    );
+  },
+
+  editLikedVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/update`,
+      body
+    );
+  },
+  deleteLikedVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/delete`,
+      body
+    );
+  },
+
+  informPodAboutLike({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions_received/append`,
+      body
+    );
+  },
+
+  getById({ domain, serviceId }, filter) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/query`,
+      filter
+    );
   },
   searchAssets(filter) {
     return Api().get(

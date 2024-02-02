@@ -1,60 +1,68 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify'
-import { required, email, max, min, size, oneOf } from 'vee-validate/dist/rules'
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
+import {
+  required,
+  email,
+  max,
+  min,
+  size,
+  oneOf,
+} from "vee-validate/dist/rules";
 import {
   extend,
   ValidationObserver,
   ValidationProvider,
-  setInteractionMode
-} from 'vee-validate'
-import Vuebar from 'vuebar'
+  setInteractionMode,
+} from "vee-validate";
+import Vuebar from "vuebar";
+import { uuid } from "vue-uuid";
 // import InfiniteLoading from 'vue-infinite-loading'
 
-setInteractionMode('eager')
+setInteractionMode("eager");
 
-extend('required', {
+extend("required", {
   ...required,
-  message: 'Enter {_field_}'
-})
+  message: "Enter {_field_}",
+});
 
-extend('oneOf', {
-  ...oneOf
-})
+extend("oneOf", {
+  ...oneOf,
+});
 
-extend('max', {
+extend("max", {
   ...max,
-  message: '{_field_} may not be greater than {length} characters'
-})
+  message: "{_field_} may not be greater than {length} characters",
+});
 
-extend('min', {
+extend("min", {
   ...min,
-  message: '{_field_} may not be less than {length} characters'
-})
+  message: "{_field_} may not be less than {length} characters",
+});
 
-extend('email', {
+extend("email", {
   ...email,
-  message: 'Email must be valid'
-})
+  message: "Email must be valid",
+});
 
-extend('password', {
-  params: ['target'],
+extend("password", {
+  params: ["target"],
   validate(value, { target }) {
-    return value === target
+    return value === target;
   },
-  message: 'Password does not match'
-})
+  message: "Password does not match",
+});
 
-extend('size', {
+extend("size", {
   ...size,
-  message: 'video size should be less than 5 MB!'
-})
+  message: "video size should be less than 5 MB!",
+});
 
-Vue.config.productionTip = false
-Vue.component('ValidationProvider', ValidationProvider)
-Vue.component('ValidationObserver', ValidationObserver)
+Vue.config.productionTip = false;
+Vue.component("ValidationProvider", ValidationProvider);
+Vue.component("ValidationObserver", ValidationObserver);
 
 // Vue.use(InfiniteLoading, {
 //   props: {
@@ -65,11 +73,12 @@ Vue.component('ValidationObserver', ValidationObserver)
 
 // Vue.component('InfiniteLoading', InfiniteLoading)
 
-Vue.use(Vuebar)
+Vue.use(Vuebar);
+Vue.use(uuid);
 
 new Vue({
   router,
   store,
   vuetify,
-  render: (h) => h(App)
-}).$mount('#app')
+  render: (h) => h(App),
+}).$mount("#app");

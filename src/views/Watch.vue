@@ -1,7 +1,7 @@
 <template>
   <div id="watch" ref="watch" :key="pageKey">
     <v-container fluid>
-      <v-row >
+      <v-row>
         <v-alert prominent class="mx-auto" type="error" v-if="errored">
           <v-row align="center">
             <v-col class="grow">
@@ -23,7 +23,8 @@
                 <div>
                   <v-responsive>
                     <div style="border-radius: 10px !important; overflow: hidden;">
-                      <video-player style="min-height: 480px;" :options="getVideoOptions" :key-id="key_id" :content-token="content_token" />
+                      <video-player style="min-height: 480px;" :options="getVideoOptions" :key-id="key_id"
+                        :content-token="content_token" />
                     </div>
                     <v-card flat tile class="card">
                       <div class="d-flex justify-space-between">
@@ -65,27 +66,30 @@
                           </v-btn>
                         </div>
                         <div class="d-flex align-center">
-                          <v-btn-toggle style="background-color: #f2f2f2 !important;" dense rounded>
-                            <v-btn>
-                              <v-icon size="24">mdi-thumb-up-outline</v-icon>
+                          <v-btn-toggle active-class="active-btn" class="toggle-btn-class" background-color="#f2f2f2"  dense rounded>
+                            <v-btn @click="likeOrDislike(LIKE)">
+                              <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon> 
+                              <v-icon v-else size="24">mdi-thumb-up-outline</v-icon> 
                             </v-btn>
-                            <v-btn>
-                              <v-icon size="24">mdi-thumb-down-outline</v-icon>
+                            <v-btn @click="likeOrDislike(DISLIKE)">
+                              <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
+                              <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
                             </v-btn>
                           </v-btn-toggle>
                           <v-btn color="#dcdcdc" rounded outlined class="ml-2 grey-background">
                             <v-icon color="black" size="26">mdi-share-outline</v-icon>
-                            <p class="mb-0 ml-1 share" >
+                            <p class="mb-0 ml-1 share">
                               Share
                             </p>
                           </v-btn>
-                          <v-btn fab small color="#dcdcdc"  rounded outlined class="ml-2 px-0 dots-button">
+                          <v-btn fab small color="#dcdcdc" rounded outlined class="ml-2 px-0 dots-button">
                             <v-icon color="black" size="26">mdi-dots-horizontal</v-icon>
                           </v-btn>
                         </div>
                       </div>
                     </v-card>
-                    <div v-if="asset.contents" class="pa-3 mt-2 grey-background" style="background-color: #e5e5e5; border-radius: 5px;">
+                    <div v-if="asset.contents" class="pa-3 mt-2 grey-background"
+                      style="background-color: #e5e5e5; border-radius: 5px;">
                       <!-- <p class="black--text" v-html="asset.contents">
                       </p> -->
                       {{ asset.contents }}
@@ -97,53 +101,38 @@
           </v-row>
         </v-col>
         <v-col cols="12" md="3" class="pt-6">
-          <div
-              v-for="(video, i) in loading ? 12 : videos"
-              :key="i"
-              class="recommended-videos mb-2"
-              :followed-accounts="followedAccounts"
-              style=" position: relative; height: 90px; cursor: pointer;"
-              @click="getItem(video); videoOptions.autoplay = 'play'"
-            >
-              <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
-                <video-card
-                  :card="{ maxWidth: 370 }"
-                  :video="video.node"
-                  :channel="video.origin"
-                  @follow="followChannel(video.node, video.origin)"
-                  style="position: absolute; width: 100%;"
-                  small-card
-                  class="mb-2 "
-                ></video-card>
-              </v-skeleton-loader>
+          <div v-for="(video, i) in loading ? 12 : videos" :key="i" class="recommended-videos mb-2"
+            :followed-accounts="followedAccounts" style=" position: relative; height: 90px; cursor: pointer;"
+            @click="getItem(video); videoOptions.autoplay = 'play'">
+            <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
+              <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
+                @follow="followChannel(video.node, video.origin)" style="position: absolute; width: 100%;" small-card
+                class="mb-2 "></video-card>
+            </v-skeleton-loader>
+          </div>
+          <infinite-loading @infinite="getVideos($event, '')">
+            <div slot="spinner">
+              <v-progress-circular indeterminate :loading="loading" color="red"></v-progress-circular>
             </div>
-            <infinite-loading @infinite="getVideos($event, '')">
-              <div slot="spinner">
-                <v-progress-circular
-                  indeterminate
-                  :loading="loading"
-                  color="red"
-                ></v-progress-circular>
-              </div>
-              <div slot="no-results"></div>
-              <span slot="no-more"></span>
-              <div slot="error" slot-scope="{ trigger }">
-                <v-alert prominent type="error">
-                  <v-row align="center">
-                    <v-col class="grow">
-                      <div class="title">Error!</div>
-                      <div>
-                        Something went wrong, but don’t fret — let’s give it
-                        another shot.
-                      </div>
-                    </v-col>
-                    <v-col class="shrink">
-                      <v-btn @click="trigger">Take action</v-btn>
-                    </v-col>
-                  </v-row>
-                </v-alert>
-              </div>
-            </infinite-loading>
+            <div slot="no-results"></div>
+            <span slot="no-more"></span>
+            <div slot="error" slot-scope="{ trigger }">
+              <v-alert prominent type="error">
+                <v-row align="center">
+                  <v-col class="grow">
+                    <div class="title">Error!</div>
+                    <div>
+                      Something went wrong, but don’t fret — let’s give it
+                      another shot.
+                    </div>
+                  </v-col>
+                  <v-col class="shrink">
+                    <v-btn @click="trigger">Take action</v-btn>
+                  </v-col>
+                </v-row>
+              </v-alert>
+            </div>
+          </infinite-loading>
         </v-col>
       </v-row>
     </v-container>
@@ -165,6 +154,7 @@ import "videojs-youtube";
 import { followMixin, videosMixin } from "@/mixins";
 import VideoCard from "@/components/VideoCard";
 import InfiniteLoading from "vue-infinite-loading";
+import { uuid } from 'vue-uuid'
 
 export default {
   mixins: [followMixin, videosMixin],
@@ -185,12 +175,21 @@ export default {
     videoOptions: {},
     key_id: "",
     content_token: "",
+    assetReactions:[],
+    LIKE:'like',
+    DISLIKE:'dislike'
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
     getVideoOptions() {
       return this.videoOptions;
     },
+    isVideosLikedByCurrentUser(){
+      return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset?.node?.relation == this.LIKE)
+    },
+    isVideoDislikedByCurrentUser(){
+      return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset.node.relation == this.DISLIKE)
+    }
   },
   methods: {
     async getVideo() {
@@ -248,11 +247,153 @@ export default {
       );
       if (data) {
         this.setFollowed(this.asset.origin);
+        this.informPodAboutFollow(
+          {
+            remote_member_id: this.asset.origin,
+            depth: 1,
+            serviceId: this.service_id,
+            query_id: uuid.v4()
+          }
+        )
         this.followedAccounts = JSON.parse(
           window.localStorage.getItem("followedAccounts")
         );
       }
     },
+
+    async likeOrDislike(relation) {
+      let updatedData = null
+      let newData = null
+
+      const {asset_id, origin, created_timestamp} = this.asset
+      const serviceId = this.service_id
+      if(this.isVideosLikedByCurrentUser || this.isVideoDislikedByCurrentUser){
+        if(this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE ){
+          this.deleteAssetReaction()
+          this.assetReactions = []
+          this.assetReactions = await this.getVideoByid(asset_id)
+          return
+        }
+        const existingRelation = this.isVideosLikedByCurrentUser ? 'dislike' : 'like'
+        const filter = 
+          {
+              asset_id : 
+              {
+                eq: asset_id
+              }
+          }
+       const { data } = await this.updateLikedVideo(
+         serviceId,
+        {
+          relation: existingRelation,
+          member_id: origin,
+          created_timestamp,
+          asset_id,
+        },
+          filter
+       )
+
+       updatedData = data
+       this.assetReactions = []
+       this.assetReactions = await this.getVideoByid(asset_id)
+      }
+      else{
+        const { data } = await this.likeVideo(
+          relation,
+          this.asset.origin,
+          this.service_id,
+          this.asset.created_timestamp,
+          this.asset.asset_id
+        );
+
+        newData = data
+        this.assetReactions = []
+        this.assetReactions = await this.getVideoByid(asset_id)
+      }
+
+      if (newData || updatedData) {
+        this.informPodAboutLike(
+          {
+            remote_member_id: this.asset.origin,
+            depth: 1,
+            serviceId: this.service_id,
+            query_id: uuid.v4(),
+            asset_id: this.asset.asset_id,
+            created_timestamp: this.asset.created_timestamp,
+            member_id: this.asset.origin,
+          }
+        )
+      }
+    },
+    async editLikeOrDislike() {
+      const { data } = await this.updateLikedVideo(
+        'dislike',
+        this.asset.origin,
+        this.service_id,
+        this.asset.created_timestamp,
+        this.asset.asset_id
+      );
+
+      if (data) {
+        this.informPodAboutLike(
+          {
+            remote_member_id: this.asset.origin,
+            depth: 1,
+            serviceId: this.service_id,
+            query_id: uuid.v4(),
+            asset_id: this.asset.asset_id,
+            created_timestamp: this.asset.created_timestamp,
+            member_id: this.asset.origin,
+          }
+        )
+      }
+    },
+
+    async getVideoByid(assetId) {
+      try{
+        const filter = 
+          {
+            filter:{
+              asset_id : 
+              {
+                eq: assetId
+              }
+            }
+          }
+        const { data } = await this.getAssetById(
+          this.service_id, filter
+        );
+  
+        return data?.edges
+      }catch(error){
+        console.error("Error", error);
+        return []
+      }
+    },
+    async deleteAssetReaction() {
+      const { asset_id } = this.asset
+      try{
+        const filter = {
+              asset_id : 
+              {
+                eq: asset_id
+              }
+          }
+        const { data } = await this.deleteReaction({
+          serviceId: this.service_id,
+          depth: 0,
+          query_id: uuid.v4(),
+          filter
+        }
+        );
+  
+      console.log("Data", data);
+      }catch(error){
+        console.error("Error", error);
+        return []
+      }
+    },
+
     async checkSubscription(id) {
       if (!this.isAuthenticated) return;
 
@@ -411,8 +552,10 @@ export default {
     VideoPlayer,
     VideoCard
   },
-  created() {
+  async created() {
     this.getVideo();
+    this.assetReactions = await this.getVideoByid(this.asset.asset_id)
+    console.log("Asset reactions", this.assetReactions);
   },
   mounted() {
     this.followedAccounts =
@@ -452,26 +595,37 @@ button.v-btn.remove-hover-bg {
   }
 }
 
+.active-btn{
+  background-color: #f2f2f2 !important;
+}
+.toggle-btn-class{
+  .v-btn:before{
+    background-color: #f2f2f2 !important;
+  }
+}
+
 .channel-name {
   font-size: 1rem;
   font-weight: 600 !important;
 }
-.share{
+
+.share {
   color: black;
   text-transform: capitalize;
 }
-.dots-button{
+
+.dots-button {
   background-color: #f2f2f2 !important;
   height: 37px !important;
   width: 37px !important;
 }
 
-.grey-background{
+.grey-background {
   background-color: #f2f2f2 !important;
 }
 
-.recommended-videos{
-  .thumbnail{
+.recommended-videos {
+  .thumbnail {
     max-height: 90px !important;
     min-height: 90px !important;
     max-width: 168px;
