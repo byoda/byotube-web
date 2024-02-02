@@ -55,6 +55,12 @@ export const followMixin = {
         { data: body }
       );
     },
+    updateLikedVideo: function(serviceId, data, filter) {
+      return VideoService.editLikedVideo(
+        { domain: this.initialState.domain, serviceId: serviceId },
+        { data, filter }
+      );
+    },
 
     informPodAboutLike: function({
       serviceId,
@@ -102,7 +108,6 @@ export const followMixin = {
     },
 
     getAssetById(serviceId, filter) {
-      console.log("Inside");
       return VideoService.getById(
         {
           domain: this.initialState.domain,

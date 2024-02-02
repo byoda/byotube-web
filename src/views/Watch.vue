@@ -67,11 +67,13 @@
                         </div>
                         <div class="d-flex align-center">
                           <v-btn-toggle style="background-color: #f2f2f2 !important;" dense rounded>
-                            <v-btn @click="like">
-                              <v-icon size="24">mdi-thumb-up-outline</v-icon>
+                            <v-btn @click="likeOrDislike(LIKE)">
+                              <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon> 
+                              <v-icon v-else size="24">mdi-thumb-up-outline</v-icon> 
                             </v-btn>
-                            <v-btn @click="dislike">
-                              <v-icon size="24">mdi-thumb-down-outline</v-icon>
+                            <v-btn @click="likeOrDislike(DISLIKE)">
+                              <v-icon v-if="isVideosDisikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
+                              <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
                             </v-btn>
                           </v-btn-toggle>
                           <v-btn color="#dcdcdc" rounded outlined class="ml-2 grey-background">
@@ -173,12 +175,21 @@ export default {
     videoOptions: {},
     key_id: "",
     content_token: "",
+    assetReactions:[],
+    LIKE:'like',
+    DISLIKE:'dislike'
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
     getVideoOptions() {
       return this.videoOptions;
     },
+    isVideosLikedByCurrentUser(){
+      return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset?.node?.relation == this.LIKE)
+    },
+    isVideosDisikedByCurrentUser(){
+      return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset.node.relation == this.DISLIKE)
+    }
   },
   methods: {
     async getVideo() {
@@ -250,16 +261,51 @@ export default {
       }
     },
 
-    async like() {
-      const { data } = await this.likeVideo(
-        'like',
-        this.asset.origin,
-        this.service_id,
-        this.asset.created_timestamp,
-        this.asset.asset_id
-      );
+    async likeOrDislike(relation) {
+      let updatedData = null
+      let newData = null
 
-      if (data) {
+      const {asset_id, origin, created_timestamp} = this.asset
+      const serviceId = this.service_id
+      if(this.isVideosLikedByCurrentUser || this.isVideosDisikedByCurrentUser){
+        const existingRelation = this.isVideosLikedByCurrentUser ? 'dislike' : 'like'
+        const filter = 
+          {
+              asset_id : 
+              {
+                eq: asset_id
+              }
+          }
+       const { data } = await this.updateLikedVideo(
+         serviceId,
+        {
+          relation: existingRelation,
+          member_id: origin,
+          created_timestamp,
+          asset_id,
+        },
+          filter
+       )
+
+       updatedData = data
+       this.assetReactions = []
+       this.assetReactions = await this.getVideoByid(asset_id)
+      }
+      else{
+        const { data } = await this.likeVideo(
+          relation,
+          this.asset.origin,
+          this.service_id,
+          this.asset.created_timestamp,
+          this.asset.asset_id
+        );
+
+        newData = data
+        this.assetReactions = []
+        this.assetReactions =await this.getVideoByid(asset_id)
+      }
+
+      if (newData || updatedData) {
         this.informPodAboutLike(
           {
             remote_member_id: this.asset.origin,
@@ -273,8 +319,8 @@ export default {
         )
       }
     },
-    async dislike() {
-      const { data } = await this.likeVideo(
+    async editLikeOrDislike() {
+      const { data } = await this.updateLikedVideo(
         'dislike',
         this.asset.origin,
         this.service_id,
@@ -297,14 +343,14 @@ export default {
       }
     },
 
-    async getVideoByid() {
+    async getVideoByid(assetId) {
       try{
         const filter = 
           {
             filter:{
               asset_id : 
               {
-                eq: 'd3902755-a1fb-4f99-aece-5bd1b0359e90'
+                eq: assetId
               }
             }
           }
@@ -312,9 +358,10 @@ export default {
           this.service_id, filter
         );
   
-        console.log("Data", data);
+        return data?.edges
       }catch(error){
         console.error("Error", error);
+        return []
       }
     },
 
@@ -476,9 +523,10 @@ export default {
     VideoPlayer,
     VideoCard
   },
-  created() {
+  async created() {
     this.getVideo();
-    this.getVideoByid()
+    this.assetReactions = await this.getVideoByid(this.asset.asset_id)
+    console.log("Asset reactions", this.assetReactions);
   },
   mounted() {
     this.followedAccounts =

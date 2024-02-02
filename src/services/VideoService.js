@@ -37,6 +37,13 @@ export default {
     );
   },
 
+  editLikedVideo({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/asset_reactions/update`,
+      body
+    );
+  },
+
   informPodAboutLike({ domain, serviceId }, body) {
     return Api().post(
       `https://${domain}/api/v1/data/${serviceId}/asset_reactions_received/append`,
