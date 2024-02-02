@@ -315,7 +315,7 @@ export default {
         this.informPodAboutLike(
           {
             remote_member_id: this.asset.origin,
-            depth: 0,
+            depth: 1,
             serviceId: this.service_id,
             query_id: uuid.v4(),
             asset_id: this.asset.asset_id,
