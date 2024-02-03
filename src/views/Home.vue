@@ -171,7 +171,7 @@ export default {
 
     async mapSegmentedVideos(section, index, first) {
       section.loading = true
-      const videosData = await this.getSegmentedVideos(section?.key, section?.after, first ? first : 8)
+      const videosData = await this.getSegmentedVideos(section?.key, section?.after, first ? first : 9)
       section.videos.push(...videosData?.edges)
       section.has_next_page = videosData?.page_info?.has_next_page;
       if (section.has_next_page) {
@@ -282,7 +282,7 @@ export default {
 
 @media (min-width: 1440px) {
   .grid-layout {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 
     .thumbnail {
       max-height: 220px !important;

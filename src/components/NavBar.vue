@@ -6,7 +6,7 @@
 
         <v-toolbar-title class="font-weight-bold d-flex align-items-center">
           <div class="d-flex align-items-center">
-            <v-img src="~@/assets/byotube-logo.png" :width="170" :height="39" contain @click="openAbout" />
+            <v-img src="~@/assets/byotube-logo.png" :width="170" :height="39" contain @click="$router.push({name:'Home'})" />
           </div>
           <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="primary"></v-progress-linear>
         </v-toolbar-title>
@@ -14,7 +14,6 @@
           <v-text-field v-model="searchText" flat rounded hide-details append-icon="mdi-magnify" placeholder="Search"
             outlined dense @click:append="search" @keyup.enter="search"></v-text-field>
         </div>
-
         <!-- <v-spacer></v-spacer> -->
 
         <!-- <v-menu offsetY>
@@ -160,15 +159,15 @@
       </div>
     </v-app-bar>
 
-    <!-- <v-navigation-drawer
+    <v-navigation-drawer
       v-model="drawer"
       app
       :clipped="$route.name !== 'Watch'"
       :temporary="$route.name === 'Watch'"
       id="nav"
     >
-      <div tag="div" class="v-navigation-drawer__content" v-bar>
-        <v-list dense nav class="py-0" tag="div">
+      <div tag="div" style="width: 100%;" class=" v-navigation-drawer__content" v-bar>
+        <v-list dense nav rounded class="py-0 mt-2" tag="div">
           <v-list-item
             :class="{
               'hidden-lg-and-up': $route.name === 'Watch' ? false : true
@@ -181,7 +180,7 @@
             <v-toolbar-title class="font-weight-bold">VueTube</v-toolbar-title>
           </v-list-item>
           <v-divider class="hidden-lg-and-up"></v-divider>
-          <div v-for="parentItem in items" :key="parentItem.header">
+          <div v-for="parentItem in items" :key="parentItem.header" class="pr-4">
             <v-subheader
               v-if="parentItem.header"
               class="pl-3 py-4 subtitle-1 font-weight-bold text-uppercase"
@@ -193,12 +192,13 @@
                 : parentItem.pages"
               :key="item.title"
               class="mb-0"
-              :to="
+              :to=" item.link && (
                 parentItem.header === 'Subscriptions'
                   ? '/channels/' + item.channelId._id
-                  : item.link
+                  : item.link)
               "
               exact
+              :href="item.title == 'About' ? 'https://about.byo.tube/' :null "
               active-class="active-item"
             >
               <v-list-item-icon v-if="parentItem.header !== 'Subscriptions'">
@@ -279,7 +279,7 @@
           </span>
         </v-list>
       </div>
-    </v-navigation-drawer> -->
+    </v-navigation-drawer>
   </nav>
 </template>
 
@@ -306,12 +306,14 @@ export default {
       {
         header: null,
         pages: [
-          { title: "Home", link: "/", icon: "mdi-home" },
-          { title: "Trending", link: "/trending", icon: "mdi-fire" },
+          { title: "Home", link: "/", icon: "mdi-home", method:()=>{} },
+          { title: "About", link: null, icon: "mdi-information-variant-circle-outline", method:()=>{ window.open('https://about.byo.tube/') } },
+          { title: "Trending", link: "/trending", icon: "mdi-fire", method:()=>{ } },
           {
             title: "Subscriptions",
             link: "/subscriptions",
             icon: "mdi-youtube-subscription",
+            method:()=>{}
           },
         ],
       },
@@ -499,6 +501,7 @@ export default {
   // },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
+      vm.drawer = to.name == 'Watch' ? false  : true
       if (!to.query["search-query"] === "") return;
       vm.searchText = to.query["search-query"];
       // vm.getSearchResults(to.query['search-query'])
@@ -514,6 +517,8 @@ export default {
     this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true;
     // console.log(this.$route.name)
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
+
+    console.log("Drawer", this.drawer);
   },
   created() {
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
@@ -561,7 +566,7 @@ export default {
 
   .vb>.vb-dragger {
     z-index: 5;
-    width: 10px;
+    width: 5px;
     right: 0;
   }
 
@@ -575,14 +580,14 @@ export default {
     transition: background-color 100ms ease-out, margin 100ms ease-out,
       height 100ms ease-out;
 
-    margin: 5px 5px 5px 0;
+    margin: 5px 0px 0px 0;
     border-radius: 20px;
     height: calc(100% - 10px);
     display: block;
   }
 
   .v-navigation-drawer__content:hover .vb>.vb-dragger>.vb-dragger-styler {
-    width: 10px;
+    width: 5px;
     background-color: #e0e0e0;
   }
 
@@ -591,10 +596,10 @@ export default {
     background-color: rgba(255, 255, 255, 0.3);
   }
 
-  .vb>.vb-dragger:hover>.vb-dragger-styler {
-    margin: 0px;
-    width: 10px;
-  }
+  // .vb>.vb-dragger:hover>.vb-dragger-styler {
+  //   margin: 0px;
+  //   width: 10px;
+  // }
 
   .vb.vb-dragging>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
@@ -605,6 +610,10 @@ export default {
   .vb.vb-dragging-phantom>.vb-dragger>.vb-dragger-styler {
     background-color: rgba(48, 121, 244, 0.5);
   }
+
+  // .vb::-webkit-scrollbar-thumb{
+  //   background-color: red !important;
+  // }
 
   .auth-btn {
     height: 40px;
