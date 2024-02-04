@@ -6,9 +6,11 @@
 
         <v-toolbar-title class="font-weight-bold d-flex align-items-center">
           <div class="d-flex align-items-center">
-            <v-img src="~@/assets/byotube-logo.png" :width="170" :height="39" contain @click="$router.push({name:'Home'})" />
+            <v-img src="~@/assets/byotube-logo.png" :width="170" :height="39" contain
+              @click="$router.push({ name: 'Home' })" />
           </div>
-          <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom color="primary"></v-progress-linear>
+          <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom
+            color="primary"></v-progress-linear>
         </v-toolbar-title>
         <div class="search-field">
           <v-text-field v-model="searchText" flat rounded hide-details append-icon="mdi-magnify" placeholder="Search"
@@ -159,54 +161,28 @@
       </div>
     </v-app-bar>
 
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      :clipped="$route.name !== 'Watch'"
-      :temporary="$route.name === 'Watch'"
-      id="nav"
-    >
+
+    <v-navigation-drawer v-model="drawer" app :clipped="$route.name !== 'Watch'" :temporary="$route.name === 'Watch'"
+      id="nav">
       <div tag="div" style="width: 100%;" class=" v-navigation-drawer__content" v-bar>
         <v-list dense nav rounded class="py-0 mt-2" tag="div">
-          <v-list-item
-            :class="{
-              'hidden-lg-and-up': $route.name === 'Watch' ? false : true
-            }"
-          >
-            <v-app-bar-nav-icon
-              @click="drawer = !drawer"
-              class="mr-5"
-            ></v-app-bar-nav-icon>
+          <v-list-item :class="{
+            'hidden-lg-and-up': $route.name === 'Watch' ? false : true
+          }">
+            <v-app-bar-nav-icon @click="drawer = !drawer" class="mr-5"></v-app-bar-nav-icon>
             <v-toolbar-title class="font-weight-bold">BYO.Tube</v-toolbar-title>
           </v-list-item>
           <v-divider class="hidden-lg-and-up"></v-divider>
-          <div v-for="parentItem in items" :key="parentItem.header" class="pr-4">
-            <v-subheader
-              v-if="parentItem.header"
-              class="pl-3 py-4 subtitle-1 font-weight-bold text-uppercase"
-              >{{ parentItem.header }}</v-subheader
-            >
-            <v-list-item
-              v-for="(item, i) in parentItem.header === 'Subscriptions'
-                ? items[2].pages.slice(0, channelLength)
-                : parentItem.pages"
-              :key="item.title"
-              class="mb-0"
-              :to=" item.link && (
-                parentItem.header === 'Subscriptions'
-                  ? '/channels/' + item.channelId._id
-                  : item.link)
-              "
-              exact
-              :href="item.title == 'About' ? 'https://about.byo.tube/' :null "
-              active-class="active-item"
-            >
+          <div v-for="parentItem in drawerItems" :key="parentItem.header" class="pr-4">
+            <v-subheader v-if="parentItem.header" class="pl-3 py-4 subtitle-1 font-weight-bold text-uppercase">{{
+              parentItem.header }}</v-subheader>
+            <v-list-item v-for="(item) in parentItem.pages" :key="item.title" class="mb-0" :to="item.link && (item.link)
+              " exact :href="item.title == 'About' ? 'https://about.byo.tube/' : null" active-class="active-item">
               <v-list-item-icon v-if="parentItem.header !== 'Subscriptions'">
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-item-icon>
-              <v-list-item-avatar v-else class="mr-5">
-                {{ i }}
-                <v-avatar
+              <v-list-item-avatar v-else class="my-0">
+                <!-- <v-avatar
                   v-if="
                     item.channelId.photoUrl !== 'no-photo.jpg' && item.channelId
                   "
@@ -217,47 +193,36 @@
                     "
                     :alt="`${item.channelId.channelName} avatar`"
                   />
+                </v-avatar> -->
+                <v-avatar size="30" color="red">
+                  <span class="white--text">
+                    {{
+                      item.title.split('')[0].toUpperCase()
+                    }}</span>
                 </v-avatar>
-                <template v-else>
-                  <v-avatar color="red">
-                    <span class="white--text headline ">
-                      {{
-                        item.channelId.channelName.split('')[0].toUpperCase()
-                      }}</span
-                    >
-                  </v-avatar>
-                </template>
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title class=" font-weight-medium subtitle-2">{{
-                  parentItem.header === 'Subscriptions'
-                    ? item.channelId.channelName
-                    : item.title
-                }}</v-list-item-title>
+                <v-list-item-title class=" font-weight-medium subtitle-2">
+                  {{ 
+                    item.title
+                  }}
+
+                </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <v-btn
-              id="showBtn"
-              @click="moreChannels"
-              v-if="
-                parentItem.header === 'Subscriptions' &&
-                  isAuthenticated &&
-                  items[2].length > 0
-              "
-              block
-              text
-              class="text-none"
-            >
+            <v-btn id="showBtn" @click="moreChannels" v-if="parentItem.header === 'Subscriptions' &&
+              isAuthenticated &&
+              items[2].length > 0
+              " block text class="text-none">
               <v-icon>{{
                 channelLength === 3 ? 'mdi-chevron-down' : 'mdi-chevron-up'
               }}</v-icon>
               {{
                 channelLength === 3
-                  ? `Show ${items[2].pages.length - 3} more `
-                  : 'Show less'
-              }}</v-btn
-            >
+                ? `Show ${items[2].pages.length - 3} more `
+                : 'Show less'
+              }}</v-btn>
 
             <!-- <v-divider
               v-if="parentItem.header !== false"
@@ -292,14 +257,15 @@ import { videosMixin } from "../mixins/videos";
 export default {
   props: {
     loading: {
-      default:false,
-      type:Boolean
+      default: false,
+      type: Boolean
     }
   },
-  mixins:[videosMixin],
+  mixins: [videosMixin],
   data: () => ({
     drawer: true,
     filter: [],
+    followedAccounts: [],
     options: [
       { name: "YouTube Hosted", value: "external" },
       { name: "BYODA Hosted", value: "published" },
@@ -308,14 +274,14 @@ export default {
       {
         header: null,
         pages: [
-          { title: "Home", link: "/", icon: "mdi-home", method:()=>{} },
-          { title: "About", link: null, icon: "mdi-information-variant-circle-outline", method:()=>{ window.open('https://about.byo.tube/') } },
-          { title: "Trending", link: "/trending", icon: "mdi-fire", method:()=>{ } },
+          { title: "Home", link: "/", icon: "mdi-home", method: () => { } },
+          { title: "About", link: null, icon: "mdi-information-variant-circle-outline", method: () => { window.open('https://about.byo.tube/') } },
+          { title: "Trending", link: "/trending", icon: "mdi-fire", method: () => { } },
           {
             title: "Subscriptions",
             link: "/subscriptions",
             icon: "mdi-youtube-subscription",
-            method:()=>{}
+            method: () => { }
           },
         ],
       },
@@ -412,6 +378,9 @@ export default {
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
+    drawerItems() {
+      return [...this.items]
+    }
   },
   methods: {
     // filerItems(item){
@@ -436,7 +405,7 @@ export default {
       //   await HistoryService.createHistory(data).catch((err) =>
       //     console.log(err)
       //   );
-      
+
       this.$emit('search')
       this.$router.push({
         name: "Search",
@@ -461,6 +430,17 @@ export default {
     },
     openAbout() {
       window.open('https://about.byo.tube/')
+    },
+    mapChannelToPages(channelArr) {
+      return channelArr?.map(channel => {
+        console.log("chanell", channel?.node?.member_id);
+        return {
+          title: channel.node.annotations[0],
+          link: `/channels/${channel?.node?.member_id}`,
+          icon: null
+
+        }
+      })
     }
   },
   // beforeRouteLeave(to, from, next) {
@@ -474,13 +454,13 @@ export default {
   // },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.drawer = to.name == 'Watch' ? false  : true
+      vm.drawer = to.name == 'Watch' ? false : true
       if (!to.query["search-query"] === "") return;
       vm.searchText = to.query["search-query"];
       // vm.getSearchResults(to.query['search-query'])
     });
   },
-  mounted() {
+  async mounted() {
     // if (this.$route.query['search-query'])
     //   this.searchText = this.$route.query['search-query']
 
@@ -490,9 +470,11 @@ export default {
     this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true;
     // console.log(this.$route.name)
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
+    const { data } = await this.getFollowedChannels(this.service_id)
+    this.items[2].pages = this.mapChannelToPages(data.edges)
+    console.log("Items", this.items);
+    this.channelLength = 3
 
-    console.log("Drawer", this.drawer);
-    this.getFollowedChannels(this.service_id)
   },
   created() {
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
