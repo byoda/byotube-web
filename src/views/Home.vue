@@ -112,12 +112,18 @@ export default {
     VideoCard,
     // InfiniteLoading,
   },
-  data: () => ({
+  props:{
+      sectionNames:{
+        default:null,
+        type:Array
+      }
+    },
+  data: (vm) => ({
     options: [
       { name: "YouTube Hosted", value: "external" },
       { name: "BYODA Hosted", value: "published" },
     ],
-    sections: [
+    sections: vm.sectionNames ? vm.sectionNames : [
       {
         title: "Recent Uploads",
         key:'recent_uploads',

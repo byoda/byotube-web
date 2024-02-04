@@ -2,15 +2,20 @@ import Api from "@/services/Api";
 
 export default {
   getAll(filter) {
-    return Api().get(
-      `service/data?${filter.first ? "first=" + filter.first + "&" : ""}${
-        filter.list_name ? "list_name=" + filter.list_name + "&" : ""
-      }${filter.after ? "after=" + filter.after + "&" : ""}${
-        filter.ingest_status
-          ? "ingest_status=" + filter.ingest_status + "&"
-          : ""
-      }`
-    );
+    const queryArray = Object.entries(filter).map(([key, value]) => {
+      return value ? `${key}=${value}` : null;
+    });
+
+    const queryString = queryArray?.reduce((acc, curr) => {
+      if (curr) {
+        return `${acc}${curr}&`;
+      }
+      return acc;
+    }, "");
+
+    const query = queryString.slice(0, queryString.length - 1);
+
+    return Api().get(`service/data?${query}`);
   },
   getMemberVideos(url, body = {}) {
     return Api().post(url, body);
@@ -19,6 +24,15 @@ export default {
   follow({ domain, serviceId }, body) {
     return Api().post(
       `https://${domain}/api/v1/data/${serviceId}/network_invites/append`,
+      body
+    );
+  },
+
+  // https://notest.byoda.me/api/v1/data/16384/network_links/query
+
+  getFollowedAccounts({ domain, serviceId }, body) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/network_links/query`,
       body
     );
   },

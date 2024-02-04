@@ -178,6 +178,7 @@ export const videosMixin = {
         ? await this.getMemberVideos($state)
         : await this.getServiceVideos($state);
     },
+
     async followChannel(asset, origin) {
       const { creator, created_timestamp } = asset;
       const { data } = await this.follow(
@@ -191,6 +192,17 @@ export const videosMixin = {
       }
       this.followedAccounts = JSON.parse(
         window.localStorage.getItem("followedAccounts")
+      );
+    },
+    getFollowedChannels: function(serviceId) {
+      // const body = {
+      //   text: channelName,
+      //   member_id: origin,
+      //   created_timestamp: createdTimestamp,
+      // };
+      return VideoService.getFollowedAccounts(
+        { domain: this.initialState.domain, serviceId: serviceId },
+        {}
       );
     },
     async changeVideo(assetData) {

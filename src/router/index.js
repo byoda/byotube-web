@@ -25,6 +25,15 @@ const routes = [
     },
   },
   {
+    path: "/gaming",
+    name: "Gaming",
+    components: {
+      NavBar,
+      default: () =>
+        import(/* webpackChunkName: "about" */ "../views/Gaming/Gaming.vue"),
+    },
+  },
+  {
     path: "/subscriptions",
     name: "Subscription",
     components: {

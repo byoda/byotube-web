@@ -177,7 +177,7 @@
               @click="drawer = !drawer"
               class="mr-5"
             ></v-app-bar-nav-icon>
-            <v-toolbar-title class="font-weight-bold">VueTube</v-toolbar-title>
+            <v-toolbar-title class="font-weight-bold">BYO.Tube</v-toolbar-title>
           </v-list-item>
           <v-divider class="hidden-lg-and-up"></v-divider>
           <div v-for="parentItem in items" :key="parentItem.header" class="pr-4">
@@ -259,13 +259,13 @@
               }}</v-btn
             >
 
-            <v-divider
+            <!-- <v-divider
               v-if="parentItem.header !== false"
               class="mt-2 mb-2"
-            ></v-divider>
+            ></v-divider> -->
           </div>
 
-          <span v-for="link in links" :key="link.text">
+          <!-- <span v-for="link in links" :key="link.text">
             <span v-if="link.text === 'Terms'" class="mb-2 d-block"> </span>
             <v-btn
               href
@@ -276,7 +276,7 @@
               small
               >{{ link.text }}</v-btn
             >
-          </span>
+          </span> -->
         </v-list>
       </div>
     </v-navigation-drawer>
@@ -286,6 +286,7 @@
 <script>
 import { mapGetters } from "vuex";
 import SubscriptionService from "@/services/SubscriptionService";
+import { videosMixin } from "../mixins/videos";
 // import HistoryService from "@/services/HistoryService";
 
 export default {
@@ -295,6 +296,7 @@ export default {
       type:Boolean
     }
   },
+  mixins:[videosMixin],
   data: () => ({
     drawer: true,
     filter: [],
@@ -375,50 +377,21 @@ export default {
         ],
       },
       {
-        header: "MORE FROM VUETUBE",
+        header: "MORE FROM BYO.Tube",
         pages: [
           {
-            title: "VueTube Premium",
+            title: "BYO.Tube Premium",
             link: "#vp",
             icon: "mdi-youtube",
           },
           {
             title: "Gaming",
-            link: "#g",
+            link: "/gaming",
             icon: "mdi-youtube-gaming",
           },
-          {
-            title: "Live",
-            link: "#li",
-            icon: "mdi-access-point",
-          },
         ],
       },
-      {
-        header: null,
-        pages: [
-          {
-            title: "Setting",
-            link: "#sg",
-            icon: "mdi-cog",
-          },
-          {
-            title: "Report history",
-            link: "#rh",
-            icon: "mdi-flag",
-          },
-          {
-            title: "Help",
-            link: "#hp",
-            icon: "mdi-help-circle",
-          },
-          {
-            title: "Send feedback",
-            link: "#f",
-            icon: "mdi-message-alert",
-          },
-        ],
-      },
+
     ],
     links: [
       { text: "About", link: "#" },
@@ -519,6 +492,7 @@ export default {
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
 
     console.log("Drawer", this.drawer);
+    this.getFollowedChannels(this.service_id)
   },
   created() {
     this.drawer = this.$route.name === "Watch" ? false : this.drawer;
@@ -549,7 +523,7 @@ export default {
 #navbar {
   .active-item {
     .v-list-item__icon {
-      color: red !important;
+      color: #f29716 !important;
     }
   }
 
