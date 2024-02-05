@@ -179,6 +179,7 @@ export default {
     assetReactions: [],
     LIKE: 'like',
     DISLIKE: 'dislike'
+
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
@@ -265,6 +266,7 @@ export default {
     async likeOrDislike(relation) {
       let updatedData = null
       let newData = null
+
 
       const { asset_id, origin, created_timestamp } = this.asset
       const serviceId = this.service_id
@@ -387,6 +389,7 @@ export default {
           filter
         }
         );
+
 
       } catch (error) {
         console.error("Error", error);
