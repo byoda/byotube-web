@@ -1,6 +1,6 @@
 <template>
-  <div id="channel-home">
-    <div class="mt-2" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
+  <div id="channel-home" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
+    <div class="mt-2">
       <v-parallax height="230" style="border-radius: 15px;"
         src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-parallax>
     </div>
@@ -9,7 +9,7 @@
         <div id="channel-header">
           <v-row class="justify-space-between">
 
-            <v-col cols="12" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
+            <v-col cols="12">
               <v-skeleton-loader type="list-item-avatar-two-line" :loading="loading" class="mr-1">
                 <div>
                   <v-row class="d-flex">
@@ -46,9 +46,55 @@
               </v-skeleton-loader>
             </v-col>
           </v-row>
-
         </div>
-        <v-card flat class="transparent" height="100%" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
+        <div v-if="sections.videos.length" class="mt-8">
+          <h2 class="text-h1 section-title secondary--text font-weight-medium">
+            {{ sections.title }}
+          </h2>
+          <div class="grid-layout">
+            <div v-for="(video, i) in sections.videos" :key="i" class="py-6" @click="getItem(video)"
+              :followed-accounts="followedAccounts" style="position: relative;">
+              <!-- <v-skeleton-loader style="" type="card-avatar" :loading="sections.loading"> -->
+              <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
+                @follow="followChannel(video.node, video.origin)" style="position: absolute; width: 100%;"></video-card>
+              <!-- </v-skeleton-loader> -->
+            </div>
+          </div>
+          <div v-if="sections.has_next_page" class="mt-10">
+            <hr>
+            <div class="text-center show-more-btn">
+              <v-btn :loading="sections.loading" elevation="0" rounded
+                class="auth-btn show-more-btn font-weight-normal light-gray--text mt-n8"
+                @click="mapSegmentedVideos(section, sectionIndex, 24)">
+                Show More <v-icon left size="26" class="ml-2 font-weight-light">mdi-chevron-down</v-icon>
+              </v-btn>
+            </div>
+          </div>
+        </div>
+        <infinite-loading @infinite="getChannelVideos($event)">
+              <div slot="spinner">
+                <v-progress-circular indeterminate :loading="sections.loading" color="red"></v-progress-circular>
+              </div>
+              <div slot="no-results"></div>
+              <span slot="no-more"></span>
+              <div slot="error" slot-scope="{ trigger }">
+                <v-alert prominent type="error">
+                  <v-row align="center">
+                    <v-col class="grow">
+                      <div class="title">Error!</div>
+                      <div>
+                        Something went wrong, but don’t fret — let’s give it
+                        another shot.
+                      </div>
+                    </v-col>
+                    <v-col class="shrink">
+                      <v-btn @click="trigger">Take action</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-alert>
+              </div>
+            </infinite-loading>
+        <!-- <v-card flat class="transparent" height="100%" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
           <v-row>
             <v-col cols="12" md="7" class="tabs">
               <v-tabs v-model="tab" background-color="transparent" show-arrows centered center-active>
@@ -66,36 +112,35 @@
               <v-tab-item>
                 <v-card class="transparent" flat width="370">
                   <v-card-title>Uploads</v-card-title>
-                  <!-- <v-sheet class="mx-auto"> -->
                     <video-card :card="{ maxWidth: 370, maxHeight:238 }" :video="video" :channel="video.origin"
                      ></video-card>
-                  <!-- <v-slide-group class="pa-4" multiple show-arrows>
+                  <v-slide-group class="pa-4" multiple show-arrows>
                     <v-slide-item>
                       <v-skeleton-loader type="card-avatar" :loading="loading" width="250px" class="mr-1">
                       </v-skeleton-loader>
                     </v-slide-item>
-                  </v-slide-group> -->
+                  </v-slide-group>
                 </v-card>
               </v-tab-item>
             </v-tabs-items>
-        </v-card>
+        </v-card> -->
       </div>
     </v-container>
-    <signin-modal :openModal="signinDialog" :details="details" @closeModal="signinDialog = false" />
+    <!-- <signin-modal :openModal="signinDialog" :details="details" @closeModal="signinDialog = false" /> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
 import UserService from '@/services/UserService'
-import VideoService from '@/services/VideoService'
 import SubscriptionService from '@/services/SubscriptionService'
-
 import VideoCard from '@/components/VideoCard'
-import SigninModal from '@/components/SigninModal'
+// import SigninModal from '@/components/SigninModal'
+import { videosMixin } from "@/mixins";
+import InfiniteLoading from "vue-infinite-loading";
 
 export default {
+  mixins: [videosMixin],
   data: () => ({
     tab: null,
     loading: false,
@@ -109,124 +154,22 @@ export default {
     channel: {},
     signinDialog: false,
     details: {},
-    video: {
-      "created_timestamp": "2024-02-03T06:24:52.356119Z",
-      "asset_id": "655647c1-4a6f-4f50-ad9b-6b585e1ac861",
-      "asset_type": "video",
-      "asset_url": "https://www.youtube.com/watch?v=H_7aLJTaKlY",
-      "asset_merkle_root_hash": null,
-      "video_thumbnails": [
-        {
-          "thumbnail_id": "ed821fe5-9b12-47f1-9199-d6ac9e6bd866",
-          "url": "https://i.ytimg.com/vi_webp/H_7aLJTaKlY/maxresdefault.webp",
-          "width": 0,
-          "height": 0,
-          "preference": "",
-          "size": "0x0"
-        },
-        {
-          "thumbnail_id": "f7d44e78-dd1a-4fb9-99a6-07fd21418ab5",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/default.jpg",
-          "width": 120,
-          "height": 90,
-          "preference": "-13",
-          "size": "120x90"
-        },
-        {
-          "thumbnail_id": "e57dd2ae-ac58-49b1-9a18-4c8a258a8a99",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/mqdefault.jpg",
-          "width": 320,
-          "height": 180,
-          "preference": "-11",
-          "size": "320x180"
-        },
-        {
-          "thumbnail_id": "ca0612e6-bb06-4a48-81cd-cc16c6cd9665",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCoBoWmYiimesIYZ11lwCi3Rybq7Q",
-          "width": 168,
-          "height": 94,
-          "preference": "-7",
-          "size": "168x94"
-        },
-        {
-          "thumbnail_id": "50a9c2c0-5919-44bb-86db-f3b37f40ecbb",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBJmR_s3Zz56v5wTlAp1gS_bF-nBg",
-          "width": 196,
-          "height": 110,
-          "preference": "-7",
-          "size": "196x110"
-        },
-        {
-          "thumbnail_id": "56daa9f7-4f2c-462a-b62b-dc81681740f1",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCxH62L6mzikouNibumkeYSfKAkPg",
-          "width": 246,
-          "height": 138,
-          "preference": "-7",
-          "size": "246x138"
-        },
-        {
-          "thumbnail_id": "c0ef8a12-dd58-4e27-80f2-07722d94dddf",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBogml102sg5za22Ci7JnYHG7Teig",
-          "width": 336,
-          "height": 188,
-          "preference": "-7",
-          "size": "336x188"
-        },
-        {
-          "thumbnail_id": "65b00110-b3f9-4662-abfa-6e9a9d471d1b",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/hqdefault.jpg",
-          "width": 480,
-          "height": 360,
-          "preference": "-7",
-          "size": "480x360"
-        },
-        {
-          "thumbnail_id": "fac54c38-da64-451b-8215-e748ad7d4280",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/sddefault.jpg",
-          "width": 640,
-          "height": 480,
-          "preference": "-5",
-          "size": "640x480"
-        },
-        {
-          "thumbnail_id": "acf369c6-dceb-431d-be23-df9549cb6641",
-          "url": "https://i.ytimg.com/vi/H_7aLJTaKlY/maxresdefault.jpg",
-          "width": 1920,
-          "height": 1080,
-          "preference": "-1",
-          "size": "1920x1080"
-        }
-      ],
-      "video_chapters": [],
-      "locale": null,
-      "creator": "GMHikaru",
-      "creator_thumbnail": "https://yt3.googleusercontent.com/CLZYpQiar2z6iwlTK3pGtxfd9gqarP8tb7IGg-eHbXdAiaMZJu2w8-LvRo2dywj0ZSStjGUyxw=s900-c-k-c0x00ffffff-no-rj",
-      "published_timestamp": "2024-02-03T00:00:00Z",
-      "content_warnings": [],
-      "claims": [],
-      "copyright_years": [],
-      "publisher": "YouTube",
-      "publisher_asset_id": "H_7aLJTaKlY",
-      "title": "Hans Banned From The Saint Louis Chess Club",
-      "contents": "Hikaru reacts to the news that the Saint Louis Chess Club has not extended an invitation Hans back to it's 2024 events as well as cheating drama from CCT\n👍LIVE MOST WEEKDAYS ON KICK ►https://www.kick.com/gmhikaru\n♟️ LEARN CHESS  & PLAY WITH ME ► https://go.chess.com/hikaru \n🎁 GIVE 💎 CHESS ► https://www.chess.com/membership/gift?ref_id=15448422\n🎬 CLIPS CHANNEL ► https://www.youtube.com/c/GMHikaruClips?sub_confirmation=1\n🎞️ MORE GMHIKARU ► https://www.youtube.com/c/moregmhikaru?sub_confirmation=1\n💜 TWITCH ► https://www.twitch.tv/gmhikaru\n📸 INSTAGRAM ► https://www.instagram.com/gmhikaru/\n🐦 TWITTER ► https://twitter.com/gmhikaru\n✨ TIKTOK ► https://www.tiktok.com/@gmhikaru\n💛 DISCORD ► https://discord.com/invite/aeaqK6g\n💙 FACEBOOK  ►  https://facebook.com/GMHikaru\n💚 SUPPORT  ► https://streamlabs.com/gmhikaru\n🤣 REDDIT ► https://www.reddit.com/r/HikaruNakamura/\n━━━━━━━━━━━━━\n🎥 Edit and 🎨 Thumbnail ► Jaron  https://twitter.com/jaroniscaring\n👌Channel Management  ► Team Hikaru\n📧 Global Business contact: TeamGMHikaru@gmail.com \n📭Chinese Brand Business contact: gmhikaru_ydads@163.com\n\n#gmhikaru #chess #hansniemann",
-      "keywords": [],
-      "annotations": [],
-      "categories": [
-        "Gaming"
-      ],
-      "duration": 487,
-      "channel_id": null,
-      "ingest_status": "external",
-      "screen_orientation_horizontal": true,
-      "origin": "33b7f7c4-2a1c-4165-999b-9bea2e64a1c5"
-    }
+    sections:
+    {
+      title: "Videos",
+      key: '',
+      loading: true,
+      videos: [],
+      after: null,
+      has_next_page: null
+    },
   }),
   computed: {
     ...mapGetters(['isAuthenticated', 'currentUser'])
   },
   components: {
     VideoCard,
-    SigninModal
+    InfiniteLoading
   },
   methods: {
     async getChannel(id) {
@@ -250,27 +193,16 @@ export default {
       } else {
         this.showSubBtn = true
       }
-      this.getVideos()
+      // this.getVideos()
 
       this.checkSubscription(this.channel._id)
       // console.log(channel)
     },
-    async getVideos() {
-      // this.getChannel()
-      this.loading = true
-
-      const videos = await VideoService.getAll('public', {
-        userId: this.channel._id
-      })
-        .catch((err) => {
-          console.log(err)
-          this.errored = true
-        })
-        .finally(() => (this.loading = false))
-
-      if (typeof videos === 'undefined') return
-
-      this.videos = videos.data
+    async getChannelVideos($state) {
+      const data = await this.getSegmentedVideos('CaspianReport', this.sections.after, 9)
+      this.sections.videos.push(...data?.edges)
+      this.sections.after = data?.page_info?.end_cursor
+      $state?.loaded()
     },
     async checkSubscription(id) {
       if (!this.currentUser) return
@@ -319,13 +251,20 @@ export default {
       // console.log(this.subscribed)
     }
   },
-  mounted() {
-    // this.getChannel(this.$route.params.id)
-  },
-  // beforeRouteUpdate(to, from, next) {
-  //   this.getChannel(to.params.id)
-  //   next()
-  // }
+  async mounted() {
+    const queryFilter = {
+      filter:{
+        creator:{
+          eq:this.$route.query.creator
+        }
+      },
+      remote_member_id:this.$route.params.id
+    }
+    const { data } = await this.getChannelData(queryFilter)
+    console.log("Data", data);
+    // this.getVideos()
+  }
+
 }
 </script>
 

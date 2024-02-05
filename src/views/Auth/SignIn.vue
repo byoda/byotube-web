@@ -7,6 +7,7 @@
             <v-card-title class="text-center">BYO.Tube</v-card-title>
             <v-card-subtitle class="mb-5">Sign in</v-card-subtitle>
             <v-card-text>
+              <p>To become a member of BYO.Tube, you will need a BYODA personal data server. Please sign up for a personal data server at <a>BYO.Host</a> </p>
               <ValidationObserver ref="form" v-slot="{ handleSubmit, reset }">
                 <form
                   @submit.prevent="handleSubmit(signin)"

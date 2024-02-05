@@ -433,10 +433,10 @@ export default {
     },
     mapChannelToPages(channelArr) {
       return channelArr?.map(channel => {
-        console.log("chanell", channel?.node?.member_id);
+        console.log("Channel", channel);
         return {
           title: channel.node.annotations[0],
-          link: `/channels/${channel?.node?.member_id}`,
+          link: `/channels/${channel?.node?.member_id}?creator=${channel.node.annotations[0]}`,
           icon: null
 
         }
