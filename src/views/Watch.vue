@@ -66,10 +66,11 @@
                           </v-btn>
                         </div>
                         <div class="d-flex align-center">
-                          <v-btn-toggle active-class="active-btn" class="toggle-btn-class" background-color="#f2f2f2"  dense rounded>
+                          <v-btn-toggle active-class="active-btn" class="toggle-btn-class" background-color="#f2f2f2"
+                            dense rounded>
                             <v-btn @click="likeOrDislike(LIKE)">
-                              <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon> 
-                              <v-icon v-else size="24">mdi-thumb-up-outline</v-icon> 
+                              <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon>
+                              <v-icon v-else size="24">mdi-thumb-up-outline</v-icon>
                             </v-btn>
                             <v-btn @click="likeOrDislike(DISLIKE)">
                               <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
@@ -175,19 +176,20 @@ export default {
     videoOptions: {},
     key_id: "",
     content_token: "",
-    assetReactions:[],
-    LIKE:'like',
-    DISLIKE:'dislike'
+    assetReactions: [],
+    LIKE: 'like',
+    DISLIKE: 'dislike'
+
   }),
   computed: {
     ...mapGetters(["currentUser", "getUrl", "isAuthenticated"]),
     getVideoOptions() {
       return this.videoOptions;
     },
-    isVideosLikedByCurrentUser(){
+    isVideosLikedByCurrentUser() {
       return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset?.node?.relation == this.LIKE)
     },
-    isVideoDislikedByCurrentUser(){
+    isVideoDislikedByCurrentUser() {
       return !!this.assetReactions.find(asset => asset?.node?.asset_id === this.asset?.asset_id && asset.node.relation == this.DISLIKE)
     }
   },
@@ -265,39 +267,40 @@ export default {
       let updatedData = null
       let newData = null
 
-      const {asset_id, origin, created_timestamp} = this.asset
+
+      const { asset_id, origin, created_timestamp } = this.asset
       const serviceId = this.service_id
-      if(this.isVideosLikedByCurrentUser || this.isVideoDislikedByCurrentUser){
-        if(this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE ){
+      if (this.isVideosLikedByCurrentUser || this.isVideoDislikedByCurrentUser) {
+        if (this.isVideosLikedByCurrentUser && relation == this.LIKE || this.isVideoDislikedByCurrentUser && relation == this.DISLIKE) {
           this.deleteAssetReaction()
           this.assetReactions = []
           this.assetReactions = await this.getVideoByid(asset_id)
           return
         }
         const existingRelation = this.isVideosLikedByCurrentUser ? 'dislike' : 'like'
-        const filter = 
-          {
-              asset_id : 
-              {
-                eq: asset_id
-              }
-          }
-       const { data } = await this.updateLikedVideo(
-         serviceId,
+        const filter =
         {
-          relation: existingRelation,
-          member_id: origin,
-          created_timestamp,
-          asset_id,
-        },
+          asset_id:
+          {
+            eq: asset_id
+          }
+        }
+        const { data } = await this.updateLikedVideo(
+          serviceId,
+          {
+            relation: existingRelation,
+            member_id: origin,
+            created_timestamp,
+            asset_id,
+          },
           filter
-       )
+        )
 
-       updatedData = data
-       this.assetReactions = []
-       this.assetReactions = await this.getVideoByid(asset_id)
+        updatedData = data
+        this.assetReactions = []
+        this.assetReactions = await this.getVideoByid(asset_id)
       }
-      else{
+      else {
         const { data } = await this.likeVideo(
           relation,
           this.asset.origin,
@@ -350,45 +353,45 @@ export default {
     },
 
     async getVideoByid(assetId) {
-      try{
-        const filter = 
-          {
-            filter:{
-              asset_id : 
-              {
-                eq: assetId
-              }
+      try {
+        const filter =
+        {
+          filter: {
+            asset_id:
+            {
+              eq: assetId
             }
           }
+        }
         const { data } = await this.getAssetById(
           this.service_id, filter
         );
-  
+
         return data?.edges
-      }catch(error){
+      } catch (error) {
         console.error("Error", error);
         return []
       }
     },
     async deleteAssetReaction() {
       const { asset_id } = this.asset
-      try{
+      try {
         const filter = {
-              asset_id : 
-              {
-                eq: asset_id
-              }
+          asset_id:
+          {
+            eq: asset_id
           }
-        const { data } = await this.deleteReaction({
+        }
+        await this.deleteReaction({
           serviceId: this.service_id,
           depth: 0,
           query_id: uuid.v4(),
           filter
         }
         );
-  
-      console.log("Data", data);
-      }catch(error){
+
+
+      } catch (error) {
         console.error("Error", error);
         return []
       }
@@ -555,7 +558,6 @@ export default {
   async created() {
     this.getVideo();
     this.assetReactions = await this.getVideoByid(this.asset.asset_id)
-    console.log("Asset reactions", this.assetReactions);
   },
   mounted() {
     this.followedAccounts =
@@ -595,11 +597,12 @@ button.v-btn.remove-hover-bg {
   }
 }
 
-.active-btn{
+.active-btn {
   background-color: #f2f2f2 !important;
 }
-.toggle-btn-class{
-  .v-btn:before{
+
+.toggle-btn-class {
+  .v-btn:before {
     background-color: #f2f2f2 !important;
   }
 }
