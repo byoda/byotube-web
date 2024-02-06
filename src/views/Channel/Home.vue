@@ -138,6 +138,7 @@ import VideoCard from '@/components/VideoCard'
 // import SigninModal from '@/components/SigninModal'
 import { videosMixin } from "@/mixins";
 import InfiniteLoading from "vue-infinite-loading";
+import { uuid } from 'vue-uuid';
 
 export default {
   mixins: [videosMixin],
@@ -255,10 +256,12 @@ export default {
     const queryFilter = {
       filter:{
         creator:{
-          eq:this.$route.query.creator
+          "eq" :this.$route.query?.creator?.toString()
         }
       },
-      remote_member_id:this.$route.params.id
+      remote_member_id:this.$route.params.id,
+      depth:1,
+      query_id: uuid.v4()
     }
     const { data } = await this.getChannelData(queryFilter)
     console.log("Data", data);
