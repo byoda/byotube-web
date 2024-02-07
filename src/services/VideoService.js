@@ -81,6 +81,14 @@ export default {
       `service/search/asset?text=${filter.text}&num=${filter.num}&offset=${filter.offset}`
     );
   },
+
+  getChannel({ domain, serviceId }, filter) {
+    return Api().post(
+      `https://${domain}/api/v1/data/${serviceId}/channels/query`,
+      filter
+    );
+  },
+
   uploadVideo(data, optional) {
     return Api().post("videos", data, optional);
   },

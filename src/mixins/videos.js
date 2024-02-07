@@ -195,14 +195,15 @@ export const videosMixin = {
       );
     },
     getFollowedChannels: function(serviceId) {
-      // const body = {
-      //   text: channelName,
-      //   member_id: origin,
-      //   created_timestamp: createdTimestamp,
-      // };
       return VideoService.getFollowedAccounts(
         { domain: this.initialState.domain, serviceId: serviceId },
         {}
+      );
+    },
+    getChannelData: function(filter) {
+      return VideoService.getChannel(
+        { domain: this.initialState.domain, serviceId: this.service_id },
+        filter
       );
     },
     async changeVideo(assetData) {
