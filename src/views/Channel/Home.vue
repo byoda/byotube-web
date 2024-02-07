@@ -2,7 +2,7 @@
   <div id="channel-home" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
     <div class="mt-2">
       <v-parallax height="230" style="border-radius: 15px;"
-        src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"></v-parallax>
+        :src="channel.display_hint!=='banner' ? 'https://cdn.vuetifyjs.com/images/parallax/material.jpg' : channel.banners[10].url "></v-parallax>
     </div>
     <v-container class="py-0">
       <div class="nav-bgcolor">
@@ -11,7 +11,7 @@
 
             <v-col cols="12">
               <v-skeleton-loader type="list-item-avatar-two-line" :loading="loading" class="mr-1">
-                <div>
+                <div v-if="channel" >
                   <v-row class="d-flex">
                     <v-col cols="12" md="2" size="160">
                       <v-img class="circle" height="160" width="160"
@@ -26,13 +26,13 @@
                       </v-avatar> -->
                     </v-col>
                     <v-col cols="12" md="10" class="align-self-auto">
-                      <h1 class="channel-name">Junaid Jahan</h1>
+                      <h1 class="channel-name">{{ channel.creator }}</h1>
                       <p class="channel-subtitle mb-0">
-                        @junaidjahan <span> . </span> <span>3.7M subscribers</span> <span> . </span> <span>182
+                        @{{ channel.creator }} <span> . </span> <span>3.7M subscribers</span> <span> . </span> <span>182
                           videos</span>
                       </p>
                       <p class="channel-subtitle py-2 mb-0">
-                        I am a frontend focused software engineer having experience in Vue Js
+                        {{channel.description}}
                       </p>
                       <v-btn height="36" width="95" class="text-capitalize px-2 font-weight-medium text-caption" dark
                         rounded>
@@ -72,28 +72,28 @@
           </div>
         </div>
         <infinite-loading @infinite="getChannelVideos($event)">
-              <div slot="spinner">
-                <v-progress-circular indeterminate :loading="sections.loading" color="red"></v-progress-circular>
-              </div>
-              <div slot="no-results"></div>
-              <span slot="no-more"></span>
-              <div slot="error" slot-scope="{ trigger }">
-                <v-alert prominent type="error">
-                  <v-row align="center">
-                    <v-col class="grow">
-                      <div class="title">Error!</div>
-                      <div>
-                        Something went wrong, but don’t fret — let’s give it
-                        another shot.
-                      </div>
-                    </v-col>
-                    <v-col class="shrink">
-                      <v-btn @click="trigger">Take action</v-btn>
-                    </v-col>
-                  </v-row>
-                </v-alert>
-              </div>
-            </infinite-loading>
+          <div slot="spinner">
+            <v-progress-circular indeterminate :loading="sections.loading" color="red"></v-progress-circular>
+          </div>
+          <div slot="no-results"></div>
+          <span slot="no-more"></span>
+          <div slot="error" slot-scope="{ trigger }">
+            <v-alert prominent type="error">
+              <v-row align="center">
+                <v-col class="grow">
+                  <div class="title">Error!</div>
+                  <div>
+                    Something went wrong, but don’t fret — let’s give it
+                    another shot.
+                  </div>
+                </v-col>
+                <v-col class="shrink">
+                  <v-btn @click="trigger">Take action</v-btn>
+                </v-col>
+              </v-row>
+            </v-alert>
+          </div>
+        </infinite-loading>
         <!-- <v-card flat class="transparent" height="100%" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
           <v-row>
             <v-col cols="12" md="7" class="tabs">
@@ -107,7 +107,6 @@
             </v-col>
 
           </v-row>
-
             <v-tabs-items v-model="tab" class="transparent">
               <v-tab-item>
                 <v-card class="transparent" flat width="370">
@@ -132,7 +131,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import UserService from '@/services/UserService'
+// import UserService from '@/services/UserService'
 import SubscriptionService from '@/services/SubscriptionService'
 import VideoCard from '@/components/VideoCard'
 // import SigninModal from '@/components/SigninModal'
@@ -173,31 +172,21 @@ export default {
     InfiniteLoading
   },
   methods: {
-    async getChannel(id) {
-      // console.log(this.$route.params.id)
-      this.loading = true
-      this.errored = false
-
-      const channel = await UserService.getById(id)
-        .catch((err) => {
-          this.errored = true
-          console.log(err)
-          this.$router.push('/')
-        })
-        .finally(() => (this.loading = false))
-
-      if (!channel) return
-      this.channel = channel.data.data
-      // console.log(channel)
-      if (this.currentUser && this.currentUser._id === this.channel._id) {
-        this.showSubBtn = false
-      } else {
-        this.showSubBtn = true
+    async getChannel() {
+      const queryFilter = {
+        filter: {
+          creator: {
+            "eq": this.$route.query?.creator?.toString()
+          }
+        },
+        remote_member_id: this.$route.params.id,
+        depth: 1,
+        query_id: uuid.v4()
       }
-      // this.getVideos()
+      const { data } = await this.getChannelData(queryFilter)
+      this.channel = data?.edges[0]?.node
 
-      this.checkSubscription(this.channel._id)
-      // console.log(channel)
+      console.log("Channel data", this.channel);
     },
     async getChannelVideos($state) {
       const data = await this.getSegmentedVideos('CaspianReport', this.sections.after, 9)
@@ -253,19 +242,7 @@ export default {
     }
   },
   async mounted() {
-    const queryFilter = {
-      filter:{
-        creator:{
-          "eq" :this.$route.query?.creator?.toString()
-        }
-      },
-      remote_member_id:this.$route.params.id,
-      depth:1,
-      query_id: uuid.v4()
-    }
-    const { data } = await this.getChannelData(queryFilter)
-    console.log("Data", data);
-    // this.getVideos()
+    this.getChannel()
   }
 
 }
