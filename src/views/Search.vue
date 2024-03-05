@@ -135,7 +135,7 @@
               </v-card>
             </v-skeleton-loader>
           </div>
-          <infinite-loading
+          <!-- <infinite-loading
             :identifier="infiniteId"
             @infinite="getSearchResults"
           >
@@ -163,7 +163,7 @@
                 </v-row>
               </v-alert>
             </div>
-          </infinite-loading>
+          </infinite-loading> -->
         </v-col>
       </v-row>
     </v-container>
@@ -171,7 +171,7 @@
 </template>
 
 <script>
-import InfiniteLoading from 'vue-infinite-loading'
+// import InfiniteLoading from 'vue-infinite-loading'
 import { mapGetters } from 'vuex'
 import SearchService from '@/services/SearchService'
 
@@ -224,7 +224,7 @@ export default {
     }
   },
   components: {
-    InfiniteLoading
+    // InfiniteLoading
   },
   beforeRouteUpdate(to, from, next) {
     // console.log(to.query['search-query'])

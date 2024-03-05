@@ -1,63 +1,68 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import NavBar from "@/components/NavBar.vue";
-import StudioNavBar from "@/components/StudioNavBar.vue";
-
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from "vue-router";
+import NonAuth from "@/views/non-auth/NonAuth.vue";
+import Home from "@/views/home/Home.vue";
+import Watch from "@/views/watch/Watch.vue";
+import Search from "@/views/Search/Search.vue";
+import Channel from "@/views/channel/Channel.vue";
+import Following from "@/views/following/Following.vue";
+import History from "@/views/history/History.vue";
+import Signin from "@/views/Auth/signin/SignIn.vue";
+import Lists from "@/views/lists/Lists.vue";
+import { useAuthStore } from "@/store";
 
 const routes = [
   {
     path: "/",
     alias: "/byotube",
-    name: "Home",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "about" */ "../views/Home.vue"),
-    },
-  },
-  {
-    path: "/results",
-    name: "Search",
-    components: {
-      default: () =>
-        import(/* webpackChunkName: "about" */ "../views/Search/Search.vue"),
-    },
-  },
-  {
-    path: "/gaming",
-    name: "Gaming",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "about" */ "../views/Gaming/Gaming.vue"),
-    },
-  },
-  {
-    path: "/subscriptions",
-    name: "Subscription",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "about" */ "../views/Subscription.vue"),
-    },
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/liked-videos",
-    name: "LikedVideos",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "about" */ "../views/LikedVideo.vue"),
-    },
-    meta: { requiresAuth: true },
+    name: "NonAuth",
+    component: NonAuth,
+    children: [
+      {
+        path: "/",
+        name: "Home",
+        component: Home,
+      },
+      {
+        path: "results",
+        name: "Search",
+        component: Search,
+      },
+      {
+        path: "channels",
+        name: "Channels",
+        component: Channel,
+      },
+      {
+        path: "channels",
+        name: "Channels",
+        component: Channel,
+      },
+      {
+        path: "lists",
+        name: "Lists",
+        component: Lists,
+      },
+      {
+        path: "watch",
+        name: "Watch",
+        component: Watch,
+      },
+      {
+        path: "following",
+        name: "Following",
+        component: Following,
+      },
+      {
+        path: "history",
+        name: "History",
+        component: History,
+      },
+    ],
   },
   {
     path: "/signin",
     name: "SignIn",
-    component: () =>
-      import(/* webpackChunkName: "signin" */ "../views/Auth/SignIn.vue"),
+    component: Signin,
     meta: { requiresVisitor: true },
   },
   {
@@ -67,112 +72,38 @@ const routes = [
       import(/* webpackChunkName: "signup" */ "../views/Auth/SignUp.vue"),
     meta: { requiresVisitor: true },
   },
-  {
-    path: "/trending",
-    name: "Trending",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "trending" */ "../views/Trending.vue"),
-    },
-  },
-  {
-    path: "/studio",
-    components: {
-      StudioNavBar,
-      default: () =>
-        import(/* webpackChunkName: "dashboard" */ "../views/Studio/Index.vue"),
-    },
-    children: [
-      {
-        path: "/",
-        name: "Dashboard",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "../views/Studio/Dashboard.vue"
-          ),
-      },
-      {
-        path: "videos",
-        name: "Video",
-        component: () =>
-          import(/* webpackChunkName: "video" */ "../views/Studio/Video.vue"),
-      },
-      {
-        path: "details/:id",
-        name: "Detail",
-        component: () =>
-          import(/* webpackChunkName: "video" */ "../views/Studio/Details.vue"),
-      },
-    ],
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/channels/:id",
-    components: {
-      NavBar,
-      default: () =>
-        import(
-          /* webpackChunkName: "dashboard" */ "../views/Channel/Index.vue"
-        ),
-    },
-    children: [
-      {
-        path: "/",
-        name: "ChannelHome",
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ "../views/Channel/Home.vue"
-          ),
-      },
-    ],
-  },
-  {
-    path: "/watch",
-    name: "Watch",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "video" */ "../views/Watch.vue"),
-    },
-  },
-  {
-    path: "/history",
-    name: "History",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "video" */ "../views/History.vue"),
-    },
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/search",
-    name: "Search",
-    components: {
-      NavBar,
-      default: () =>
-        import(/* webpackChunkName: "video" */ "../views/Search.vue"),
-    },
-  },
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHistory(),
   mode: "history",
-  base: process.env.BASE_URL,
   routes,
+  base: import.meta.env.BASE_URL,
 });
 
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem("user");
+  const authStore = useAuthStore();
+  const token = localStorage.getItem("token");
+  if (token) authStore.setAuth(true);
+  const nonAuthRoutes = [
+    "SignIn",
+    "Signup",
+    "Home",
+    "Watch",
+    "Search",
+    "Gaming",
+    "Channels",
+  ];
+  const authRoutes = ["Host"];
+  const authPages = ["SignIn", "Signup"];
+  const isAuthPages = authPages.includes(to.name);
+  const isAuthRoute = authRoutes.includes(to.name);
+  const isNonAuthRoute = nonAuthRoutes.includes(to.name);
 
-  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
-    next("/");
-  } else if (
-    to.matched.some((record) => record.meta.requiresVisitor) &&
-    loggedIn
-  ) {
-    next("/");
+  if (authStore.isAuthenticated && isAuthPages) {
+    next("home");
+  } else if (!authStore.isAuthenticated && isAuthRoute) {
+    next("signin");
   } else {
     next();
   }
