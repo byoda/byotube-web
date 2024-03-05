@@ -251,8 +251,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import UploadVideoModal from '@/components/UploadVideoModal'
-import SettingsModal from '@/components/SettingsModal'
+// import UploadVideoModal from '@/components/UploadVideoModal'
+// import SettingsModal from '@/components/SettingsModal'
 export default {
   name: 'StudioNavBar',
   data: () => ({
@@ -340,8 +340,8 @@ export default {
     }
   },
   components: {
-    UploadVideoModal,
-    SettingsModal
+    // UploadVideoModal,
+    // SettingsModal
   },
   mounted() {
     this.drawer = this.$vuetify.breakpoint.mdAndDown ? false : true

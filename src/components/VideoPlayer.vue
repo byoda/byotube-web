@@ -28,26 +28,37 @@
     },
     data() {
       return {
-        player: null
+        player: null,
+        videojs
       }
     },
+    methods:{
+        currentTime(){
+          return  this.player.cache_.currentTime
+        },
+    },
+
     created(){
+
+     
       videojs.Vhs.xhr.beforeRequest =  (options) => {
           if (options.headers == undefined){
               options.headers = {}
           }
           if (this.contentToken) {
-              videojs.log(`Adding authorization headers with key_id ${this.keyId} and token ${this.contentToken}`)
               options.headers["Authorization"] = `Bearer ${this.contentToken}`
               options.headers["X-AuthorizationKeyId"] = this.keyId
           }
 
           return options;
       };
+
+    
     },
     mounted() {
       this.player = videojs(this.$refs.videoPlayer, this.options, () => {
     });
+
     },
     beforeDestroy() {
       if (this.player) {

@@ -38,7 +38,7 @@
             <p>You haven't subscribed to any channel yet</p>
           </v-col>
           <v-col cols="12" sm="12" md="12" lg="12">
-            <infinite-loading @infinite="getVideos">
+            <!-- <infinite-loading @infinite="getVideos">
               <div slot="spinner">
                 <v-progress-circular
                   indeterminate
@@ -63,7 +63,7 @@
                   </v-row>
                 </v-alert>
               </div>
-            </infinite-loading>
+            </infinite-loading> -->
           </v-col>
         </v-row>
       </main>
@@ -72,7 +72,6 @@
 </template>
 
 <script>
-import InfiniteLoading from 'vue-infinite-loading'
 import moment from 'moment'
 
 import VideoCard from '@/components/VideoCard'

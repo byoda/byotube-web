@@ -1,84 +1,55 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
-import {
-  required,
-  email,
-  max,
-  min,
-  size,
-  oneOf,
-} from "vee-validate/dist/rules";
-import {
-  extend,
-  ValidationObserver,
-  ValidationProvider,
-  setInteractionMode,
-} from "vee-validate";
-import Vuebar from "vuebar";
-import { uuid } from "vue-uuid";
-// import InfiniteLoading from 'vue-infinite-loading'
+import "./assets/styles/main.scss";
+import VueSweetalert2 from "vue-sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
-setInteractionMode("eager");
+// Vuetify
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+import { theme } from "@/plugins/vuetify";
+import { createPinia } from "pinia";
+import * as AllRules from "@vee-validate/rules";
+import { configure, defineRule } from "vee-validate";
+import { localize } from "@vee-validate/i18n";
+import mitt from "mitt";
 
-extend("required", {
-  ...required,
-  message: "Enter {_field_}",
+Object.keys(AllRules).forEach((rule) => {
+  defineRule(rule, AllRules[rule]);
 });
 
-extend("oneOf", {
-  ...oneOf,
+configure({
+  generateMessage: localize("en", {
+    messages: {
+      required: "The {field} field is required",
+      alpha: "Only alphabetic values allowed",
+      alpha_num: "Only alphabetic and numeric values allowed",
+      alpha_spaces: "Only alphabetic values allowed",
+      confirmed: "The entered passwords don't match. Try again!",
+      email: "This {field} must be a valid email",
+      integer: "This {field} must be an integer",
+      max: "This {field} not be greater than 0:{max} values",
+      min: "This {field} must be at least 0:{min} values",
+      numeric: "This {field} may only contain numeric values",
+    },
+  }),
 });
 
-extend("max", {
-  ...max,
-  message: "{_field_} may not be greater than {length} characters",
+const vuetify = createVuetify({
+  theme,
 });
 
-extend("min", {
-  ...min,
-  message: "{_field_} may not be less than {length} characters",
-});
+const emitter = mitt();
 
-extend("email", {
-  ...email,
-  message: "Email must be valid",
-});
+const pinia = createPinia();
+const app = createApp(App);
 
-extend("password", {
-  params: ["target"],
-  validate(value, { target }) {
-    return value === target;
-  },
-  message: "Password does not match",
-});
+app.config.globalProperties.emitter = emitter;
 
-extend("size", {
-  ...size,
-  message: "video size should be less than 5 MB!",
-});
+app.use(vuetify);
+app.use(router);
+app.use(pinia);
+app.use(VueSweetalert2);
 
-Vue.config.productionTip = false;
-Vue.component("ValidationProvider", ValidationProvider);
-Vue.component("ValidationObserver", ValidationObserver);
-
-// Vue.use(InfiniteLoading, {
-//   props: {
-//     distance: null
-//     /* other props need to configure */
-//   }
-// })
-
-// Vue.component('InfiniteLoading', InfiniteLoading)
-
-Vue.use(Vuebar);
-Vue.use(uuid);
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+app.mount("#app");

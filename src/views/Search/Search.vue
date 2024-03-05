@@ -1,58 +1,79 @@
 <template>
     <div>
-        <NavBar :loading="queryChangeLoaded" @search="queryChangeLoaded = true" />
+        <!-- <NavBar :loading="queryChangeLoaded" @search="queryChangeLoaded = true" /> -->
         <v-container>
-            <div v-for="(video, i) in videos" :key="i" class="py-3" @click="getItem(video)" style="cursor: pointer;">
-                <video-card search-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
+            <div v-for="(video, i) in videos" :key="i" class="py-3" @click="moveToWatch(video)" style="cursor: pointer;">
+                <video-card :search-card="true" :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
                     @follow="followChannel(video.node, video.origin)"></video-card>
             </div>
-            <p v-if="noMoreResults">
-                <v-alert dense type="info" color="primary" >
-                  End of search results
+            <!-- <p v-if="noMoreResults && !videos.length">
+                <v-alert dense type="info" color="primary">
+                    End of search results
                 </v-alert>
-            </p>
-            <infinite-loading v-else :distance="1" @infinite="getSearchResults($event)">
-                <div slot="spinner">
-                    <v-progress-circular indeterminate color="red" :loading="loaded"></v-progress-circular>
-                </div>
-                <div slot="no-results"></div>
-                <span slot="no-more"> End of search results </span>
-                <div slot="error">
-                    <v-alert prominent type="error">
-                        <v-row align="center">
-                            <v-col class="grow">
-                                <div class="title">Error!</div>
-                                <div>
-                                    Something went wrong, but don’t fret — let’s give it
-                                    another shot.
-                                </div>
-                            </v-col>
-                            <v-col class="shrink">
-                                <v-btn>Take action</v-btn>
-                            </v-col>
-                        </v-row>
-                    </v-alert>
-                </div>
-            </infinite-loading>
+            </p> -->
+            <!-- <div v-if="loaded" class="text-center">
+                <v-progress-circular indeterminate  color="red"></v-progress-circular>
+            </div> -->
+            <BaseInfiniteScroller @load="getSearchResults($event)" />
 
         </v-container>
     </div>
 </template>
 
-<script>
+<script setup>
+import VideoCard from "@/components/VideoCard.vue";
+import { useSearch } from "./useSearch.js"
+import { useRoute } from "vue-router";
+import { watch } from "vue";
+import { useVideo } from "@/composables";
+import { onMounted } from "vue";
+import { BaseInfiniteScroller } from "@/components/base/index.js";
+
+const route = useRoute()
+
+const { getItem, moveToWatch } = useVideo()
+
+const {
+    text,
+    videos,
+    loaded,
+    offset,
+    queryChangeLoaded,
+    noMoreResults,
+    getSearchResults
+} = useSearch()
+
+watch(()=>route.query.search_query, async () => {
+        videos.value = []
+        offset.value = 0
+        queryChangeLoaded.value = true
+        text.value = route.query?.search_query
+        await getSearchResults()
+
+}, {
+    deep: true,
+    immediate: false
+})
+
+
+</script>
+
+<!-- <script>
 import VideoCard from "@/components/VideoCard";
 import VideoService from "@/services/VideoService";
-import InfiniteLoading from "vue-infinite-loading";
 import NavBar from "@/components/NavBar.vue";
 import { videosMixin } from "@/mixins";
+import { watch } from "vue";
+import { watchEffect } from "vue";
+import { useRoute } from "vue-router";
 
 
 export default {
     name: "Search",
-    mixins: [ videosMixin ],
+    mixins: [videosMixin],
     components: {
         VideoCard,
-        InfiniteLoading,
+        // InfiniteLoading,
         NavBar
     },
     data: (vm) => ({
@@ -123,6 +144,6 @@ export default {
 
 };
 
-</script>
+</script> -->
 
 <style lang="scss" scoped></style>
