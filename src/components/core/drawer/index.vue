@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="coreStore.isDrawerOpen" mobile-breakpoint="sm" app :border="0" id="nav">
+    <v-navigation-drawer v-model="coreStore.isDrawerOpen" mobile-breakpoint="sm" app :border="0" id="nav" class="pb-5">
         <div tag="div" style="width: 100%;" class="v-navigation-drawer__content" v-bar>
             <v-list density="compact" nav rounded class="py-0 mt-2" tag="div">
                 <!-- <v-list-item rounded="xl" :class="{
@@ -149,6 +149,41 @@ const items = [
                 icon: "mdi-newspaper-variant-outline",
             },
             {
+                title: "Auto & Vehicles",
+                link: "/lists?list_name=auto %26 vehicles",
+                icon: "mdi-car-multiple",
+            },
+            {
+                title: "People & Blogs",
+                link: "/lists?list_name=people %26 blogs'",
+                icon: "mdi-post-outline",
+            },
+            {
+                title: "Film & Animation",
+                link: "/lists?list_name=film %26 animation",
+                icon: "mdi-movie-play-outline",
+            },
+            {
+                title: "Travel & Events",
+                link: "/lists?list_name=travel %26 events",
+                icon: "mdi-wallet-travel",
+            },
+            {
+                title: "How to & Style",
+                link: "/lists?list_name=howto %26 style",
+                icon: "mdi-face-man-shimmer-outline",
+            },
+            {
+                title: "Science & Technology",
+                link: "/lists?list_name=science %26 technology",
+                icon: "mdi-rocket-launch-outline",
+            },
+            {
+                title: "Nonprofits & Activism",
+                link: "/lists?list_name=nonprofits %26 activism",
+                icon: "mdi-crowd",
+            },
+            {
                 title: "All Channels",
                 link: null,
                 href: "https://www.byoda.tube/pages/creators/",
@@ -196,7 +231,6 @@ const getFollowData = async () => {
 onMounted(async () => {
     if (isAuthenticated.value) {
         await getFollowData()
-        console.log("dsfdsjk");
     }
     channelLength.value = 3
     emitter.on('channel-followed', async () => {
