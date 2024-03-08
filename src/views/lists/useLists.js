@@ -27,10 +27,16 @@ export const useLists = () => {
       const data = await getSegmentedVideos(
         sections.value.key,
         sections.value.after,
-        9
+        16
       );
 
-      if (!data?.edges.length) return;
+      if (!data?.edges.length) {
+        load?.done("empty");
+        moveToHomePage();
+        return;
+      } else {
+        load?.done("ok");
+      }
 
       sections.value.videos.push(...data?.edges);
       sections.value.after = data?.page_info?.end_cursor;
@@ -38,8 +44,6 @@ export const useLists = () => {
       if (!data?.page_info?.has_next_page) {
         load?.done("empty");
       }
-
-      load?.done("ok");
     } catch (error) {
       load?.done("error");
     }
@@ -57,6 +61,12 @@ export const useLists = () => {
       after: null,
       has_next_page: null,
     };
+  };
+
+  const moveToHomePage = () => {
+    setTimeout(() => {
+      router.push({ name: "Home" });
+    }, 3000);
   };
 
   return {
