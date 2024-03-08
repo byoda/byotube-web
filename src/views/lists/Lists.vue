@@ -13,7 +13,11 @@
             </div>
           </div>
         </div>
-        <BaseInfiniteScroller @load="getListVideos($event)" class="mt-8" />
+        <BaseInfiniteScroller @load="getListVideos($event)" class="mt-8">
+          <template #empty>
+            <v-alert type="warning">No content available for this category!</v-alert>
+          </template>
+        </BaseInfiniteScroller>
         </v-container>
     </div>
 </template>
