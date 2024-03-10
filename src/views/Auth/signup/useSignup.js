@@ -128,7 +128,7 @@ export const useSignup = () => {
       creator: "Yes",
     },
     {
-      byotube: "Operate your own BYODA pod",
+      byotube: "Store your data on your BYODA pod",
       anonymous: "No",
       lite: "No",
       liteFunded: "No",
@@ -144,10 +144,10 @@ export const useSignup = () => {
       "Your handle is unique and people can go to your channel using www.byo.tube/channel/@<handle> (feature under development",
     "Follow Creator": "Follow the creators of the content you love",
     "Subscribe to Creator":
-      "You'll need to pay a monthly fee to see the subscriber-only content of the creator",
+    "Pay for a monthly subscription to see the subscriber-only content of a creator",
     "Tip Videos": "Give the creator of the video a tip",
     "BYO.Tube Ultra": "See videos hosted on BYO.Tube without ads",
-    "Watch History": "See a list of videos you have watched",
+    "Watch History": "See the list of videos you have watched",
     "Feed Algorithm selection":
       "Select the algorithm that creates the 'For You' feed (feature under development)",
     Likes: "Like/Dislike videos",
@@ -158,7 +158,7 @@ export const useSignup = () => {
     "Video upload":
       "Upload videos directly to BYO.Tube (feature under development)",
     "Youtube Import": "Import your videos from YouTube",
-    "Operate your own BYODA pod":
+    "Store your data on your BYODA pod":
       "You can run the BYODA pod yourself or have it hosted at https://byo.host/",
   };
 
@@ -170,7 +170,7 @@ export const useSignup = () => {
   };
 
   const liteFundedTooltip =
-    "To prevent bots and spam, you need to make a one-time payment of 2.99$ to upgrade from a 'Lite' account to 'Lite - funded' account";
+    "To prevent bots and spam, make a one-time donation of $2.99 to upgrade from a 'Lite' to a 'Lite - funded' account";
 
   const getIconColor = (val) => {
     return val.includes("Yes") ? "green" : "red";
