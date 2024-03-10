@@ -189,6 +189,7 @@ export const useSignup = () => {
   };
 
   const getContentTooltip = (val, item) => {
+    console.log("Done");
     if (val.includes("*")) {
       return contentTooltips[item?.byotube];
     }
