@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-export const useSignup = () => {
+export const useAccountOptions = () => {
   const router = useRouter();
 
   const authStore = useAuthStore();
@@ -172,6 +172,37 @@ export const useSignup = () => {
   const liteFundedTooltip =
     "To prevent bots and spam, you need to make a one-time payment of 2.99$ to upgrade from a 'Lite' account to 'Lite - funded' account";
 
+  const headers = [
+    {
+      title: "BYO.Tube",
+      align: "start",
+      sortable: false,
+      key: "byotube",
+      width: "180",
+    },
+    {
+      title: "Anonymous",
+      key: "anonymous",
+      align: "center",
+      width: "50",
+      sortable: false,
+    },
+    { title: "Lite", key: "lite", align: "center", sortable: false },
+    {
+      title: "Lite - funded(*)",
+      key: "liteFunded",
+      align: "center",
+      sortable: false,
+    },
+    { title: "BYODA-plain", key: "plain", align: "center", sortable: false },
+    {
+      title: "BYODA-(Top) Creator",
+      key: "creator",
+      align: "center",
+      sortable: false,
+    },
+  ];
+
   const getIconColor = (val) => {
     return val.includes("Yes") ? "green" : "red";
   };
@@ -194,7 +225,12 @@ export const useSignup = () => {
     }
   };
 
+  const openUrl = (url) => {
+    window.open(url);
+  };
+
   return {
+    headers,
     rows,
     liteFundedTooltip,
     getIconColor,
@@ -202,5 +238,6 @@ export const useSignup = () => {
     getValue,
     getFeatureTooltip,
     getContentTooltip,
+    openUrl,
   };
 };

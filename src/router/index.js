@@ -7,6 +7,7 @@ import Channel from "@/views/channel/Channel.vue";
 import Following from "@/views/following/Following.vue";
 import History from "@/views/history/History.vue";
 import Signin from "@/views/Auth/signin/SignIn.vue";
+import AccountOptions from "@/views/Auth/account-options/AccountOptions.vue";
 import Lists from "@/views/lists/Lists.vue";
 import { useAuthStore } from "@/store";
 
@@ -58,6 +59,12 @@ const routes = [
         component: History,
       },
     ],
+  },
+  {
+    path: "/account-options",
+    name: "AccountOptions",
+    component: AccountOptions,
+    meta: { requiresVisitor: true },
   },
   {
     path: "/signin",
