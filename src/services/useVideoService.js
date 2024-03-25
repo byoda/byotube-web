@@ -1,24 +1,9 @@
-import { useAxios } from "@/composables";
+import { useAxios, useHelper } from "@/composables";
 
 export const useVideoService = () => {
   const { Api } = useAxios();
+  const { channelQuery } = useHelper()
 
-  const channelQuery = (filter) => {
-    const queryArray = Object.entries(filter).map(([key, value]) => {
-      return value ? `${key}=${value}` : null;
-    });
-
-    const queryString = queryArray?.reduce((acc, curr) => {
-      if (curr) {
-        return `${acc}${curr}&`;
-      }
-      return acc;
-    }, "");
-
-    const query = queryString.slice(0, queryString.length - 1);
-
-    return query;
-  };
 
   const getAll = (filter) => {
     const query = channelQuery(filter);

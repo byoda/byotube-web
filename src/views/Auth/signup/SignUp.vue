@@ -7,38 +7,37 @@
             <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
           </div>
           <v-row class="justify-space-between px-4 pt-6 pb-12">
-           
             <v-col cols="12">
               <v-card-subtitle class="mb-5">Create your VueTube account</v-card-subtitle>
               <v-card-text>
-                <form @submit.prevent="handleSubmit(signUp)" @reset.prevent="reset">
+                <BaseForm ref="signupForm">
                   <v-row>
                     <v-col cols="12" class="pb-0">
-                      <BaseTextfield v-model="email" :error-messages="errors" label="Email" color="primary" name="Email"
-                        class="mb-3" variant="outlined" />
+                      <BaseTextfield v-model="signupData.email" label="Email" color="primary" name="Email"
+                        class="mb-1" variant="outlined" rules="required" />
                     </v-col>
-                    <v-col cols="12" class="pb-0">
-                      <BaseTextfield v-model="channelName" label="Channel Name" name="Channel Name" color="primary"
-                        variant="outlined" />
+                    <v-col cols="12">
+                      <BaseTextfield v-model="signupData.handle" label="Channel Name" name="Channel Name" color="primary"
+                        variant="outlined" rules="required" />
                     </v-col>
                     <v-col cols="12"  class="py-0">
-                      <BaseTextfield v-model="password" type="password" name="Password" label="Password" color="primary"
-                        variant="outlined" />
+                      <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password" color="primary"
+                        variant="outlined" rules="required" />
                     </v-col>
-                    <v-col cols="12" class="py-0">
-                      <BaseTextfield type="password" v-model="confirmPassword" name="Confirm Password" color="primary"
-                        label="Confirm Password" variant="outlined" />
+                    <v-col cols="12" class="">
+                      <BaseTextfield type="password" v-model="signupData.confirmPassword" name="Confirm Password" color="primary"
+                        label="Confirm Password" variant="outlined" rules="confirmed:@Password" />
                     </v-col>
                   </v-row>
                   <div class="mt-6">
-                    <p class="pl-0 text-capitalize mb-2">Already have and account? <span
-                        class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Signin</span> here
+                    <p class="pl-0 mb-2">Already have an account? <span
+                        class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Signin</span>
                     </p>
-                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loading" depressed>
+                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loading" depressed @click="signup">
                       Sign up
                     </BaseBtn>
                   </div>
-                </form>
+                </BaseForm>
               </v-card-text>
             </v-col>
           </v-row>
@@ -50,52 +49,13 @@
 
 <script setup>
 import { ref } from 'vue';
-import { BaseBtn, BaseTextfield } from '@/components/base';
+import { BaseBtn, BaseForm, BaseTextfield } from '@/components/base';
+import { useSignup } from './useSignup';
 
-const email = ref('')
-const channelName = ref('')
-const password = ref('')
-const confirmPassword = ref('')
 const loading = ref(false)
 
+const { signupData, signupForm, signup } = useSignup()
 
-
-
-
-
-const signUp = async () => {
-  loading.value = true
-
-  // const data = await this.$store
-  //   .dispatch('signUp', {
-  //     email: email.value,
-  //     channelName: channelName.value,
-  //     password: password.value
-  //   })
-  //   .catch((err) => {
-  //     loading.value = false
-  //     const errors = err.response.data.error
-
-  //     this.$refs.form.setErrors({
-  //       'Email': errors.find((error) => {
-  //         return error.field === 'email'
-  //       })
-  //         ? ['This email is already taken']
-  //         : null,
-  //       'Channel Name': errors.find((error) => {
-  //         return error.field === 'channelName'
-  //       })
-  //         ? ['This channel name is already taken']
-  //         : null
-  //     })
-  //   })
-
-  if (!data) return
-
-  if (!user) return
-  loading.value = false
-  this.$router.push({ name: 'Home' })
-}
 </script>
 
 <style scoped>

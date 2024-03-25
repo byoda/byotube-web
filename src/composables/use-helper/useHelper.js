@@ -29,6 +29,23 @@ export const useHelper = () => {
     })
   }
 
+  const channelQuery = (filter) => {
+    const queryArray = Object.entries(filter).map(([key, value]) => {
+      return value ? `${key}=${value}` : null;
+    });
+
+    const queryString = queryArray?.reduce((acc, curr) => {
+      if (curr) {
+        return `${acc}${curr}&`;
+      }
+      return acc;
+    }, "");
+
+    const query = queryString.slice(0, queryString.length - 1);
+    console.log("Wuery", query, filter);
+    return query;
+  };
+
   const convertDateToDuration = (date) => {
     const currentDate = new Date();
     const inputDate = new Date(date);
@@ -67,5 +84,6 @@ export const useHelper = () => {
     uniqueArrayOfObjects,
     convertDateToDuration,
     convertSecondsToMinutesAndSeconds,
+    channelQuery
   };
 };
