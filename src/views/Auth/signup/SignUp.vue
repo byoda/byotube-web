@@ -6,9 +6,9 @@
           <div class="text-center pt-7">
             <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
           </div>
-          <v-row class="justify-space-between px-4 pt-6 pb-12">
+          <v-row class="justify-space-between px-4 pt-6 pb-5">
             <v-col cols="12">
-              <v-card-subtitle class="mb-5">Create your VueTube account</v-card-subtitle>
+              <v-card-subtitle class="mb-5">Create your BYO.Tube Lite account</v-card-subtitle>
               <v-card-text>
                 <BaseForm ref="signupForm">
                   <v-row>
@@ -36,6 +36,9 @@
                     <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loading" depressed @click="signup">
                       Sign up
                     </BaseBtn>
+                    <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, get a BYODA Personal Data Server hosted by  <span
+                        class="text-primary cursor-pointer"> <a href="https://byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
+                    </p>
                   </div>
                 </BaseForm>
               </v-card-text>

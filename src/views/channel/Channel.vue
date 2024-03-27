@@ -3,7 +3,7 @@
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loading" class="mr-1 mt-3 bg-transparent">
         <v-parallax height="230" style="border-radius: 15px;"
-          :src="channelCover"></v-parallax>
+          :src="channelCover?.url"></v-parallax>
       </v-skeleton-loader>
     </div>
     <v-container class="py-0 px-0">
@@ -15,7 +15,7 @@
                 <template v-if="channel">
                   <v-row class="pl-3">
                     <v-col cols="12" md="2" size="160" class="px-0">
-                      <img v-if="channelAvatar" class="circle" :height="160" :width="160" :src="channelAvatar" />
+                      <img v-if="channelAvatar?.url" class="circle" :height="160" :width="160" :src="channelAvatar?.url" />
                       <v-icon size="128" v-else>
                         mdi-account-circle-outline
                       </v-icon>
@@ -69,10 +69,10 @@
                 <video-card :card="{ maxWidth: 370 }" style="position: absolute; width: 100%;" :video="video.node" :channel="video.origin"/>
             </div>
           </div>
-          <BaseInfiniteScroller class="base-scroller{" :items="sections.videos" @load="getChannelVideos($event)">
+          <BaseInfiniteScroller class="base-scroller" :items="sections.videos" @load="getChannelVideos($event)">
               <template #loading>
                 <div class="grid-layout">
-                  <div class="mt-6 w-100" v-for="skeleten in 3" :key="skeleten" >
+                  <div class="mt-6 w-100 " v-for="skeleten in 3" :key="skeleten" >
                     <v-skeleton-loader type="card-avatar">
                     </v-skeleton-loader>
                   </div>
@@ -128,6 +128,7 @@ import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { NonAuthDialog } from '@/components/shared';
 
+
 const { mdAndUp } = useDisplay()
 const route = useRoute()
 
@@ -157,8 +158,8 @@ const { getFollowedChannels } = useFollow()
 
 
 onMounted(async () => {
+  await getChannel()
   if (isAuthenticated.value) {
-      await getChannel()
       getFollowing.value =
       typeof window !== "undefined"
         ? JSON.parse(window.localStorage.getItem("followedAccounts"))
@@ -226,7 +227,7 @@ watch(() => (route.query.member_id || route.query.channel), async () => {
 
 .base-scroller{
     .v-infinite-scroll__side{
-        display: block;
+        display: block !important;
     }
 }
 </style>

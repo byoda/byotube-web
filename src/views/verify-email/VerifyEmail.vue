@@ -39,7 +39,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute()
 const { loader, showLoader, hideLoader } = useLoader();
 const { verifyEmail } = useAuthService()
-const { channelQuery } = useHelper()
+const { toQueryString } = useHelper()
 
 const liteId = route.query.lite_id
 const token = route.query.token
@@ -50,7 +50,7 @@ const verifyEmailAddress = async () => {
     setTimeout(async () => {
         try {
             showLoader();
-            const params = channelQuery({ lite_id: liteId, token: token })
+            const params = toQueryString({ lite_id: liteId, token: token })
             console.log("Ads", params);
             await verifyEmail(params)
         } catch (error) {

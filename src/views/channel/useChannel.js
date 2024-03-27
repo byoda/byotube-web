@@ -1,4 +1,5 @@
-import { useEmitter, useFollow, useLoader, useVideo } from "@/composables";
+import { useEmitter, useFollow, useHelper, useLoader, useVideo } from "@/composables";
+import { useChannelService } from "@/services";
 import { useAuthStore, useCoreStore } from "@/store";
 import { computed, ref, toRefs } from "vue";
 import { useRoute } from "vue-router";
@@ -17,6 +18,8 @@ export const useChannel = () => {
     hideLoader: hideFollowLoading,
   } = useLoader();
 
+  const { getChannelDataFromCentralAPI } = useChannelService()
+
   const { getChannelData, getSegmentedVideos, getVideosFromPod } = useVideo();
   const {
     followedAccounts,
@@ -24,6 +27,10 @@ export const useChannel = () => {
     setFollowed,
     informPodAboutAccountFollow,
   } = useFollow();
+
+  const { toQueryString, findThumbnailWithMaxHeight, findAvatarWithMaxHeight } = useHelper()
+
+ 
 
   const remoteId = ref(route.query.member_id);
   const channelName = ref(route.query.channel);
@@ -56,27 +63,11 @@ export const useChannel = () => {
   });
 
   const channelAvatar = computed(() => {
-    if (isAuthenticated.value) {
-      channel.value?.channel_thumbnails?.[2]?.url
-        ? channel.value?.channel_thumbnails?.[2]?.url
-        : channel.value?.creator_thumbnail;
-    }
-    if (sections.value?.videos.length) {
-      const creatorThumbnail = sections.value?.videos[0].node.creator_thumbnail;
-      return creatorThumbnail;
-    }
+        return findAvatarWithMaxHeight(channel.value?.channel_thumbnails)
   });
 
   const channelCover = computed(() => {
-    if (isAuthenticated.value)
-      return channel.value?.banners?.[10]?.url
-        ? channel.value?.banners?.[10]?.url
-        : channel.value?.creator_thumbnail;
-
-    if (sections.value?.videos.length) {
-      const videoThumbnails = sections.value?.videos[0].node.video_thumbnails;
-      return videoThumbnails[videoThumbnails?.length - 1]?.url;
-    }
+      return findThumbnailWithMaxHeight(channel.value?.banners, 720)
   });
 
   const getFollowing = computed({
@@ -90,21 +81,15 @@ export const useChannel = () => {
 
   const getChannel = async () => {
     loading.value = true;
-    const queryFilter = {
-      filter: {
-        creator: {
-          eq: channelName.value,
-        },
-      },
-      remote_member_id: remoteId.value,
-      depth: 1,
-      query_id: uuid.v4(),
-    };
-
-    if (isAuthenticated.value) {
-      const { data } = await getChannelData(queryFilter);
-      channel.value = data?.edges[0]?.node;
+  
+    const queryObj = {
+      creator: channelName.value,
+      member_id: remoteId.value
     }
+  
+    const query = toQueryString(queryObj)
+    const { data } = await getChannelDataFromCentralAPI(query);
+    channel.value = data?.node;
 
     loading.value = false;
   };

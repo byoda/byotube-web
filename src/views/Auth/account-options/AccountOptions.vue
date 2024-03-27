@@ -7,6 +7,9 @@
             <div class="text-center pt-7">
               <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
             </div>
+            <p class="mt-4 text-center">
+              Review features of the different BYO.Tube account types, check out the feature matrix
+            </p>
             <v-col cols="12">
               <v-data-table :headers="headers" items-per-page="15" :items="rows">
                 <template #header.liteFunded>
