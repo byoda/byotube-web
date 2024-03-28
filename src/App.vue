@@ -7,6 +7,20 @@
 </template>
 
 <script setup>
+import { useApp } from "@/composables"
+import { onUnmounted } from "vue";
+import { onMounted } from "vue";
+
+const { setSessionIdLocalStorage, removeSessionIdLocalStorage } = useApp()
+
+onMounted(()=>{
+  setSessionIdLocalStorage()
+})
+
+onUnmounted(()=>{
+  removeSessionIdLocalStorage()
+})
+
 </script>
 
 <style lang="scss">

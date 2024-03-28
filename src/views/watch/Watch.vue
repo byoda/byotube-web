@@ -30,7 +30,7 @@
                         <p class="text-h3 text-white ">Video no longer available!</p>
                       </div>
                       <video-player style="min-height: 480px; width: 100%;" ref="videoJs" :options='getVideoOptions'
-                        :key-id="key_id" :content-token="content_token" :key="playerKey" />
+                        :key-id="key_id" :content-token="content_token" :key="playerKey" :asset-id="asset?.asset_id" :origin="asset?.origin" />
                     </div>
                     <v-card flat tile class="card" v-if="!videoNotfound">
                       <div class="d-flex justify-space-between">

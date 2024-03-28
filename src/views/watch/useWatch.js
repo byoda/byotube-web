@@ -320,7 +320,6 @@ export const useWatch = () => {
   };
 
   const getAssetReactionsById = async (assetId) => {
-    console.log("Asset Id", assetId);
     try {
       const filter = {
         filter: {
