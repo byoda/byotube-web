@@ -1,4 +1,10 @@
-import { useEmitter, useFollow, useHelper, useLoader, useVideo } from "@/composables";
+import {
+  useEmitter,
+  useFollow,
+  useHelper,
+  useLoader,
+  useVideo,
+} from "@/composables";
 import { useChannelService } from "@/services";
 import { useAuthStore, useCoreStore } from "@/store";
 import { computed, ref, toRefs } from "vue";
@@ -18,7 +24,7 @@ export const useChannel = () => {
     hideLoader: hideFollowLoading,
   } = useLoader();
 
-  const { getChannelDataFromCentralAPI } = useChannelService()
+  const { getChannelDataFromCentralAPI } = useChannelService();
 
   const { getChannelData, getSegmentedVideos, getVideosFromPod } = useVideo();
   const {
@@ -28,9 +34,8 @@ export const useChannel = () => {
     informPodAboutAccountFollow,
   } = useFollow();
 
-  const { toQueryString, findThumbnailWithMaxHeight, findAvatarWithMaxHeight } = useHelper()
-
- 
+  const { toQueryString, findThumbnailWithMaxHeight, findAvatarWithMaxHeight } =
+    useHelper();
 
   const remoteId = ref(route.query.member_id);
   const channelName = ref(route.query.channel);
@@ -63,11 +68,11 @@ export const useChannel = () => {
   });
 
   const channelAvatar = computed(() => {
-        return findAvatarWithMaxHeight(channel.value?.channel_thumbnails)
+    return findAvatarWithMaxHeight(channel.value?.channel_thumbnails);
   });
 
   const channelCover = computed(() => {
-      return findThumbnailWithMaxHeight(channel.value?.banners, 720)
+    return findThumbnailWithMaxHeight(channel.value?.banners, 720);
   });
 
   const getFollowing = computed({
@@ -81,13 +86,13 @@ export const useChannel = () => {
 
   const getChannel = async () => {
     loading.value = true;
-  
+
     const queryObj = {
       creator: channelName.value,
-      member_id: remoteId.value
-    }
-  
-    const query = toQueryString(queryObj)
+      member_id: remoteId.value,
+    };
+
+    const query = toQueryString(queryObj);
     const { data } = await getChannelDataFromCentralAPI(query);
     channel.value = data?.node;
 
@@ -98,13 +103,11 @@ export const useChannel = () => {
     const { done } = event;
     try {
       sections.value.loading = true;
-      const data = isAuthenticated.value
-        ? await getVideosFromPod({
-            creator: channelName.value,
-            memberId: remoteId.value,
-            after: sections.value.after,
-          })
-        : await getSegmentedVideos(channelName.value, sections.value.after, 9);
+      const data = await getSegmentedVideos(
+        channelName.value,
+        sections.value.after,
+        9
+      );
 
       if (!data?.page_info?.has_next_page && !data?.edges?.length) {
         done("empty");

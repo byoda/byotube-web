@@ -6,7 +6,7 @@
           :src="channelCover?.url"></v-parallax>
       </v-skeleton-loader>
     </div>
-    <v-container class="py-0 px-0">
+    <v-container class="py-0 px-0" id="my-cont">
       <div class="nav-bgcolor">
         <div id="channel-header">
           <v-row class="justify-space-between">
@@ -53,7 +53,7 @@
             </v-col>
           </v-row>
         </div>
-        <div class="mt-8">
+        <div class="mt-8" >
           <h2 class="section-title text-secondary font-weight-medium">
             {{ sections.title }} {{ channelName }}
           </h2>
