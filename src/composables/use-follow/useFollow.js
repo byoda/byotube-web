@@ -1,10 +1,9 @@
-import { useFollowService, useVideoService } from "@/services";
+import { useFollowService } from "@/services";
 import { ref } from "vue";
 
 export const useFollow = () => {
-  const { follow, informPodAboutFollow, getFollowedAccounts } =
+  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite } =
     useFollowService();
-  const { getAssetReactions } = useVideoService();
 
   const followedAccounts = ref(null);
 
@@ -31,6 +30,16 @@ export const useFollow = () => {
       { domain: initialState.domain, serviceId: service_id },
       { data: body }
     );
+  };
+
+  const followWithBtLiteAccount = (channelName, origin, createdTimestamp) => {
+    const body = {
+      relation: "follow",
+      annotations: [channelName],
+      member_id: origin,
+      created_timestamp: createdTimestamp,
+    };
+    return followBtLite(body);
   };
 
   const informPodAboutAccountFollow = ({
@@ -97,5 +106,6 @@ export const useFollow = () => {
     setFollowed,
     followChannel,
     getFollowedChannels,
+    followWithBtLiteAccount
   };
 };

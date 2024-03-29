@@ -19,26 +19,16 @@
                       <v-icon size="128" v-else>
                         mdi-account-circle-outline
                       </v-icon>
-
-                      <!-- <v-avatar v-else color="red" size="60">
-                        <span class="white--text headline ">
-                          {{
-                            channel.channelName.split('')[0].toUpperCase()
-                          }}</span
-                        >
-                      </v-avatar> -->
                     </v-col>
                     <v-col cols="12" md="8" class="pl-0">
                       <h1 class="channel-name">{{ channel.creator }}</h1>
                       <p class="channel-subtitle mb-0">
-                        <!-- @{{ channel.creator }} <span> . </span> <span>3.7M subscribers</span> <span> . </span> <span>182
-                          videos</span> -->
                         <span v-if="channel.creator">
                           @{{ channel.creator }}
                         </span>
                       </p>
                       <p class="channel-subtitle py-2 mb-0">
-                        {{ channel.description && isAuthenticated ? channel.description : 'You need to be logged in to see details about this channel' }}
+                        {{ channel?.description  }}
                       </p>
                       <BaseBtn height="36" width="95" color="black" :loading="followLoading"
                         class="text-capitalize px-2 font-weight-medium text-caption" dark rounded @click="isAuthenticated ? followChannel() : openAuthDialog()">
@@ -57,12 +47,6 @@
           <h2 class="section-title text-secondary font-weight-medium">
             {{ sections.title }} {{ channelName }}
           </h2>
-          <!-- <div class="grid-layout">
-                  <div class="mt-6 w-100"  v-for="skeleten in 3" :key="skeleten" >
-                    <v-skeleton-loader type="card-avatar" :loading="sections.loading" >
-                    </v-skeleton-loader>
-                  </div>
-                </div> -->
           <div class="grid-layout">
             <div v-for="(video, i) in sections.videos" :key="i" class="py-6" @click="moveToWatch(video)"
               style="position: relative;">

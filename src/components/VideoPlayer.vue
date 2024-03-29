@@ -127,9 +127,10 @@ const props = defineProps({
       if (options.headers == undefined) {
         options.headers = {}
       }
-      if (this.contentToken) {
+      if (props.contentToken) {
         options.headers["Authorization"] = `Bearer ${props.contentToken}`
         options.headers["X-AuthorizationKeyId"] = props.keyId
+
       }
 
       return options;
@@ -140,9 +141,10 @@ const props = defineProps({
 
   onMounted(() => {
     player.value = videojs(videoPlayer.value, props.options, () => {
+      player.value.cmcd({sid:sessionid, cid:`${props.origin}_${props.assetId}`, useHeaders:true});
+      console.log("Player", player.value);
     });
    
-    player.value.cmcd({sid:sessionid, cid:`${props.origin}_${props.assetId}`});
 
   })
 

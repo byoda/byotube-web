@@ -60,7 +60,7 @@
                             {{ asset?.creator }}
                           </p>
                           <BaseBtn rounded variant="outlined"
-                            @click="!isAuthenticated ? openAuthDialog() : followChannel()">
+                            @click="!isAuthenticated ? openAuthDialog() : (isBtLiteAccount ? followChannelWithBtLiteAccount() :  followChannel())">
                             <p class="mb-0" v-if="getFollowing &&
     getFollowing.includes(asset?.origin)
     ">
@@ -187,14 +187,17 @@ const {
   openAuthDialog,
   openCopyUrlDialog,
   mapSegmentedVideos,
-  mapFollowIds
+  mapFollowIds,
+  followChannelWithBtLiteAccount
 } = useWatch()
 
-const { loading, videos, getVideos } = useVideo()
+const { loading } = useVideo()
+const { isBtLiteAccount } = toRefs(useAuthStore())
 
 const assetId = route.query?.asset_id;
 const memberId = route.query?.member_id;
 const cursor = route.query?.v;
+const domain = JSON.parse(localStorage.getItem('domain'))
 
 const movetoChannel = () => {
   router.push(`/channels?member_id=${memberId}&channel=${asset.value?.creator}`)
@@ -212,7 +215,7 @@ onMounted(async () => {
       ? JSON.parse(window.localStorage.getItem("followedAccounts"))
       : null;
 
-      if(isAuthenticated.value){
+      if(isAuthenticated.value && domain){
         const { data } = await getFollowedChannels()
         getFollowing.value = mapFollowIds(data.edges)
       }

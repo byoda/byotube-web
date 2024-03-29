@@ -22,7 +22,7 @@
                   </p>
                   <BaseTextfield v-model="signinData.password" color="primary" name="Password" rules="required"  type="password" label="Password"
                     variant="outlined"></BaseTextfield>
-                  <BaseTextfield v-model="signinData.domain" color="primary" name="Domain"  :rules="{required:true, regex:/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/}"  label="Domain" variant="outlined"
+                  <BaseTextfield v-model="signinData.domain" color="primary" name="Domain"  :rules="{ regex:/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/}"  label="Domain" variant="outlined"
                     class="mt-3"></BaseTextfield>
                   <div class="mt-6 d-flex justify-space-between white-text">
                     <BaseBtn type="submit" class="bg-primary elevation-0" :loading="loader" depressed>Sign in</BaseBtn>

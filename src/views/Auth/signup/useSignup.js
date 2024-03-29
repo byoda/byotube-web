@@ -1,17 +1,11 @@
 import { useAlert, useLoader } from "@/composables";
 import { useAuthService } from "@/services";
-import { useAuthStore } from "@/store";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 
 export const useSignup = () => {
-  const router = useRouter();
-
-  const authStore = useAuthStore();
 
   const { showError } = useAlert();
   const { loader, showLoader, hideLoader } = useLoader();
-  const { signIn: signinReq } = useAuthService();
   const { createAccountLite } = useAuthService()
 
   const signupForm = ref()

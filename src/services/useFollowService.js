@@ -10,9 +10,14 @@ export const useFollowService = () => {
     );
   };
 
+  const followBtLite = ( body) => {
+    return Api.post(`/lite/networklink`, body);
+  };
+
   const getFollowedAccounts = ({ domain, serviceId }, body) => {
+    const requestDomain =  !!JSON.parse(domain) ? domain : 'api.byo.tube';
     return Api.post(
-      `https://${domain}/api/v1/data/${serviceId}/network_links/query`,
+      `https://${requestDomain}/api/v1/data/${serviceId}/network_links/query`,
       body
     );
   };
@@ -28,5 +33,6 @@ export const useFollowService = () => {
     follow,
     getFollowedAccounts,
     informPodAboutFollow,
+    followBtLite
   };
 };

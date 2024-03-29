@@ -149,16 +149,6 @@ const items = [
                 icon: "mdi-newspaper-variant-outline",
             },
             {
-                title: "Auto & Vehicles",
-                link: "/lists?list_name=auto %26 vehicles",
-                icon: "mdi-car-multiple",
-            },
-            {
-                title: "People & Blogs",
-                link: "/lists?list_name=people %26 blogs'",
-                icon: "mdi-post-outline",
-            },
-            {
                 title: "Film & Animation",
                 link: "/lists?list_name=film %26 animation",
                 icon: "mdi-movie-play-outline",

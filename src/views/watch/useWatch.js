@@ -1,12 +1,11 @@
 import {
-  useAlert,
   useFollow,
   useHelper,
   useLoader,
   useVideo,
 } from "@/composables";
 import { useAuthStore, useCoreStore } from "@/store";
-import { computed, ref, toRaw, toRef, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { uuid } from "vue-uuid";
 
@@ -17,7 +16,6 @@ export const useWatch = () => {
   const { isAuthenticated } = toRefs(useAuthStore());
   const coreStore = useCoreStore();
 
-  const { showError } = useAlert();
   const { convertSecondsToMinutesAndSeconds } = useHelper();
   const {
     loader: videoLoading,
@@ -31,20 +29,18 @@ export const useWatch = () => {
     informPodAboutLike,
     likeVideo,
     getAllAssetReactions,
-    getAssetReactionsByIdFromPod,
-    getVideoByIdFromPod,
     getVideoFromCentralApi,
     getItem,
     appendVideoReactions,
     updateVideoReactions,
     getSegmentedVideos,
-    getVideoFromFeedAsset,
   } = useVideo();
   const {
     followedAccounts,
     followAccount,
     setFollowed,
     informPodAboutAccountFollow,
+    followWithBtLiteAccount
   } = useFollow();
 
   const assetId = ref(route.query?.asset_id);
@@ -125,26 +121,12 @@ export const useWatch = () => {
       videoNotfound.value = false;
 
       let assetData = null;
-
-      // if (
-      //   isAuthenticated.value &&
-      //   assetId.value &&
-      //   memberId.value &&
-      //   followedAccounts.value.includes(memberId.value)
-      // ) {
-      //   const { data } = await getVideoFromFeedAsset({
-      //     assetId: assetId.value,
-      //     memberId: memberId.value,
-      //   });
-      //   assetData = await getItem(data.edges[0]);
-      // } else {
       const { data } = await getVideoFromCentralApi({
         assetId: assetId.value,
         memberId: memberId.value,
         cursor: cursor.value,
       });
       assetData = await getItem(data);
-      // }
 
       if (!assetData) {
         videoNotfound.value = true;
@@ -227,6 +209,14 @@ export const useWatch = () => {
         window.localStorage.getItem("followedAccounts")
       );
     }
+  };
+
+  const followChannelWithBtLiteAccount = async () => {
+    await followWithBtLiteAccount(
+      asset.value.creator,
+      asset.value.origin,
+      asset.value.created_timestamp
+    );
   };
 
   const likeOrDislike = async (relation) => {
@@ -479,5 +469,6 @@ export const useWatch = () => {
     openCopyUrlDialog,
     mapSegmentedVideos,
     mapFollowIds,
+    followChannelWithBtLiteAccount
   };
 };
