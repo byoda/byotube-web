@@ -89,14 +89,21 @@ export const useFollow = () => {
     );
   };
 
-  const getFollowedChannels = (serviceId) => {
-    return getFollowedAccounts(
+  const getFollowedChannels = async (serviceId) => {
+    const followedChannels =  await getFollowedAccounts(
       {
         domain: initialState.domain,
         serviceId: serviceId ? serviceId : service_id,
       },
       {}
     );
+    const getFollowedIds = followedChannels?.data?.edges?.map(channel => {
+      return channel?.node?.member_id
+    })
+
+    localStorage.setItem('followedAccounts', JSON.stringify(getFollowedIds))
+
+    return followedChannels
   };
 
   return {

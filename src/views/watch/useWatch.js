@@ -394,7 +394,6 @@ export const useWatch = () => {
 
   const mapSegmentedVideos = async (section, first, $state) => {
     const { done } = $state;
-    console.log("State", $state);
     try {
       section.loading = true;
       const videosData = await getSegmentedVideos(

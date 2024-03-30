@@ -80,12 +80,6 @@ export const useAssetReaction = () => {
         (isVideoDislikedByCurrentUser(assetReactions, asset) &&
           relation == DISLIKE)
       ) {
-        console.log(
-          "sdkhf",
-          isVideosLikedByCurrentUser(assetReactions, asset),
-          isVideosLikedByCurrentUser(assetReactions, asset) && relation == LIKE,
-          relation
-        );
         await deleteAssetReaction(asset);
         return;
       }

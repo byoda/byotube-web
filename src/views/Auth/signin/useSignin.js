@@ -41,9 +41,6 @@ export const useSignin = () => {
         service_id,
       });
 
-
-      console.log("Data", data, status);
-
       if (data && status == 200) {
         localStorage.setItem("token", data?.auth_token);
         localStorage.setItem("domain", signinData.value.domain);

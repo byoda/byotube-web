@@ -142,7 +142,6 @@ const props = defineProps({
   onMounted(() => {
     player.value = videojs(videoPlayer.value, props.options, () => {
       player.value.cmcd({sid:sessionid, cid:`${props.origin}_${props.assetId}`, useHeaders:true});
-      console.log("Player", player.value);
     });
    
 

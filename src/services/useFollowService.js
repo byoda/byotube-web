@@ -15,13 +15,12 @@ export const useFollowService = () => {
   };
 
   const getFollowedAccounts = ({ domain, serviceId }, body) => {
-    const requestDomain =  !!JSON.parse(domain) ? domain : 'api.byo.tube';
-    return Api.post(
-      `https://${requestDomain}/api/v1/data/${serviceId}/network_links/query`,
-      body
+    const requestUrl =  !!JSON.parse(domain) ? `https://${domain}/api/v1/data/${serviceId}/network_links/query` : 'https://api.byo.tube/api/v1/lite/networklinks';
+    return Api.get(
+      requestUrl
     );
   };
-
+  
   const informPodAboutFollow = ({ domain, serviceId }, body) => {
     return Api.post(
       `https://${domain}/api/v1/data/${serviceId}/network_links_inbound/query`,

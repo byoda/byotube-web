@@ -51,7 +51,6 @@ const verifyEmailAddress = async () => {
         try {
             showLoader();
             const params = toQueryString({ lite_id: liteId, token: token })
-            console.log("Ads", params);
             await verifyEmail(params)
         } catch (error) {
             if (error) {
