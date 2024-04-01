@@ -1,4 +1,4 @@
-import { constants } from "@/globals/contants";
+import { constants } from "@/globals/constants";
 import { useVideoService } from "@/services";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -362,6 +362,12 @@ export const useVideo = () => {
     );
   };
 
+  const deleteReactionBtLiteAccount = ({ member_id, relation, annotation }) => {
+    return deleteAssetReaction(
+      { member_id, relation, annotation }
+    );
+  };
+
   const deleteAllReactions = ({ depth, query_id, filter }) => {
     return deleteAssetReaction(
       { domain: initialState.domain, serviceId: service_id },
@@ -506,5 +512,6 @@ export const useVideo = () => {
     getVideosFromPod,
     deleteAllReactions,
     getVideoFromFeedAsset,
+    deleteReactionBtLiteAccount
   };
 };

@@ -34,6 +34,7 @@ export const useWatch = () => {
     appendVideoReactions,
     updateVideoReactions,
     getSegmentedVideos,
+    deleteReactionBtLiteAccount
   } = useVideo();
   const {
     followedAccounts,
@@ -328,6 +329,7 @@ export const useWatch = () => {
 
   const deleteAssetReaction = async () => {
     const { asset_id } = asset;
+    console.log("Asset", asset);
     try {
       const filter = {
         asset_id: {

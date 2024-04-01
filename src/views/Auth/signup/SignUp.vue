@@ -17,8 +17,8 @@
                         class="mb-1" variant="outlined" rules="required" />
                     </v-col>
                     <v-col cols="12">
-                      <BaseTextfield v-model="signupData.handle" label="Channel Name" name="Channel Name" color="primary"
-                        variant="outlined" rules="required" />
+                      <BaseTextfield v-model="signupData.handle" label="Domain" name="Domain" color="primary"
+                        variant="outlined" rules="required" :disabled="accountType !== AccountType.BYOTUBE" />
                     </v-col>
                     <v-col cols="12"  class="py-0">
                       <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password" color="primary"
@@ -54,10 +54,17 @@
 import { ref } from 'vue';
 import { BaseBtn, BaseForm, BaseTextfield } from '@/components/base';
 import { useSignup } from './useSignup';
+import { useRoute } from 'vue-router';
+import { AccountType } from '@/globals/constants';
+
+
+const route = useRoute()
 
 const loading = ref(false)
 
 const { signupData, signupForm, signup } = useSignup()
+
+const accountType = route.query['account-type']
 
 </script>
 

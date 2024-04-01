@@ -271,7 +271,7 @@ import { onMounted } from "vue";
 import { useFollow, useHelper, useVideo } from "@/composables";
 import { useAuthStore, useCoreStore } from "@/store";
 import { onUnmounted } from "vue";
-import { BaseBtn, BaseCard, BaseInfiniteScroller } from "@/components/base";
+import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
 import { NonAuthDialog, CopyUrlDialog } from "@/components/shared";
 import { useRouter, useRoute } from "vue-router";
 import { toRefs } from "vue";

@@ -26,12 +26,13 @@ export const useChannel = () => {
 
   const { getChannelDataFromCentralAPI } = useChannelService();
 
-  const { getChannelData, getSegmentedVideos, getVideosFromPod } = useVideo();
+  const { getSegmentedVideos } = useVideo();
   const {
     followedAccounts,
     followAccount,
     setFollowed,
     informPodAboutAccountFollow,
+    followWithBtLiteAccount
   } = useFollow();
 
   const { toQueryString, findThumbnailWithMaxHeight, findAvatarWithMaxHeight } =
@@ -169,6 +170,24 @@ export const useChannel = () => {
     }
   };
 
+  const followChannelWithBtLiteAccount = async () => {
+    try{
+      showFollowLoading();
+      await followWithBtLiteAccount(
+        channelName.value,
+        remoteId.value,
+        channel.value.created_timestamp
+      );
+      getFollowing.value = JSON.parse(
+        window.localStorage.getItem("followedAccounts")
+      );
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      hideFollowLoading();
+    }
+  };
+
   const openAuthDialog = () => {
     coreStore.OpenDialog(nonAuthSubscriptionDialog);
   };
@@ -203,5 +222,6 @@ export const useChannel = () => {
     followChannel,
     openAuthDialog,
     mapFollowIds,
+    followChannelWithBtLiteAccount
   };
 };

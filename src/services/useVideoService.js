@@ -42,6 +42,13 @@ export const useVideoService = () => {
     );
   };
 
+  const deleteAssetReactionBtLite = (body) => {
+    return Api.delete(
+      `/lite/networklink`,
+      body
+    );
+  };
+
   const requestPodAboutLike = ({ domain, serviceId }, body) => {
     return Api.post(
       `https://${domain}/api/v1/data/${serviceId}/asset_reactions_received/append`,
@@ -93,5 +100,6 @@ export const useVideoService = () => {
     queryPodForVideo,
     requestPodAboutLike,
     getAssetFromCentralData,
+    deleteAssetReactionBtLite
   };
 };

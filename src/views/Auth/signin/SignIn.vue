@@ -24,9 +24,12 @@
                     variant="outlined"></BaseTextfield>
                   <BaseTextfield v-model="signinData.domain" color="primary" name="Domain"  :rules="{ regex:/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/}"  label="Domain" variant="outlined"
                     class="mt-3"></BaseTextfield>
-                  <div class="mt-6 d-flex justify-space-between white-text">
-                    <BaseBtn type="submit" class="bg-primary elevation-0" :loading="loader" depressed>Sign in</BaseBtn>
+                  <div class="mt-2 d-flex justify-space-between white-text">
+                    <BaseBtn type="submit" block class="bg-primary elevation-0" :loading="loader" depressed>Sign in</BaseBtn>
                   </div>
+                  <p class="pl-0 mb-2 mt-3">Don't have an account? <span
+                        class="text-primary cursor-pointer" @click="$router.push({ name: 'AccountOptions' })">Signup</span>
+                  </p>
                 </form>
               </BaseForm>
             </v-card-text>

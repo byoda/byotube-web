@@ -2,8 +2,7 @@
   <div id="channel-home" :style="{ 'padding-inline': mdAndUp ? '65px' : '10px' }">
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loading" class="mr-1 mt-3 bg-transparent">
-        <v-parallax height="230" style="border-radius: 15px;"
-          :src="channelCover?.url"></v-parallax>
+        <v-parallax height="230" style="border-radius: 15px;" :src="channelCover?.url"></v-parallax>
       </v-skeleton-loader>
     </div>
     <v-container class="py-0 px-0" id="my-cont">
@@ -15,27 +14,38 @@
                 <template v-if="channel">
                   <v-row class="pl-3">
                     <v-col cols="12" md="2" size="160" class="px-0">
-                      <img v-if="channelAvatar?.url" class="circle" :height="160" :width="160" :src="channelAvatar?.url" />
+                      <img v-if="channelAvatar?.url" class="circle" :height="160" :width="160"
+                        :src="channelAvatar?.url" />
                       <v-icon size="128" v-else>
                         mdi-account-circle-outline
                       </v-icon>
                     </v-col>
                     <v-col cols="12" md="8" class="pl-0">
-                      <h1 class="channel-name">{{ channel.creator }}</h1>
-                      <p class="channel-subtitle mb-0">
-                        <span v-if="channel.creator">
-                          @{{ channel.creator }}
-                        </span>
-                      </p>
+                      <div class="d-flex ga-5">
+                        <div>
+                          <h1 class="channel-name">{{ channel.creator }}</h1>
+                          <p class="channel-subtitle mb-0">
+                            <span v-if="channel.creator">
+                              @{{ channel.creator }}
+                            </span>
+                          </p>
+                        </div>
+                        <BaseBtn height="36" width="95" color="black" :loading="followLoading"
+                          class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
+                          @click="isAuthenticated ? (isBtLiteAccount ? followChannelWithBtLiteAccount() : followChannel()) : openAuthDialog()">
+                          <p class="subscribe-btn mb-0 px-2">
+                            {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }}
+                          </p>
+                        </BaseBtn>
+                      </div>
                       <p class="channel-subtitle py-2 mb-0">
-                        {{ channel?.description  }}
+                        {{ textEllipsis(channel?.description, 340) }}
                       </p>
-                      <BaseBtn height="36" width="95" color="black" :loading="followLoading"
-                        class="text-capitalize px-2 font-weight-medium text-caption" dark rounded @click="isAuthenticated ? followChannel() : openAuthDialog()">
-                        <p class="subscribe-btn mb-0 px-2">
-                          {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }} 
-                        </p>
-                      </BaseBtn>
+
+                      <p v-html="dar">
+
+                      </p>
+
                     </v-col>
                   </v-row>
                 </template>
@@ -43,26 +53,27 @@
             </v-col>
           </v-row>
         </div>
-        <div class="mt-8" >
+        <div class="mt-8">
           <h2 class="section-title text-secondary font-weight-medium">
             {{ sections.title }} {{ channelName }}
           </h2>
           <div class="grid-layout">
             <div v-for="(video, i) in sections.videos" :key="i" class="py-6" @click="moveToWatch(video)"
               style="position: relative;">
-                <video-card :card="{ maxWidth: 370 }" style="position: absolute; width: 100%;" :video="video.node" :channel="video.origin"/>
+              <video-card :card="{ maxWidth: 370 }" style="position: absolute; width: 100%;" :video="video.node"
+                :channel="video.origin" />
             </div>
           </div>
           <BaseInfiniteScroller class="base-scroller" :items="sections.videos" @load="getChannelVideos($event)">
-              <template #loading>
-                <div class="grid-layout">
-                  <div class="mt-6 w-100 " v-for="skeleten in 3" :key="skeleten" >
-                    <v-skeleton-loader type="card-avatar">
-                    </v-skeleton-loader>
-                  </div>
+            <template #loading>
+              <div class="grid-layout">
+                <div class="mt-6 w-100 " v-for="skeleten in 3" :key="skeleten">
+                  <v-skeleton-loader type="card-avatar">
+                  </v-skeleton-loader>
                 </div>
-              </template>
-            </BaseInfiniteScroller>
+              </div>
+            </template>
+          </BaseInfiniteScroller>
         </div>
         <!-- <v-card flat class="transparent" height="100%" :style="{ 'padding-inline': $vuetify.breakpoint.mdAndUp ? '65px' : '10px' }">
           <v-row>
@@ -107,16 +118,19 @@ import { useDisplay } from 'vuetify'
 import { BaseBtn, BaseInfiniteScroller } from '@/components/base';
 import { useAuthStore } from '@/store';
 import { toRefs } from 'vue';
-import { useVideo, useFollow } from '@/composables';
+import { useVideo, useFollow, useHelper } from '@/composables';
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { NonAuthDialog } from '@/components/shared';
 
 
 const { mdAndUp } = useDisplay()
+const dar = " <html><body>Check out all of Jackery's products here!  <a href='https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873'>https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873</a><p><p><p>summer feels like its over now... feeling happy and sad 😦</body></html>"
 const route = useRoute()
 
 const { isAuthenticated } = toRefs(useAuthStore());
+const { isBtLiteAccount } = toRefs(useAuthStore());
+const { textEllipsis } = useHelper()
 
 const { moveToWatch } = useVideo()
 
@@ -135,7 +149,8 @@ const {
   getChannelVideos,
   followChannel,
   openAuthDialog,
-  mapFollowIds
+  mapFollowIds,
+  followChannelWithBtLiteAccount
 } = useChannel()
 
 const { getFollowedChannels } = useFollow()
@@ -144,13 +159,13 @@ const { getFollowedChannels } = useFollow()
 onMounted(async () => {
   await getChannel()
   if (isAuthenticated.value) {
-      getFollowing.value =
+    getFollowing.value =
       typeof window !== "undefined"
         ? JSON.parse(window.localStorage.getItem("followedAccounts"))
         : null;
 
-      const { data } = await getFollowedChannels()
-      getFollowing.value = mapFollowIds(data.edges)
+    const { data } = await getFollowedChannels()
+    getFollowing.value = mapFollowIds(data.edges)
 
   }
 })
@@ -209,9 +224,9 @@ watch(() => (route.query.member_id || route.query.channel), async () => {
 
 }
 
-.base-scroller{
-    .v-infinite-scroll__side{
-        display: block !important;
-    }
+.base-scroller {
+  .v-infinite-scroll__side {
+    display: block !important;
+  }
 }
 </style>

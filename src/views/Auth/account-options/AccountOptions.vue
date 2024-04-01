@@ -131,13 +131,13 @@
                       </BaseBtn>
                     </td>
                     <td colspan="2">
-                      <BaseBtn variant="tonal" color="primary" size="small" @click="$router.push({name:'SignUp'})">
-                        Get a Lite account
+                      <BaseBtn variant="tonal" color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
+                        Get a Lite Account
                       </BaseBtn>
                     </td>
                     <td colspan="2">
-                      <BaseBtn variant="tonal" color="primary" size="small" @click="openUrl('https://byo.host/signup')">
-                        Get a BYODA pod
+                      <BaseBtn variant="tonal" color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
+                        Get a ByoTube Account
                       </BaseBtn>
                     </td>
                   </tr>
