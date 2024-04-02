@@ -1,31 +1,10 @@
-import { useAlert, useLoader } from "@/composables";
-import { useAuthService } from "@/services";
-import { useAuthStore } from "@/store";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 export const useAccountOptions = () => {
-  const router = useRouter();
-
-  const authStore = useAuthStore();
-
-  const { showError } = useAlert();
-  const { loader, showLoader, hideLoader } = useLoader();
-  const { signIn: signinReq } = useAuthService();
 
   const rows = [
     {
       byotube: "Choose Nickname",
       anonymous: "No",
       lite: "No",
-      liteFunded: "Yes",
-      plain: "Yes",
-      creator: "Yes",
-    },
-    {
-      byotube: "Choose Handle",
-      anonymous: "No",
-      lite: "Yes",
       liteFunded: "Yes",
       plain: "Yes",
       creator: "Yes",
@@ -47,25 +26,9 @@ export const useAccountOptions = () => {
       creator: "Yes",
     },
     {
-      byotube: "Tip Videos",
+      byotube: "Tip creators",
       anonymous: "No",
       lite: "No",
-      liteFunded: "Yes",
-      plain: "Yes",
-      creator: "Yes",
-    },
-    {
-      byotube: "BYO.Tube Ultra",
-      anonymous: "No",
-      lite: "No",
-      liteFunded: "Yes",
-      plain: "Yes",
-      creator: "Yes",
-    },
-    {
-      byotube: "Watch History",
-      anonymous: "No",
-      lite: "Yes",
       liteFunded: "Yes",
       plain: "Yes",
       creator: "Yes",
@@ -95,15 +58,6 @@ export const useAccountOptions = () => {
       creator: "Yes",
     },
     {
-      byotube: "Bookmarks",
-      anonymous: "No",
-      lite: "Yes",
-      liteFunded: "Yes",
-      plain: "Yes",
-      creator: "Yes",
-    },
-
-    {
       byotube: "Maintain Lists",
       anonymous: "No",
       lite: "Yes",
@@ -128,7 +82,7 @@ export const useAccountOptions = () => {
       creator: "Yes",
     },
     {
-      byotube: "Store your data on your BYODA pod",
+      byotube: "Data on BYODA pod",
       anonymous: "No",
       lite: "No",
       liteFunded: "No",
@@ -145,7 +99,7 @@ export const useAccountOptions = () => {
     "Follow Creator": "Follow the creators of the content you love",
     "Subscribe to Creator":
       "Pay for a monthly subscription to see the subscriber-only content of a creator",
-    "Tip Videos": "Give the creator of the video a tip",
+    "Tip creators": "Give the creator of the video a tip",
     "BYO.Tube Ultra": "See videos hosted on BYO.Tube without ads",
     "Watch History": "See the list of videos you have watched",
     "Feed Algorithm selection":

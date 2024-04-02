@@ -2,7 +2,7 @@
   <div>
     <v-container fluid class="fill-height">
       <v-row>
-        <v-col cols="12" xs="12" sm="8" md="8" lg="7" class="ma-auto shadow-smooth">
+        <v-col cols="12" xs="12" sm="8" md="6" lg="6" class="ma-auto shadow-smooth">
           <v-card class="rounded-lg pa-5" outlined :loading="loading">
             <div class="text-center pt-7">
               <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
@@ -155,7 +155,7 @@
 import { useAccountOptions } from './useAccountOptions.js';
 import { BaseBtn } from '@/components/base';
 
-const { liteFundedTooltip, rows, getIcon, getIconColor, getValue, getFeatureTooltip, getContentTooltip, openUrl } = useAccountOptions()
+const { liteFundedTooltip, rows, headers, getIcon, getIconColor, getValue, getFeatureTooltip, getContentTooltip, openUrl } = useAccountOptions()
 </script>
 
 <style lang="scss" scoped>
