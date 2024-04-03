@@ -4,14 +4,14 @@
       <v-row>
         <v-col cols="12" xs="12" sm="9" md="9" lg="9" class="ma-auto shadow-smooth">
           <v-card class="rounded-lg pa-5" outlined :loading="loading">
-            <div class="text-center pt-3">
+            <div class="text-center">
               <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
             </div>
             <p class="mt-4 text-center">
               Review features of the different BYO.Tube account types, check out the feature matrix
             </p>
             <v-col cols="12">
-              <v-data-table :headers="headers" items-per-page="15" :items="rows">
+              <v-data-table :headers="headers" items-per-page="15" :items="rows" density="comfortable">
                 <template #header.liteFunded>
                   <div class="text-center">
                     <p>
@@ -137,7 +137,7 @@
                     </td>
                     <td colspan="2">
                       <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
-                        Get a ByoTube Account
+                        Get a Byo.Tube Account
                       </BaseBtn>
                     </td>
                   </tr>

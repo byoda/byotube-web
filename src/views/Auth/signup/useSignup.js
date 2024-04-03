@@ -41,6 +41,5 @@ export const useSignup = () => {
     signupData,
     signupForm,
     signup,
-    accountTypeSelection
   };
 };
