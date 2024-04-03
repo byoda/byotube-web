@@ -40,6 +40,7 @@ export const useSignup = () => {
   return {
     signupData,
     signupForm,
-    signup
+    signup,
+    accountTypeSelection
   };
 };

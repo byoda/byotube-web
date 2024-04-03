@@ -38,7 +38,6 @@ const { moveToWatch } = useVideo()
 
 const {
   sections,
-  listName,
   getListVideos,
   changeSection
 } = useLists()

@@ -12,13 +12,19 @@
               <v-card-text>
                 <BaseForm ref="signupForm">
                   <v-row>
+                    <v-col cols="12">
+                      <BaseRadioGroup v-model="accountType" hide-details label="Account Type" inline>
+                        <BaseRadio label="Lite" value="lite" />
+                        <BaseRadio  label="Byotube" value="byotube" />
+                      </BaseRadioGroup>
+                    </v-col>
                     <v-col cols="12" class="pb-0">
                       <BaseTextfield v-model="signupData.email" label="Email" color="primary" name="Email"
                         class="mb-1" variant="outlined" rules="required" />
                     </v-col>
                     <v-col cols="12">
                       <BaseTextfield v-model="signupData.handle" label="Domain" name="Domain" color="primary"
-                        variant="outlined" :rules="accountType == AccountType.LITE" :disabled="accountType !== AccountType.BYOTUBE" />
+                        variant="outlined" :rules="isByotubeAccount ? 'required' : ''" :disabled="!isByotubeAccount" :key="accountType" />
                     </v-col>
                     <v-col cols="12"  class="py-0">
                       <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password" color="primary"
@@ -52,10 +58,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import { BaseBtn, BaseForm, BaseTextfield } from '@/components/base';
+import { BaseBtn, BaseForm, BaseRadio, BaseTextfield, BaseRadioGroup } from '@/components/base';
 import { useSignup } from './useSignup';
 import { useRoute } from 'vue-router';
 import { AccountType } from '@/globals/constants';
+import { computed } from 'vue';
 
 
 const route = useRoute()
@@ -64,7 +71,11 @@ const loading = ref(false)
 
 const { signupData, signupForm, signup } = useSignup()
 
-const accountType = route.query['account-type']
+const accountType = ref(route.query['account-type'])
+
+const isByotubeAccount = computed(()=>{
+  return accountType.value === AccountType.BYOTUBE 
+})
 
 </script>
 

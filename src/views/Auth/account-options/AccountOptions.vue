@@ -2,9 +2,9 @@
   <div>
     <v-container fluid class="fill-height">
       <v-row>
-        <v-col cols="12" xs="12" sm="8" md="6" lg="6" class="ma-auto shadow-smooth">
+        <v-col cols="12" xs="12" sm="9" md="9" lg="9" class="ma-auto shadow-smooth">
           <v-card class="rounded-lg pa-5" outlined :loading="loading">
-            <div class="text-center pt-7">
+            <div class="text-center pt-3">
               <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
             </div>
             <p class="mt-4 text-center">
@@ -15,7 +15,7 @@
                 <template #header.liteFunded>
                   <div class="text-center">
                     <p>
-                      Lite - funded(*)
+                      Lite - funded
                       <v-tooltip activator="parent" :text="liteFundedTooltip" location="top">
                       </v-tooltip>
                     </p>
@@ -126,17 +126,17 @@
                   <tr>
                     <td></td>
                     <td>
-                      <BaseBtn variant="tonal" color="primary" size="small" @click="openUrl('https://www.byo.tube/')">
+                      <BaseBtn variant="tonal" block color="primary" size="small" @click="openUrl('https://www.byo.tube/')">
                         Back to BYO.Tube
                       </BaseBtn>
                     </td>
                     <td colspan="2">
-                      <BaseBtn variant="tonal" color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
+                      <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
                         Get a Lite Account
                       </BaseBtn>
                     </td>
                     <td colspan="2">
-                      <BaseBtn variant="tonal" color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
+                      <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
                         Get a ByoTube Account
                       </BaseBtn>
                     </td>

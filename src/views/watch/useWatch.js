@@ -4,8 +4,8 @@ import {
   useLoader,
   useVideo,
 } from "@/composables";
-import { useAuthStore, useCoreStore } from "@/store";
-import { computed, ref, toRefs } from "vue";
+import { useCoreStore } from "@/store";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { uuid } from "vue-uuid";
 
@@ -13,7 +13,6 @@ export const useWatch = () => {
   const route = useRoute();
   const router = useRouter();
 
-  const { isAuthenticated } = toRefs(useAuthStore());
   const coreStore = useCoreStore();
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
@@ -329,7 +328,6 @@ export const useWatch = () => {
 
   const deleteAssetReaction = async () => {
     const { asset_id } = asset;
-    console.log("Asset", asset);
     try {
       const filter = {
         asset_id: {

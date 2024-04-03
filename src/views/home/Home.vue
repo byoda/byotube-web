@@ -1,25 +1,7 @@
 <template>
   <div id="home" class="pa-4">
     <v-container fluid>
-      <!-- <v-alert prominent type="error" v-if="errored">
-        <v-row align="center">
-          <v-col class="grow">
-            <div class="title">Error!</div>
-            <div>
-              Something went wrong, but don’t fr et — let’s give it another
-              shot.
-            </div>
-          </v-col>
-          <v-col class="shrink">
-            <v-btn @click="getVideos">Take action</v-btn>
-          </v-col>
-        </v-row>
-      </v-alert> -->
-
       <main>
-        <!-- <div class="text-center">
-          <v-progress-circular indeterminate v-if="loadAllVideos" color="red"></v-progress-circular>
-        </div> -->
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <div v-if="section.videos.length">
             <h2 class="section-title text-secondary font-weight-medium">
@@ -29,7 +11,8 @@
               <div v-for="(video, i) in section.videos" :key="i" class="py-6" @click="moveToWatch(video)"
                 :followed-accounts="followedAccounts" style="position: relative;">
                 <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
-                  @follow="followChannel(video.node, video.origin)" style="position: absolute; width: 100%;"></video-card>
+                  @follow="followChannel(video.node, video.origin)"
+                  style="position: absolute; width: 100%;"></video-card>
               </div>
             </div>
             <div v-if="section.has_next_page & sectionIndex != sections?.length - 1" class="mt-10">
@@ -46,7 +29,7 @@
           </div>
         </div>
         <BaseInfiniteScroller
-          @load="mapSegmentedVideos(sections[sections?.length - 1], sections?.length - 1, 24, $event)" class="mt-8"/>
+          @load="mapSegmentedVideos(sections[sections?.length - 1], sections?.length - 1, 24, $event)" class="mt-8" />
       </main>
     </v-container>
   </div>
@@ -69,7 +52,7 @@ const props = defineProps({
 
 const emitter = useEmitter()
 
-const { sections, loadAllVideos, ingestStatus, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch } = useHome(props)
+const { sections, ingestStatus, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch } = useHome(props)
 const { followedAccounts } = useFollow()
 
 onMounted(() => {

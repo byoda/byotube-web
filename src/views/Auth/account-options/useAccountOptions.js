@@ -1,5 +1,4 @@
 export const useAccountOptions = () => {
-
   const rows = [
     {
       byotube: "Choose Nickname",
@@ -18,15 +17,7 @@ export const useAccountOptions = () => {
       creator: "Yes",
     },
     {
-      byotube: "Subscribe to Creator",
-      anonymous: "No",
-      lite: "No",
-      liteFunded: "Yes",
-      plain: "Yes",
-      creator: "Yes",
-    },
-    {
-      byotube: "Tip creators",
+      byotube: "Tip",
       anonymous: "No",
       lite: "No",
       liteFunded: "Yes",
@@ -99,7 +90,7 @@ export const useAccountOptions = () => {
     "Follow Creator": "Follow the creators of the content you love",
     "Subscribe to Creator":
       "Pay for a monthly subscription to see the subscriber-only content of a creator",
-    "Tip creators": "Give the creator of the video a tip",
+    "Tip": "Give the creator of the video a tip",
     "BYO.Tube Ultra": "See videos hosted on BYO.Tube without ads",
     "Watch History": "See the list of videos you have watched",
     "Feed Algorithm selection":
@@ -112,7 +103,7 @@ export const useAccountOptions = () => {
     "Video upload":
       "Upload videos directly to BYO.Tube (feature under development)",
     "Youtube Import": "Import your videos from YouTube",
-    "Store your data on your BYODA pod":
+    "Data on BYODA pod":
       "You can run the BYODA pod yourself or have it hosted at https://byo.host/",
   };
 
@@ -124,7 +115,7 @@ export const useAccountOptions = () => {
   };
 
   const liteFundedTooltip =
-  "To prevent bots and spam, make a one-time donation of $2.99 to upgrade from a 'Lite' to a 'Lite - funded' account";
+    "To prevent bots and spam, make a one-time donation of $4.99 to upgrade from a 'Lite' to a 'Lite - funded' account";
 
   const headers = [
     {
@@ -132,38 +123,42 @@ export const useAccountOptions = () => {
       align: "start",
       sortable: false,
       key: "byotube",
-      width: "180",
+      width: "220",
     },
     {
       title: "Anonymous",
       key: "anonymous",
       align: "center",
-      width: "50",
       sortable: false,
+      width: "20",
     },
     {
       title: "Lite",
       key: "lite",
       align: "center",
-      sortable: false
+      sortable: false,
+      width: "160",
     },
     {
       title: "Lite - funded(*)",
       key: "liteFunded",
       align: "center",
       sortable: false,
+      width: "160",
     },
     {
-      title: "BYODA-Plain",
+      title: "Standard",
       key: "plain",
       align: "center",
-      sortable: false
+      sortable: false,
+      width: "160",
     },
     {
-      title: "BYODA-(Top) Creator",
+      title: "Creator",
       key: "creator",
       align: "center",
       sortable: false,
+      width: "160",
     },
   ];
 
