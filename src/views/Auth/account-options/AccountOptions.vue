@@ -125,17 +125,17 @@
                 <template #body.append>
                   <tr>
                     <td></td>
-                    <td>
+                    <td width="50">
                       <BaseBtn variant="tonal" block color="primary" size="small" @click="openUrl('https://www.byo.tube/')">
                         Back to BYO.Tube
                       </BaseBtn>
                     </td>
-                    <td colspan="2">
+                    <td colspan="2" width="50">
                       <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
                         Get a Lite Account
                       </BaseBtn>
                     </td>
-                    <td colspan="2">
+                    <td colspan="2" width="50">
                       <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
                         Get a Byo.Tube Account
                       </BaseBtn>

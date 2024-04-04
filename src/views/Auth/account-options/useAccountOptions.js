@@ -123,7 +123,7 @@ export const useAccountOptions = () => {
       align: "start",
       sortable: false,
       key: "byotube",
-      width: "220",
+      width: "300px",
     },
     {
       title: "Anonymous",
@@ -137,28 +137,28 @@ export const useAccountOptions = () => {
       key: "lite",
       align: "center",
       sortable: false,
-      width: "160",
+      width: "120",
     },
     {
       title: "Lite - funded(*)",
       key: "liteFunded",
       align: "center",
       sortable: false,
-      width: "160",
+      width: "120",
     },
     {
       title: "Standard",
       key: "plain",
       align: "center",
       sortable: false,
-      width: "160",
+      width: "120",
     },
     {
       title: "Creator",
       key: "creator",
       align: "center",
       sortable: false,
-      width: "160",
+      width: "120",
     },
   ];
 

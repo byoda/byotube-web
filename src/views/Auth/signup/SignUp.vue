@@ -71,7 +71,7 @@ const loading = ref(false)
 
 const { signupData, signupForm, signup } = useSignup()
 
-const accountType = ref(route.query['account-type'])
+const accountType = ref(route.query['account-type'] || 'byotube')
 
 const isByotubeAccount = computed(()=>{
   return accountType.value === AccountType.BYOTUBE 
