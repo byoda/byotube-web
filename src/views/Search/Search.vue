@@ -1,13 +1,13 @@
 <template>
     <div>
-        <v-container>
+        <v-container class="h-100">
             <div v-for="(video, i) in videos" :key="i" class="py-3" @click="moveToWatch(video)"
                 style="cursor: pointer;">
-                <video-card :search-card="true" :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
-                    @follow="followChannel(video.node, video.origin)"></video-card>
+                <video-card :search-card="true" :card="{ maxWidth: 370 }" :video="video.node"
+                    :channel="video.origin" @follow="followChannel(video.node, video.origin)"></video-card>
             </div>
-            <BaseInfiniteScroller @load="getSearchResults($event)" />
-
+            <BaseInfiniteScroller @load="getSearchResults($event)">
+            </BaseInfiniteScroller>
         </v-container>
     </div>
 </template>
@@ -29,6 +29,7 @@ const {
     videos,
     offset,
     queryChangeLoaded,
+    loaded,
     getSearchResults
 } = useSearch()
 
