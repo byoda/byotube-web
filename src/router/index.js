@@ -63,7 +63,7 @@ const routes = [
     ],
   },
   {
-    path: "/account-options",
+    path: "/features",
     name: "AccountOptions",
     component: AccountOptions,
     meta: { requiresVisitor: true },

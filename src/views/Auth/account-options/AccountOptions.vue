@@ -126,17 +126,17 @@
                   <tr>
                     <td></td>
                     <td width="50">
-                      <BaseBtn variant="tonal" block color="primary" size="small" @click="openUrl('https://www.byo.tube/')">
+                      <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="openUrl('https://www.byo.tube/')">
                         Back to BYO.Tube
                       </BaseBtn>
                     </td>
                     <td colspan="2" width="50">
-                      <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
+                      <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
                         Get a Lite Account
                       </BaseBtn>
                     </td>
                     <td colspan="2" width="50">
-                      <BaseBtn variant="tonal" block color="primary" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
+                      <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
                         Get a Byo.Tube Account
                       </BaseBtn>
                     </td>
