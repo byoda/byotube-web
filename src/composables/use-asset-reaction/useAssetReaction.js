@@ -2,6 +2,7 @@ import { computed, ref } from "vue";
 import { useVideo } from "../use-video/useVideo";
 import { useCoreStore } from "@/store";
 import { uuid } from "vue-uuid";
+import { useAssetReactionService } from "@/services";
 
 export const useAssetReaction = () => {
   const coreStore = useCoreStore();
@@ -13,6 +14,9 @@ export const useAssetReaction = () => {
     likeVideo,
     getAllAssetReactions,
   } = useVideo();
+
+  const { addEditReactionLite, getAssetReactionsLite } =
+    useAssetReactionService();
 
   const assetReactions = ref([]);
   const LIKE = "like";
@@ -191,6 +195,37 @@ export const useAssetReaction = () => {
     coreStore.OpenDialog(nonAuthSubscriptionDialog);
   };
 
+  const addOrUpdateReactionLite = async ({ asset, bookmark, relation }) => {
+    const {
+      origin,
+      asset_id,
+      asset_url,
+      keywords,
+      annotations,
+      categories,
+      list_name,
+    } = asset;
+    const body = {
+      member_id: origin,
+      asset_id,
+      asset_url,
+      asset_class: "public_assets",
+      relation,
+      bookmark,
+      keywords,
+      annotations,
+      categories,
+      list_name,
+    };
+
+    return await addEditReactionLite(body);
+  };
+
+  const fetchAssetReactionsLite = async ({member_id, asset_id}) => {
+    const query = `member_id=${member_id}&asset_id=${asset_id}`
+    return getAssetReactionsLite(query)
+  };
+
   return {
     LIKE,
     DISLIKE,
@@ -203,5 +238,7 @@ export const useAssetReaction = () => {
     editLikeOrDislike,
     followChannel,
     openAuthDialog,
+    addOrUpdateReactionLite,
+    fetchAssetReactionsLite
   };
 };

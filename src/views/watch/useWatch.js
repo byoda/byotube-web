@@ -1,4 +1,5 @@
 import {
+  useAssetReaction,
   useFollow,
   useHelper,
   useLoader,
@@ -40,8 +41,10 @@ export const useWatch = () => {
     followAccount,
     setFollowed,
     informPodAboutAccountFollow,
-    followWithBtLiteAccount
+    followWithBtLiteAccount,
   } = useFollow();
+
+  const { addOrUpdateReactionLite, fetchAssetReactionsLite } = useAssetReaction()
 
   const assetId = ref(route.query?.asset_id);
   const memberId = ref(route.query?.member_id);
@@ -326,6 +329,17 @@ export const useWatch = () => {
     }
   };
 
+  const getAssetReactionsLiteAccount = async () => {
+    try {
+      const { data } = await fetchAssetReactionsLite({member_id: memberId.value, asset_id: assetId.value});
+      console.log("calling", data);
+      return data?.edges;
+    } catch (error) {
+      console.error("Error", error);
+      return [];
+    }
+  };
+
   const deleteAssetReaction = async () => {
     const { asset_id } = asset;
     try {
@@ -419,6 +433,14 @@ export const useWatch = () => {
     }
   };
 
+  const saveOrUpdateReactionLite = async ({relation, bookmark}) => {
+    try {
+      await addOrUpdateReactionLite({asset: asset.value, bookmark, relation})
+    } catch (error) {
+        console.error('Error', error)
+    }
+  }
+
   const mapFollowIds = (edges) => {
     return edges.map((edge) => edge?.node?.member_id);
   };
@@ -468,6 +490,8 @@ export const useWatch = () => {
     openCopyUrlDialog,
     mapSegmentedVideos,
     mapFollowIds,
-    followChannelWithBtLiteAccount
+    followChannelWithBtLiteAccount,
+    saveOrUpdateReactionLite,
+    getAssetReactionsLiteAccount
   };
 };
