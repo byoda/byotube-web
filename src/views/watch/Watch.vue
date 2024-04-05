@@ -85,7 +85,7 @@
   !isAuthenticated
     ? openAuthDialog()
     : isBtLiteAccount
-      ? saveOrUpdateReactionLite(DISLIKE)
+      ? saveOrUpdateReactionLite({relation:LIKE})
       : likeOrDislike(LIKE)
   ">
                             <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon>
@@ -95,7 +95,7 @@
   !isAuthenticated
     ? openAuthDialog()
     : isBtLiteAccount
-      ? saveOrUpdateReactionLite(DISLIKE)
+      ? saveOrUpdateReactionLite({relation:DISLIKE})
       : likeOrDislike(DISLIKE)
   ">
                             <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
