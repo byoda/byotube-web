@@ -45,12 +45,12 @@
 
                     <BaseBtn variant="text" id="showBtn" @click="moreChannels" v-if="parentItem.header === 'Following' &&
                         isAuthenticated &&
-                        items[2].pages.length > 3
+                        items[2]?.pages?.length > 3
                         " class="text-none mt-1 rounded-pill"
                         :prepend-icon="channelLength === 3 ? 'mdi-chevron-down' : 'mdi-chevron-up'">
                         {{
                             channelLength === 3
-                            ? `Show ${items[2].pages.length - channelLength} more `
+                            ? `Show ${items[2]?.pages?.length - channelLength} more `
                             : 'Show less'
                         }}
                     </BaseBtn>
@@ -208,14 +208,14 @@ const mapChannelToPages = (channelArr) => {
 }
 
 const getUniqueFollowing = (array) => {
-    return array.filter((obj, index) => {
-        return array.findIndex(o => o?.node?.member_id === obj?.node?.member_id) === index
+    return array?.filter((obj, index) => {
+        return array?.findIndex(o => o?.node?.member_id === obj?.node?.member_id) === index
     })
 }
 
 const getFollowData = async () => {
-    const { data } = await getFollowedChannels(service_id)
-    items[2].pages = mapChannelToPages(getUniqueFollowing(data.edges))
+    const res = await getFollowedChannels(service_id)
+    items[2].pages = mapChannelToPages(getUniqueFollowing(res?.data.edges))
 }
 
 onMounted(async () => {

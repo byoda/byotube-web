@@ -120,9 +120,9 @@ export const useHome = (props) => {
       });
 
       if (videosData?.length) event?.done("ok");
-      section.videos?.push(...videosData?.edges);
+      section?.videos?.push(...videosData?.edges);
       section.has_next_page = videosData?.page_info?.has_next_page;
-      if (section.has_next_page) {
+      if (section?.has_next_page) {
         section.after = videosData?.page_info.end_cursor;
         event?.done("ok");
       } else {

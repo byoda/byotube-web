@@ -239,8 +239,8 @@ onMounted(async () => {
       : null;
 
   if (isAuthenticated.value && domain) {
-    const { data } = await getFollowedChannels();
-    getFollowing.value = mapFollowIds(data.edges);
+    const res = await getFollowedChannels();
+    getFollowing.value = mapFollowIds(res?.data?.edges);
   }
 
   await getVideo(); // get Video from the route params

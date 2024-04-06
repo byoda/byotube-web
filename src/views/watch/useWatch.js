@@ -455,7 +455,7 @@ export const useWatch = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges.map((edge) => edge?.node?.member_id);
+    return edges?.map((edge) => edge?.node?.member_id);
   };
 
   return {
