@@ -63,6 +63,9 @@ export const useSignin = () => {
     if (!signinData.value.domain) {
       localStorage.setItem("account", "bt-lite");
       setAccountType.value("bt-lite");
+    }else{
+      localStorage.setItem("account", "byotube");
+      setAccountType.value("byotube");
     }
   };
 

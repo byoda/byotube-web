@@ -5,8 +5,8 @@ import {
   useLoader,
   useVideo,
 } from "@/composables";
-import { useCoreStore } from "@/store";
-import { computed, ref } from "vue";
+import { useAuthStore, useCoreStore } from "@/store";
+import { computed, ref, toRefs } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { uuid } from "vue-uuid";
 
@@ -15,6 +15,7 @@ export const useWatch = () => {
   const router = useRouter();
 
   const coreStore = useCoreStore();
+  const { isBtLiteAccount } = toRefs(useAuthStore());
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
   const {
@@ -34,7 +35,7 @@ export const useWatch = () => {
     appendVideoReactions,
     updateVideoReactions,
     getSegmentedVideos,
-    deleteReactionBtLiteAccount
+    deleteReactionBtLiteAccount,
   } = useVideo();
   const {
     followedAccounts,
@@ -44,7 +45,8 @@ export const useWatch = () => {
     followWithBtLiteAccount,
   } = useFollow();
 
-  const { addOrUpdateReactionLite, fetchAssetReactionsLite } = useAssetReaction()
+  const { addOrUpdateReactionLite, fetchAssetReactionsLite } =
+    useAssetReaction();
 
   const assetId = ref(route.query?.asset_id);
   const memberId = ref(route.query?.member_id);
@@ -85,14 +87,14 @@ export const useWatch = () => {
   const copyUrlDialog = "copyUrlDialog";
 
   const isVideosLikedByCurrentUser = computed(() => {
-    return !!assetReactions.value.find(
+    return !!assetReactions.value?.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset.value?.asset_id &&
         videeoAsset?.node?.relation == LIKE
     );
   });
   const isVideoDislikedByCurrentUser = computed(() => {
-    return !!assetReactions.value.find(
+    return !!assetReactions.value?.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset.value?.asset_id &&
         videeoAsset.node.relation == DISLIKE
@@ -160,14 +162,18 @@ export const useWatch = () => {
             const { minutes, seconds } = convertSecondsToMinutesAndSeconds(
               videoJs.value?.currentTime()?.toString()
             );
-
-            await updateReactionAndBookmark(
-              asset.value,
-              videoJs.value?.currentTime()?.toString()
-            );
+            console.log("Calling");
+            isBtLiteAccount.value
+              ? await saveOrUpdateReactionLite({
+                  bookmark: videoJs.value?.currentTime()?.toString(),
+                })
+              : await updateReactionAndBookmark(
+                  asset.value,
+                  videoJs.value?.currentTime()?.toString()
+                );
           },
         },
-        autoplay: true,
+        autoplay:true,
         controls: true,
         responsive: true,
         poster: asset.value.video_thumbnail.url,
@@ -331,9 +337,15 @@ export const useWatch = () => {
 
   const getAssetReactionsLiteAccount = async () => {
     try {
-      const { data } = await fetchAssetReactionsLite({member_id: memberId.value, asset_id: assetId.value});
-      console.log("calling", data);
-      return data?.edges;
+      const { data } = await fetchAssetReactionsLite({
+        member_id: memberId.value,
+        asset_id: assetId.value,
+      });
+      return [
+        {
+          node: data,
+        },
+      ];
     } catch (error) {
       console.error("Error", error);
       return [];
@@ -433,13 +445,14 @@ export const useWatch = () => {
     }
   };
 
-  const saveOrUpdateReactionLite = async ({relation, bookmark}) => {
+  const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
-      await addOrUpdateReactionLite({asset: asset.value, bookmark, relation})
+      await addOrUpdateReactionLite({ asset: asset.value, bookmark, relation });
+      assetReactions.value = await getAssetReactionsLiteAccount();
     } catch (error) {
-        console.error('Error', error)
+      console.error("Error", error);
     }
-  }
+  };
 
   const mapFollowIds = (edges) => {
     return edges.map((edge) => edge?.node?.member_id);
@@ -492,6 +505,6 @@ export const useWatch = () => {
     mapFollowIds,
     followChannelWithBtLiteAccount,
     saveOrUpdateReactionLite,
-    getAssetReactionsLiteAccount
+    getAssetReactionsLiteAccount,
   };
 };
