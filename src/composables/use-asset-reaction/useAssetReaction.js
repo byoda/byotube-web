@@ -39,7 +39,7 @@ export const useAssetReaction = () => {
     return !!assetReactions.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset?.asset_id &&
-        videeoAsset.node.relation == DISLIKE
+        videeoAsset?.node?.relation == DISLIKE
     );
   };
 
@@ -47,7 +47,7 @@ export const useAssetReaction = () => {
     return !!assetReactions.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset?.asset_id &&
-        videeoAsset.node.relation == ""
+        videeoAsset?.node?.relation == ""
     );
   };
 

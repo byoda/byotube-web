@@ -76,15 +76,20 @@ export const useHistory = () => {
     },
   ];
 
-  const getHistoryVideos = async ($state, section, first) => {
+  const getHistoryVideos = async (load, section, first) => {
     try {
+
+      if(section?.has_next_page === false){
+        load?.done('empty')
+        return
+      } 
+
       section.loading = true;
       const filter = {
         after: section.after,
         first,
       };
       const { data } = await getAllAssetReactions(null, filter);
-      if (data?.edges?.length) $state?.loaded;
       allAssetReactions.value = data?.edges;
 
       const queryPod = data.edges.map((edge) => {
@@ -105,13 +110,14 @@ export const useHistory = () => {
         (prom) => prom.value?.data?.edges[0]
       );
 
-      section.videos?.push(...dataFromPod);
+      section.videos?.push(...dataFromPod?.filter(video=>!!video));
 
       section.has_next_page = data?.page_info?.has_next_page;
       if (section.has_next_page) {
         section.after = data?.page_info.end_cursor;
+        load?.done('ok')
       } else {
-        $state?.complete();
+        load?.done('empty');
       }
       section.loading = false;
       sections.value = section;
@@ -120,16 +126,22 @@ export const useHistory = () => {
     }
   };
 
-  const getHistoryVideosBtLite = async ($state, section, first) => {
+  const getHistoryVideosBtLite = async (load, section, first) => {
     try {
+
+      if(section?.has_next_page === false){
+        load?.done('empty')
+        return
+      } 
+
       section.loading = true;
       const filter = {
         after: section.after,
         first,
       };
       const { data } = await fetchAllAssetReactionsLite(filter);
-      if (data?.edges?.length) $state?.loaded;
-      allAssetReactions.value = data?.edges;
+
+      allAssetReactions.value = data?.edges
 
       const queryVideos = data.edges.map((edge) => {
         return getVideoFromCentralApi({
@@ -142,13 +154,16 @@ export const useHistory = () => {
         (prom) => prom.value?.data
       );
 
-      section.videos?.push(...dataFromCentralApi);
+      section.videos?.push(...dataFromCentralApi?.filter(video=>!!video));
 
       section.has_next_page = data?.page_info?.has_next_page;
-      if (section.has_next_page) {
+      if (section?.has_next_page) {
         section.after = data?.page_info.end_cursor;
+        load?.done("ok");
+        console.log("Ok");
       } else {
-        $state?.complete();
+        load?.done("empty");
+        console.log("Emptu", load);
       }
       section.loading = false;
       sections.value = section;

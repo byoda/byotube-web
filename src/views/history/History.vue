@@ -3,12 +3,6 @@
         <v-container class="container" fluid>
             <v-row>
                 <v-col cols="8">
-                    <div class="text-center" v-show="loader">
-                        <v-progress-circular indeterminate color="red"></v-progress-circular>
-                    </div>
-                    <p v-if="!loader && !sections.videos.length" class="font-weight-medium text-center">
-                        No videos!
-                    </p>
                     <v-sheet v-for="(video, i) in sections.videos" :key="i" class="long-text-ellipses mt-8"
                         position="relative" style="cursor: pointer;">
                         <video-card thumbnail-width="248" thumbnail-max-width="248" thumbnail-height="138"
@@ -34,6 +28,8 @@
 
                         </v-sheet>
                     </v-sheet>
+                    <BaseInfiniteScroller class="mt-3" @load="isBtLiteAccount ? getHistoryVideosBtLite($event, sections, 20) : getHistoryVideos($event, sections, 20)" />
+
                 </v-col>
                 <v-col cols="4" class="d-none d-md-block px-5">
                     <div class="sticky-menu">
@@ -67,22 +63,15 @@
 <script setup>
 import VideoCard from "@/components/VideoCard.vue";
 import { useHistory } from "./useHistory.js"
-import { onMounted, toRefs } from "vue";
-import { BaseTextfield } from '@/components/base'
-import { useAssetReaction, useLoader } from "@/composables/index.js";
+import { toRefs } from "vue";
+import { BaseInfiniteScroller, BaseTextfield } from '@/components/base'
+import { useAssetReaction } from "@/composables/index.js";
 import { useAuthStore } from "@/store/index.js";
 
 const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore())
-const { loader, showLoader, hideLoader } = useLoader()
 
 const { key, list, search, sections, allAssetReactions, getHistoryVideos, moveToWatch, addReaction, getHistoryVideosBtLite, saveOrUpdateReactionLite } = useHistory()
 const { LIKE, DISLIKE, isVideoDislikedByCurrentUser, isVideosLikedByCurrentUser, openAuthDialog } = useAssetReaction()
-
-onMounted(async () => {
-    showLoader()
-    isBtLiteAccount.value ? await getHistoryVideosBtLite(null, sections.value, 25) : await getHistoryVideos(null, sections.value, 25)
-    hideLoader()
-})
 
 </script>
 
