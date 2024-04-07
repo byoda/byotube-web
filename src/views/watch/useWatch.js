@@ -447,6 +447,9 @@ export const useWatch = () => {
 
   const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
+      if(assetReactions.value?.[0]?.node?.relation == relation){
+        relation = ""
+      }
       await addOrUpdateReactionLite({ asset: asset.value, bookmark, relation });
       assetReactions.value = await getAssetReactionsLiteAccount();
     } catch (error) {

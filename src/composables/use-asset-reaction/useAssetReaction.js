@@ -3,6 +3,7 @@ import { useVideo } from "../use-video/useVideo";
 import { useCoreStore } from "@/store";
 import { uuid } from "vue-uuid";
 import { useAssetReactionService } from "@/services";
+import { useHelper } from "../use-helper/useHelper";
 
 export const useAssetReaction = () => {
   const coreStore = useCoreStore();
@@ -15,7 +16,9 @@ export const useAssetReaction = () => {
     getAllAssetReactions,
   } = useVideo();
 
-  const { addEditReactionLite, getAssetReactionsLite } =
+  const { toQueryString } = useHelper()
+
+  const { addEditReactionLite, getAssetReactionsLite, getAllAssetReactionsLite } =
     useAssetReactionService();
 
   const assetReactions = ref([]);
@@ -226,6 +229,11 @@ export const useAssetReaction = () => {
     return getAssetReactionsLite(query)
   };
 
+  const fetchAllAssetReactionsLite = async ({first = 20, after = null}) => {
+    const query = toQueryString({first, after})
+    return getAllAssetReactionsLite(query)
+  };
+
   return {
     LIKE,
     DISLIKE,
@@ -239,6 +247,7 @@ export const useAssetReaction = () => {
     followChannel,
     openAuthDialog,
     addOrUpdateReactionLite,
-    fetchAssetReactionsLite
+    fetchAssetReactionsLite,
+    fetchAllAssetReactionsLite
   };
 };

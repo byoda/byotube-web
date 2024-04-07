@@ -253,7 +253,6 @@ onMounted(async () => {
         );
         await videoJs.value.player?.play()
         videoJs.value.player?.autoplay('play')
-        // videoJs.value.clickMe()
       });
     }
     if (!assetReactions.value.length) {

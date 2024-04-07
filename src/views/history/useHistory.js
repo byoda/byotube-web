@@ -11,7 +11,11 @@ export const useHistory = () => {
     getAllAssetReactions,
     getVideoByIdFromPod,
     deleteReaction,
+    getVideoFromCentralApi,
   } = useVideo();
+
+  const { fetchAllAssetReactionsLite, addOrUpdateReactionLite } =
+    useAssetReaction();
 
   const { likeOrDislike } = useAssetReaction();
 
@@ -116,6 +120,63 @@ export const useHistory = () => {
     }
   };
 
+  const getHistoryVideosBtLite = async ($state, section, first) => {
+    try {
+      section.loading = true;
+      const filter = {
+        after: section.after,
+        first,
+      };
+      const { data } = await fetchAllAssetReactionsLite(filter);
+      if (data?.edges?.length) $state?.loaded;
+      allAssetReactions.value = data?.edges;
+
+      const queryVideos = data.edges.map((edge) => {
+        return getVideoFromCentralApi({
+          assetId: edge?.node?.asset_id,
+          memberId: edge?.node?.member_id,
+        });
+      });
+
+      const dataFromCentralApi = (await Promise.allSettled(queryVideos)).map(
+        (prom) => prom.value?.data
+      );
+
+      section.videos?.push(...dataFromCentralApi);
+
+      section.has_next_page = data?.page_info?.has_next_page;
+      if (section.has_next_page) {
+        section.after = data?.page_info.end_cursor;
+      } else {
+        $state?.complete();
+      }
+      section.loading = false;
+      sections.value = section;
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const saveOrUpdateReactionLite = async ({ relation, node }) => {
+    try {
+      const asset = allAssetReactions.value?.find(
+        (videeoAsset) => videeoAsset?.node?.asset_id === node?.asset_id
+      )?.node;
+
+      if (asset?.relation == relation) {
+        relation = "";
+      }
+
+      asset.origin = asset?.member_id
+
+      await addOrUpdateReactionLite({asset, relation})
+      asset.relation = asset?.relation === relation ? "" : relation;
+      key.value = key.value + 1;
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
   const mapSegmentedVideos = async ($state, section, first) => {
     section.loading = true;
     const videosData = await getSegmentedVideos(
@@ -175,5 +236,7 @@ export const useHistory = () => {
     moveToWatch,
     getHistoryVideos,
     mapSegmentedVideos,
+    getHistoryVideosBtLite,
+    saveOrUpdateReactionLite
   };
 };

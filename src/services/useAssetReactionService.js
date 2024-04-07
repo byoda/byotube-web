@@ -16,9 +16,16 @@ export const useAssetReactionService = () => {
     );
   };
 
+  const getAllAssetReactionsLite = (query) => {
+    return Api.get(
+      `/lite/assetreactions?${query}`,
+    );
+  };
+
 
   return {
     addEditReactionLite,
-    getAssetReactionsLite
+    getAssetReactionsLite,
+    getAllAssetReactionsLite
   };
 };
