@@ -8,3 +8,8 @@ export const  IngestStatus = Object.freeze({
     EXTERNAL : 'external',
     PUBLISHED : 'published'
 })
+
+export const AccountType = Object.freeze({
+    LITE: 'lite',
+    BYOTUBE: 'byotube'
+})

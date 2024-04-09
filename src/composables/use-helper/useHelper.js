@@ -10,9 +10,11 @@ export const useHelper = () => {
   };
 
   const textEllipsis = (text, length) => {
-    if (text.length > length) {
-      return text.slice(0, length);
+    if (text?.length > length) {
+      return `${text?.slice(0, length)}...`;
     }
+
+    return text
   };
 
   const convertSecondsToMinutesAndSeconds = (seconds) => {
@@ -23,11 +25,56 @@ export const useHelper = () => {
     return { minutes, seconds: remainingSeconds };
   };
 
-  const uniqueArrayOfObjects = (array, key)=>{
-    return array.filter((obj, index)=>{
-      return array.findIndex(o => o[key] === obj[key]) === index
-    })
+  const uniqueArrayOfObjects = (array, key) => {
+    return array.filter((obj, index) => {
+      return array.findIndex((o) => o[key] === obj[key]) === index;
+    });
+  };
+
+  const toQueryString = (filter) => {
+    const queryArray = Object.entries(filter).map(([key, value]) => {
+      return value ? `${key}=${value}` : null;
+    });
+
+    const queryString = queryArray?.reduce((acc, curr) => {
+      if (curr) {
+        return `${acc}${curr}&`;
+      }
+      return acc;
+    }, "");
+
+    const query = queryString.slice(0, queryString.length - 1);
+    return query;
+  };
+
+  function findThumbnailWithMaxHeight(array, number = 0) {
+    if (array?.length === 0) {
+      return null;
+    }
+
+    const objectsWithCustomHeight = array?.find((obj) => obj.height === number);
+
+    if (objectsWithCustomHeight) {
+      return objectsWithCustomHeight;
+    }
+    const maxHeight = array?.find((obj) => {
+      return obj.height > number;
+    });
+
+    return maxHeight;
   }
+
+  const findAvatarWithMaxHeight = (array, number = 0) => {
+    if (array?.length === 0) {
+      return null; // If the array is empty, return null
+    }
+
+    const maxHeight = array?.reduce((prev, curr) => {
+      return curr.height > prev.height ? curr : prev;
+    });
+
+    return maxHeight;
+  };
 
   const convertDateToDuration = (date) => {
     const currentDate = new Date();
@@ -67,5 +114,8 @@ export const useHelper = () => {
     uniqueArrayOfObjects,
     convertDateToDuration,
     convertSecondsToMinutesAndSeconds,
+    toQueryString,
+    findThumbnailWithMaxHeight,
+    findAvatarWithMaxHeight
   };
 };

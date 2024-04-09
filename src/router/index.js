@@ -7,8 +7,11 @@ import Channel from "@/views/channel/Channel.vue";
 import Following from "@/views/following/Following.vue";
 import History from "@/views/history/History.vue";
 import Signin from "@/views/Auth/signin/SignIn.vue";
+import SignUp from "@/views/Auth/signup/SignUp.vue";
+import AccountOptions from "@/views/Auth/account-options/AccountOptions.vue";
 import Lists from "@/views/lists/Lists.vue";
 import { useAuthStore } from "@/store";
+import VerifyEmail from "@/views/verify-email/VerifyEmail.vue";
 
 const routes = [
   {
@@ -60,6 +63,12 @@ const routes = [
     ],
   },
   {
+    path: "/features",
+    name: "AccountOptions",
+    component: AccountOptions,
+    meta: { requiresVisitor: true },
+  },
+  {
     path: "/signin",
     name: "SignIn",
     component: Signin,
@@ -68,11 +77,12 @@ const routes = [
   {
     path: "/signup",
     name: "SignUp",
-    component: () =>
-      import(
-        /* webpackChunkName: "signup" */ "../views/Auth/signup/SignUp.vue"
-      ),
-    meta: { requiresVisitor: true },
+    component: SignUp
+  },
+  {
+    path: "/verify-email",
+    name: "VerifyEmail",
+    component: VerifyEmail,
   },
 ];
 

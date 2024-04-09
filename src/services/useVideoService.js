@@ -1,27 +1,12 @@
-import { useAxios } from "@/composables";
+import { useAxios, useHelper } from "@/composables";
 
 export const useVideoService = () => {
   const { Api } = useAxios();
+  const { toQueryString } = useHelper()
 
-  const channelQuery = (filter) => {
-    const queryArray = Object.entries(filter).map(([key, value]) => {
-      return value ? `${key}=${value}` : null;
-    });
-
-    const queryString = queryArray?.reduce((acc, curr) => {
-      if (curr) {
-        return `${acc}${curr}&`;
-      }
-      return acc;
-    }, "");
-
-    const query = queryString.slice(0, queryString.length - 1);
-
-    return query;
-  };
 
   const getAll = (filter) => {
-    const query = channelQuery(filter);
+    const query = toQueryString(filter);
 
     return Api.get(`service/data?${query}`);
   };
@@ -53,6 +38,13 @@ export const useVideoService = () => {
   const deleteAssetReaction = ({ domain, serviceId }, body) => {
     return Api.post(
       `https://${domain}/api/v1/data/${serviceId}/asset_reactions/delete`,
+      body
+    );
+  };
+
+  const deleteAssetReactionBtLite = (body) => {
+    return Api.delete(
+      `/lite/networklink`,
       body
     );
   };
@@ -108,5 +100,6 @@ export const useVideoService = () => {
     queryPodForVideo,
     requestPodAboutLike,
     getAssetFromCentralData,
+    deleteAssetReactionBtLite
   };
 };

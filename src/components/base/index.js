@@ -4,3 +4,6 @@ export { default as BaseForm } from "./form/index.vue";
 export { default as BaseDialog } from "./dialog/index.vue";
 export { default as BaseCard } from "./card/index.vue";
 export { default as BaseInfiniteScroller } from "./infinite-scroller/index.vue";
+export { default as BaseSpinner } from "./spinner/index.vue"
+export { default as BaseRadio } from "./radio/index.vue"
+export { default as BaseRadioGroup } from "./radio-group/index.vue"

@@ -43,32 +43,32 @@
         <v-card-title class="pl-2 pb-0 font-weight-bold whitespace-wrap cursor-pointer"
           :class="{ 'text-sm': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'py-0': smallCard, 'pb-1': searchCard }"
           style="line-height: 1.2rem" :style="{ 'font-size': searchCard ? '18px !important' : '16px' }">
-          {{ smallCard ? `${video.title.length > 35 ? `${video.title.slice(0, 35)}...` : video.title}` : video.title }}
+          {{ smallCard ? `${video?.title?.length > 35 ? `${video?.title?.slice(0, 35)}...` : video?.title}` : video?.title }}
         </v-card-title>
 
         <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0 cursor-pointer" :class="{ 'text-xs': smallCard }" @click.stop="movetoChannel">
-          {{ video.creator }} 
+          {{ video?.creator }} 
         </v-card-subtitle>
         <v-card-subtitle class="pl-2 pb-0 pt-0 mt-n1">
-          {{ convertDateToDuration(video.published_timestamp) }}
+          {{ convertDateToDuration(video?.published_timestamp) }}
         </v-card-subtitle>
         <div v-if="searchCard" class="d-flex items-center py-3 pl-2" @click.stop="movetoChannel">
           <v-avatar class="cursor-pointer">
-            <img height="40" max-width="40" v-if="video.creator_thumbnail" class="elevation-6"
-              :src="video.creator_thumbnail" />
+            <img height="40" max-width="40" v-if="video?.creator_thumbnail" class="elevation-6"
+              :src="video?.creator_thumbnail" />
             <span v-else class="white--text headline ">
-              {{ video.creator?.split("")[0].toUpperCase() }}</span>
+              {{ video?.creator?.split("")[0].toUpperCase() }}</span>
           </v-avatar>
           <v-card-subtitle class="pl-2 pb-0 pt-0 d-flex align-center cursor-pointer" :class="{ 'text-xs': smallCard }">
-            {{ video.creator }}
+            {{ video?.creator }}
           </v-card-subtitle>
 
         </div>
         <v-card-subtitle v-if="searchCard" class="pl-2 pb-0 pt-0 mt-n1 description-ellipses" @click.stop="movetoChannel">
-          {{ video.contents }}
+          {{ video?.contents }}
         </v-card-subtitle>
       </v-col>
-      <v-col v-if="video.ingest_status === EXTERNAL && !smallCard" cols="1" class="pt-2">
+      <v-col v-if="video?.ingest_status === EXTERNAL && !smallCard" cols="1" class="pt-2">
         <img src="@/assets/YouTube_icon.png" height="36" width="36" />
       </v-col>
     </v-row>
@@ -131,11 +131,11 @@ const movetoChannel = ()=>{
 }
 
 const thumbnailForVideo = (video) => {
-  const smallerThumbnailVideo = video.video_thumbnails?.find(
+  const smallerThumbnailVideo = video?.video_thumbnails?.find(
     (thumbnail) => thumbnail?.width >= 240
   );
   if (smallerThumbnailVideo) return smallerThumbnailVideo;
-  else return video.video_thumbnails?.[video?.video_thumbnails?.length - 1];
+  else return video?.video_thumbnails?.[video?.video_thumbnails?.length - 1];
 };
 
 const setThumbnailWidth = computed(()=>{

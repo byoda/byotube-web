@@ -2,6 +2,8 @@ import { computed, ref } from "vue";
 import { useVideo } from "../use-video/useVideo";
 import { useCoreStore } from "@/store";
 import { uuid } from "vue-uuid";
+import { useAssetReactionService } from "@/services";
+import { useHelper } from "../use-helper/useHelper";
 
 export const useAssetReaction = () => {
   const coreStore = useCoreStore();
@@ -13,6 +15,11 @@ export const useAssetReaction = () => {
     likeVideo,
     getAllAssetReactions,
   } = useVideo();
+
+  const { toQueryString } = useHelper()
+
+  const { addEditReactionLite, getAssetReactionsLite, getAllAssetReactionsLite } =
+    useAssetReactionService();
 
   const assetReactions = ref([]);
   const LIKE = "like";
@@ -32,7 +39,7 @@ export const useAssetReaction = () => {
     return !!assetReactions.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset?.asset_id &&
-        videeoAsset.node.relation == DISLIKE
+        videeoAsset?.node?.relation == DISLIKE
     );
   };
 
@@ -40,7 +47,7 @@ export const useAssetReaction = () => {
     return !!assetReactions.find(
       (videeoAsset) =>
         videeoAsset?.node?.asset_id === asset?.asset_id &&
-        videeoAsset.node.relation == ""
+        videeoAsset?.node?.relation == ""
     );
   };
 
@@ -80,12 +87,6 @@ export const useAssetReaction = () => {
         (isVideoDislikedByCurrentUser(assetReactions, asset) &&
           relation == DISLIKE)
       ) {
-        console.log(
-          "sdkhf",
-          isVideosLikedByCurrentUser(assetReactions, asset),
-          isVideosLikedByCurrentUser(assetReactions, asset) && relation == LIKE,
-          relation
-        );
         await deleteAssetReaction(asset);
         return;
       }
@@ -197,6 +198,42 @@ export const useAssetReaction = () => {
     coreStore.OpenDialog(nonAuthSubscriptionDialog);
   };
 
+  const addOrUpdateReactionLite = async ({ asset, bookmark, relation }) => {
+    const {
+      origin,
+      asset_id,
+      asset_url,
+      keywords,
+      annotations,
+      categories,
+      list_name,
+    } = asset;
+    const body = {
+      member_id: origin,
+      asset_id,
+      asset_url,
+      asset_class: "public_assets",
+      relation,
+      bookmark,
+      keywords,
+      annotations,
+      categories,
+      list_name,
+    };
+
+    return await addEditReactionLite(body);
+  };
+
+  const fetchAssetReactionsLite = async ({member_id, asset_id}) => {
+    const query = `member_id=${member_id}&asset_id=${asset_id}`
+    return getAssetReactionsLite(query)
+  };
+
+  const fetchAllAssetReactionsLite = async ({first = 20, after = null}) => {
+    const query = toQueryString({first, after})
+    return getAllAssetReactionsLite(query)
+  };
+
   return {
     LIKE,
     DISLIKE,
@@ -209,5 +246,8 @@ export const useAssetReaction = () => {
     editLikeOrDislike,
     followChannel,
     openAuthDialog,
+    addOrUpdateReactionLite,
+    fetchAssetReactionsLite,
+    fetchAllAssetReactionsLite
   };
 };

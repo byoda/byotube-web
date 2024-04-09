@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="coreStore.isDrawerOpen" mobile-breakpoint="sm" app :border="0" id="nav" class="pb-5">
+    <v-navigation-drawer v-model="coreStore.isDrawerOpen" mobile-breakpoint="sm" app :border="0" id="nav">
         <div tag="div" style="width: 100%;" class="v-navigation-drawer__content" v-bar>
             <v-list density="compact" nav rounded class="py-0 mt-2" tag="div">
                 <!-- <v-list-item rounded="xl" :class="{
@@ -45,12 +45,12 @@
 
                     <BaseBtn variant="text" id="showBtn" @click="moreChannels" v-if="parentItem.header === 'Following' &&
                         isAuthenticated &&
-                        items[2].pages.length > 3
+                        items[2]?.pages?.length > 3
                         " class="text-none mt-1 rounded-pill"
                         :prepend-icon="channelLength === 3 ? 'mdi-chevron-down' : 'mdi-chevron-up'">
                         {{
                             channelLength === 3
-                            ? `Show ${items[2].pages.length - channelLength} more `
+                            ? `Show ${items[2]?.pages?.length - channelLength} more `
                             : 'Show less'
                         }}
                     </BaseBtn>
@@ -62,6 +62,24 @@
                 </div>
             </v-list>
         </div>
+        <template #append v-if="smAndDown">
+            <v-sheet :elevation="10" class="pa-2"  color="grey-lighten-3">
+                <div v-if="!isAuthenticated" class="text-center">
+                  <v-btn-toggle variant="elevated" density="compact" class="text- bg-white" dense :border="true" divided>
+                    <v-btn @click="$router.push({ name: 'SignIn' })">
+                      Signin
+                    </v-btn>
+                    <v-btn @click="$router.push({ name: 'AccountOptions' })">
+                      Signup
+                    </v-btn>
+                  </v-btn-toggle>
+                </div>
+                <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn bg-white w-100 secondary--text"
+                  v-else-if="isAuthenticated" @click="logout">
+                  <v-icon left size="26">mdi-account-circle</v-icon> Sign out
+                </BaseBtn>
+            </v-sheet>
+        </template>
     </v-navigation-drawer>
     <NonAuthDialog />
 </template>
@@ -72,6 +90,7 @@ import { NonAuthDialog } from '@/components/shared'
 import { computed, onMounted, ref, onUnmounted, toRefs } from "vue";
 import { useEmitter, useFollow, useVideo, useHelper } from "@/composables";
 import { useAuthStore, useCoreStore } from '@/store';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 
 const emits = defineEmits(['search'])
 const emitter = useEmitter()
@@ -82,6 +101,7 @@ const { isAuthenticated } = toRefs(useAuthStore())
 const { getFollowedChannels } = useFollow()
 const { service_id } = useVideo()
 const { uniqueArrayOfObjects } = useHelper()
+const { smAndDown } = useDisplay()
 
 
 const nonAuthSubscriptionDialog = 'nonAuthSubscription'
@@ -149,16 +169,6 @@ const items = [
                 icon: "mdi-newspaper-variant-outline",
             },
             {
-                title: "Auto & Vehicles",
-                link: "/lists?list_name=auto %26 vehicles",
-                icon: "mdi-car-multiple",
-            },
-            {
-                title: "People & Blogs",
-                link: "/lists?list_name=people %26 blogs'",
-                icon: "mdi-post-outline",
-            },
-            {
                 title: "Film & Animation",
                 link: "/lists?list_name=film %26 animation",
                 icon: "mdi-movie-play-outline",
@@ -217,15 +227,21 @@ const mapChannelToPages = (channelArr) => {
     })
 }
 
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("domain");
+  window.location.reload();
+}
+
 const getUniqueFollowing = (array) => {
-    return array.filter((obj, index) => {
-        return array.findIndex(o => o?.node?.member_id === obj?.node?.member_id) === index
+    return array?.filter((obj, index) => {
+        return array?.findIndex(o => o?.node?.member_id === obj?.node?.member_id) === index
     })
 }
 
 const getFollowData = async () => {
-    const { data } = await getFollowedChannels(service_id)
-    items[2].pages = mapChannelToPages(getUniqueFollowing(data.edges))
+    const res = await getFollowedChannels(service_id)
+    items[2].pages = mapChannelToPages(getUniqueFollowing(res?.data.edges))
 }
 
 onMounted(async () => {

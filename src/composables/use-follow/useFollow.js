@@ -1,10 +1,9 @@
-import { useFollowService, useVideoService } from "@/services";
+import { useFollowService } from "@/services";
 import { ref } from "vue";
 
 export const useFollow = () => {
-  const { follow, informPodAboutFollow, getFollowedAccounts } =
+  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite } =
     useFollowService();
-  const { getAssetReactions } = useVideoService();
 
   const followedAccounts = ref(null);
 
@@ -31,6 +30,16 @@ export const useFollow = () => {
       { domain: initialState.domain, serviceId: service_id },
       { data: body }
     );
+  };
+
+  const followWithBtLiteAccount = (channelName, origin, createdTimestamp) => {
+    const body = {
+      relation: "follow",
+      annotations: [channelName],
+      member_id: origin,
+      created_timestamp: createdTimestamp,
+    };
+    return followBtLite(body);
   };
 
   const informPodAboutAccountFollow = ({
@@ -80,14 +89,25 @@ export const useFollow = () => {
     );
   };
 
-  const getFollowedChannels = (serviceId) => {
-    return getFollowedAccounts(
-      {
-        domain: initialState.domain,
-        serviceId: serviceId ? serviceId : service_id,
-      },
-      {}
-    );
+  const getFollowedChannels = async (serviceId) => {
+    try{
+      const followedChannels =  await getFollowedAccounts(
+        {
+          domain: initialState.domain,
+          serviceId: serviceId ? serviceId : service_id,
+        },
+        {}
+      );
+      const getFollowedIds = followedChannels?.data?.edges?.map(channel => {
+        return channel?.node?.member_id
+      })
+  
+      localStorage.setItem('followedAccounts', JSON.stringify(getFollowedIds))
+  
+      return followedChannels
+    }catch(error){
+      console.error("Error", error);
+    }
   };
 
   return {
@@ -97,5 +117,6 @@ export const useFollow = () => {
     setFollowed,
     followChannel,
     getFollowedChannels,
+    followWithBtLiteAccount
   };
 };

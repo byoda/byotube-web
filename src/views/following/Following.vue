@@ -14,8 +14,7 @@
 
 <script setup>
 import { CreatorCard } from '@/components/shared'
-import { useFollow, useLoader } from "@/composables";
-import { computed, onMounted, ref, onUnmounted, toRefs } from "vue";
+import { onMounted, toRefs } from "vue";
 import { useAuthStore } from "@/store";
 import { useFollowing } from './useFollowing';
 

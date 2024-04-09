@@ -11,7 +11,11 @@ export const useHistory = () => {
     getAllAssetReactions,
     getVideoByIdFromPod,
     deleteReaction,
+    getVideoFromCentralApi,
   } = useVideo();
+
+  const { fetchAllAssetReactionsLite, addOrUpdateReactionLite } =
+    useAssetReaction();
 
   const { likeOrDislike } = useAssetReaction();
 
@@ -72,15 +76,20 @@ export const useHistory = () => {
     },
   ];
 
-  const getHistoryVideos = async ($state, section, first) => {
+  const getHistoryVideos = async (load, section, first) => {
     try {
+
+      if(section?.has_next_page === false){
+        load?.done('empty')
+        return
+      } 
+
       section.loading = true;
       const filter = {
         after: section.after,
         first,
       };
       const { data } = await getAllAssetReactions(null, filter);
-      if (data?.edges?.length) $state?.loaded;
       allAssetReactions.value = data?.edges;
 
       const queryPod = data.edges.map((edge) => {
@@ -101,16 +110,83 @@ export const useHistory = () => {
         (prom) => prom.value?.data?.edges[0]
       );
 
-      section.videos?.push(...dataFromPod);
+      section.videos?.push(...dataFromPod?.filter(video=>!!video));
 
       section.has_next_page = data?.page_info?.has_next_page;
       if (section.has_next_page) {
         section.after = data?.page_info.end_cursor;
+        load?.done('ok')
       } else {
-        $state?.complete();
+        load?.done('empty');
       }
       section.loading = false;
       sections.value = section;
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const getHistoryVideosBtLite = async (load, section, first) => {
+    try {
+
+      if(section?.has_next_page === false){
+        load?.done('empty')
+        return
+      } 
+
+      section.loading = true;
+      const filter = {
+        after: section.after,
+        first,
+      };
+      const { data } = await fetchAllAssetReactionsLite(filter);
+
+      allAssetReactions.value = data?.edges
+
+      const queryVideos = data.edges.map((edge) => {
+        return getVideoFromCentralApi({
+          assetId: edge?.node?.asset_id,
+          memberId: edge?.node?.member_id,
+        });
+      });
+
+      const dataFromCentralApi = (await Promise.allSettled(queryVideos)).map(
+        (prom) => prom.value?.data
+      );
+
+      section.videos?.push(...dataFromCentralApi?.filter(video=>!!video));
+
+      section.has_next_page = data?.page_info?.has_next_page;
+      if (section?.has_next_page) {
+        section.after = data?.page_info.end_cursor;
+        load?.done("ok");
+        console.log("Ok");
+      } else {
+        load?.done("empty");
+        console.log("Emptu", load);
+      }
+      section.loading = false;
+      sections.value = section;
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const saveOrUpdateReactionLite = async ({ relation, node }) => {
+    try {
+      const asset = allAssetReactions.value?.find(
+        (videeoAsset) => videeoAsset?.node?.asset_id === node?.asset_id
+      )?.node;
+
+      if (asset?.relation == relation) {
+        relation = "";
+      }
+
+      asset.origin = asset?.member_id
+
+      await addOrUpdateReactionLite({asset, relation})
+      asset.relation = asset?.relation === relation ? "" : relation;
+      key.value = key.value + 1;
     } catch (error) {
       console.error("Error", error);
     }
@@ -175,5 +251,7 @@ export const useHistory = () => {
     moveToWatch,
     getHistoryVideos,
     mapSegmentedVideos,
+    getHistoryVideosBtLite,
+    saveOrUpdateReactionLite
   };
 };

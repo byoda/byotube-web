@@ -15,7 +15,7 @@
             append-inner-icon="mdi-magnify" placeholder="Search" label="Search" outlined density="compact"
             @click:appendInner="search" @keyup.enter="search" />
         </div>
-        <div>
+        <div class="d-flex align-center">
           <v-menu v-if="route.name == 'Home'" offset-y transition="slide-x-transition" :close-on-content-click="false">
             <template v-slot:activator="{ props }">
               <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-tune-variant" color="secondary"
@@ -31,18 +31,25 @@
             </v-list>
           </v-menu>
           <template v-if="mdAndUp">
-            <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
-              v-if="!isAuthenticated" @click="$router.push({name:'SignIn'})">
-              <v-icon left size="26">mdi-account-circle</v-icon> Sign in
-            </BaseBtn>
+            <div v-if="!isAuthenticated" class="auth-toggle-btn-class">
+              <v-btn-toggle variant="outlined" density="compact" dense rounded="xl" :border="true" divided>
+                <v-btn @click="$router.push({ name: 'SignIn' })">
+                  Signin
+                </v-btn>
+                <v-btn @click="$router.push({ name: 'AccountOptions' })">
+                  Signup
+                </v-btn>
+              </v-btn-toggle>
+            </div>
             <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
               v-else-if="isAuthenticated" @click="logout">
               <v-icon left size="26">mdi-account-circle</v-icon> Sign out
             </BaseBtn>
           </template>
 
+
           <BaseBtn class="ma-2 hidden-lg-and-up" variant="outlined" icon="mdi-menu" color="secondary"
-            @click="coreStore.setDrawer(!coreStore.isDrawerOpen)"  size="small" />
+            @click="coreStore.setDrawer(!coreStore.isDrawerOpen)" size="small" />
         </div>
       </div>
     </v-app-bar>
@@ -98,13 +105,40 @@ const search = async () => {
   });
 }
 
-onMounted(()=>{
+onMounted(() => {
   filter.value = JSON.parse(localStorage.getItem('videos-filter')) || []
 })
 
 </script>
 
 <style lang="scss">
+.auth-toggle-btn-class {
+  .v-btn {
+    color: #00579d;
+    padding-inline: 10px !important;
+  }
+
+  .v-btn-group--density-compact.v-btn-group {
+    height: 38px;
+  }
+
+  .v-btn-group--border {
+    border: none !important;
+  }
+
+  .v-btn__overlay {
+    background-color: #f2f2f2 !important;
+  }
+
+  .v-btn__content {
+    font-size: 12px;
+  }
+
+  .v-btn-group--divided .v-btn:not(:last-child) {
+    border-inline-end-color: #00579d;
+  }
+}
+
 .v-list-item__avatar {
   justify-content: center !important;
 }

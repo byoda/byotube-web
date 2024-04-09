@@ -10,7 +10,7 @@ export const useSearch = () => {
   const offset = ref(0);
   const num = ref(30);
   const text = ref(route.query?.search_query);
-  const loaded = ref(false);
+  const loaded = ref(true);
   const queryChangeLoaded = ref(null);
   const noMoreResults = ref(false);
 
@@ -21,11 +21,15 @@ export const useSearch = () => {
         offset: offset.value,
         num: num.value,
       };
-
       loaded.value = true;
       const { data, status } = await searchAssets(filter);
-
-      if (data && status) {
+      if(!data?.length){
+        loaded.value = false
+        load?.done('empty')
+        return
+      }
+      if (data?.length && status) {
+        load?.done("ok");
         offset.value = offset.value + 30;
         const currentScrollPosition = window.scrollY;
         window.scrollBy(currentScrollPosition, -100);
@@ -33,14 +37,11 @@ export const useSearch = () => {
           videos.value.push(...data);
         });
       }
-
-      load?.done("ok");
     } catch (error) {
       console.error("Error", error);
-      load?.done("ok");
+      load?.done("error");
     } finally {
       loaded.value = false;
-      load?.done("ok");
       queryChangeLoaded.value = false;
     }
   };

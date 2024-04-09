@@ -1,13 +1,13 @@
 import { useAlert, useLoader } from "@/composables";
 import { useAuthService } from "@/services";
 import { useAuthStore } from "@/store";
-import { ref } from "vue";
+import { ref, toRefs } from "vue";
 import { useRouter } from "vue-router";
 
 export const useSignin = () => {
   const router = useRouter();
 
-  const authStore = useAuthStore();
+  const { setAccountType, setAuth } = toRefs(useAuthStore());
 
   const { showError } = useAlert();
   const { loader, showLoader, hideLoader } = useLoader();
@@ -30,24 +30,42 @@ export const useSignin = () => {
       const { valid } = await signinForm.value?.validate();
       if (!valid) return;
 
-      const { data, status } = await signinReq(
-        `https://${signinData.value.domain}/api/v1/pod/authtoken`,
-        { username: email, password, service_id }
-      );
+   
+      const url = signinData.value.domain
+        ? `https://${signinData.value.domain}/api/v1/pod/authtoken`
+        : "/lite/account/auth ";
+
+      const { data, status } = await signinReq(url, {
+        [`${signinData.value.domain ? 'username' : 'email'}`]: email,
+        password,
+        service_id,
+      });
 
       if (data && status == 200) {
         localStorage.setItem("token", data?.auth_token);
         localStorage.setItem("domain", signinData.value.domain);
-        authStore.setAuth(true);
+        setAuth.value(true);
+          setAuthAccountType();
         router.push({ name: "Home" });
       }
     } catch (error) {
+      console.log("Erre", error);
       if (error) {
-        const { detail } = error.response.data;
+        const { detail } = error?.response?.data;
         showError(detail);
       }
     } finally {
       hideLoader();
+    }
+  };
+
+  const setAuthAccountType = () => {
+    if (!signinData.value.domain) {
+      localStorage.setItem("account", "bt-lite");
+      setAccountType.value("bt-lite");
+    }else{
+      localStorage.setItem("account", "byotube");
+      setAccountType.value("byotube");
     }
   };
 
