@@ -178,6 +178,8 @@ export const useChannel = () => {
         remoteId.value,
         channel.value.created_timestamp
       );
+      emitter.emit("channel-followed");
+      setFollowed(remoteId.value);
       getFollowing.value = JSON.parse(
         window.localStorage.getItem("followedAccounts")
       );

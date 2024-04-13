@@ -1,4 +1,5 @@
 import {
+  useAlert,
   useAssetReaction,
   useFollow,
   useHelper,
@@ -18,6 +19,7 @@ export const useWatch = () => {
   const { isBtLiteAccount } = toRefs(useAuthStore());
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
+  const { showError } = useAlert();
   const {
     loader: videoLoading,
     showLoader: showVideoLoader,
@@ -221,11 +223,21 @@ export const useWatch = () => {
   };
 
   const followChannelWithBtLiteAccount = async () => {
-    await followWithBtLiteAccount(
-      asset.value.creator,
-      asset.value.origin,
-      asset.value.created_timestamp
-    );
+    try{
+      await followWithBtLiteAccount(
+        asset.value.creator,
+        asset.value.origin,
+        asset.value.created_timestamp
+      );
+      setFollowed(asset.value.origin);
+      followedAccounts.value = JSON.parse(
+        window.localStorage.getItem("followedAccounts")
+      );
+    }catch(error){
+      console.log("Error", error);
+      const { response: { data } } = error
+      showError(data?.detail)
+    }
   };
 
   const likeOrDislike = async (relation) => {

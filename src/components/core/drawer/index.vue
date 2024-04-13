@@ -27,11 +27,10 @@
                         @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
-                            <v-avatar v-else size="30" color="red">
-                                <span class="white--text">
-                                    {{
-                                        item.title.split('')[0].toUpperCase()
-                                    }}</span>
+                            <v-avatar v-else size="30" >
+                                <v-icon size="30">
+                                    mdi-account-circle
+                                </v-icon>
                             </v-avatar>
                         </template>
                         <v-list-item-title>
@@ -112,7 +111,6 @@ const items = [
             { title: "Home", link: "/", icon: "mdi-home", method: () => { } },
             { title: "About", link: null, target: "_blank", href: 'https://about.byo.tube/', icon: "mdi-information-variant-circle-outline", method: () => { } },
             { title: "FAQ", link: null, target: "_blank", href: 'https://about.byo.tube/faq', icon: "mdi-frequently-asked-questions", method: () => { } },
-            // { title: "Trending", link: "/trending", icon: "mdi-fire", method: () => { } },
             {
                 title: "Following",
                 link: '/following',

@@ -9,7 +9,7 @@ export const useHome = (props) => {
   const router = useRouter();
   const { width: windowWidth } = useDisplay();
 
-  const { isAuthenticated } = toRefs(useAuthStore());
+  const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore());
 
   const { getSegmentedVideos, getMemberAllVideos } = useVideo();
 
@@ -95,7 +95,7 @@ export const useHome = (props) => {
     try {
       section.loading = true;
       const videosData =
-        isAuthenticated.value && section.key === RECENT_UPLOADS
+        isAuthenticated.value && !isBtLiteAccount.value && section.key === RECENT_UPLOADS
           ? await getMemberAllVideos(
               section?.after,
               first ? first : videosAccordingToSize.value,

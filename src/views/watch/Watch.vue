@@ -63,19 +63,20 @@
                           <p class="ml-3 pb-0 pt-0 channel-name mr-4 cursor-pointer" @click="movetoChannel">
                             {{ asset?.creator }}
                           </p>
-                          <BaseBtn rounded variant="outlined" @click="
+                         
+                          <BaseBtn height="36" width="95" color="black" class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded  @click="
                           !isAuthenticated
                             ? openAuthDialog()
                             : isBtLiteAccount
                               ? followChannelWithBtLiteAccount()
                               : followChannel()
                           ">
-                            <p class="mb-0" v-if="getFollowing &&
+                            <p class="mb-0 text-subtitle-2" v-if="getFollowing &&
                                getFollowing.includes(asset?.origin)
                             ">
                               Followed
                             </p>
-                            <p class="mb-0" v-else>Follow</p>
+                            <p class="mb-0 text-subtitle-2" v-else>Follow</p>
                           </BaseBtn>
                         </div>
                         <div class="d-flex align-center">

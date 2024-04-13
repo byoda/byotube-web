@@ -2,7 +2,7 @@
   <div id="channel-home" :style="{ 'padding-inline': mdAndUp ? '65px' : '10px' }">
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loading" class="mr-1 mt-3 bg-transparent">
-        <v-parallax height="230" style="border-radius: 15px;" :src="channelCover?.url"></v-parallax>
+        <v-img height="230" cover style="border-radius: 15px;" :src="channelCover?.url"></v-img>
       </v-skeleton-loader>
     </div>
     <v-container class="py-0 px-0" id="my-cont">
@@ -34,7 +34,7 @@
                           class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
                           @click="isAuthenticated ? (isBtLiteAccount ? followChannelWithBtLiteAccount() : followChannel()) : openAuthDialog()">
                           <p class="subscribe-btn mb-0 px-2">
-                            {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }}
+                            {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }} 
                           </p>
                         </BaseBtn>
                       </div>
@@ -42,10 +42,7 @@
                         {{ textEllipsis(channel?.description, 340) }}
                       </p>
 
-                      <p v-html="dar">
-
-                      </p>
-
+                      <p v-html="dar" />
                     </v-col>
                   </v-row>
                 </template>
