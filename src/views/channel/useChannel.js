@@ -85,12 +85,12 @@ export const useChannel = () => {
     },
   });
 
-  const getChannel = async () => {
+  const getChannel = async (memberId, creator) => {
     loading.value = true;
 
     const queryObj = {
-      creator: channelName.value,
-      member_id: remoteId.value,
+      creator: creator || channelName.value,
+      member_id: memberId || remoteId.value,
     };
 
     const query = toQueryString(queryObj);
@@ -98,29 +98,30 @@ export const useChannel = () => {
     channel.value = data?.node;
 
     loading.value = false;
+
+    return data
   };
 
-  const getChannelVideos = async (event) => {
-    const { done } = event;
+  const getChannelVideos = async (load) => {
     try {
+      console.log("Deep inside");
       sections.value.loading = true;
       const data = await getSegmentedVideos(
         channelName.value,
         sections.value.after,
         9
       );
-
       if (!data?.page_info?.has_next_page && !data?.edges?.length) {
-        done("empty");
+        load?.done("empty");
       }
       if (!data?.edges?.length) return;
 
       sections.value.videos.push(...data?.edges);
       sections.value.after = data?.page_info?.end_cursor;
-      done("ok");
+      load?.done("ok");
     } catch (error) {
       console.log("Error", error);
-      done("error");
+      load?.done("error");
     } finally {
       sections.value.loading = false;
     }
@@ -140,6 +141,7 @@ export const useChannel = () => {
     if (isAuthenticated.value) {
       await getChannel();
     }
+    console.log(" acadasd");
     await getChannelVideos();
   };
 

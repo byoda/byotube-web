@@ -14,6 +14,7 @@ export const useSignin = () => {
   const { signIn: signinReq } = useAuthService();
 
   const signinForm = ref();
+  const accountType = ref('lite')
 
   const signinData = ref({
     email: null,
@@ -73,6 +74,7 @@ export const useSignin = () => {
     signinForm,
     loader,
     signinData,
+    accountType,
     signin,
   };
 };

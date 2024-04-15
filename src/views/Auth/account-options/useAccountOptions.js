@@ -126,13 +126,6 @@ export const useAccountOptions = () => {
       width: "300px",
     },
     {
-      title: "Anonymous",
-      key: "anonymous",
-      align: "center",
-      sortable: false,
-      width: "20",
-    },
-    {
       title: "Lite",
       key: "lite",
       align: "center",

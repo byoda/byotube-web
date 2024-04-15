@@ -27,10 +27,8 @@
                         @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
-                            <v-avatar v-else size="30" >
-                                <v-icon size="30">
-                                    mdi-account-circle
-                                </v-icon>
+                            <v-avatar v-else size="30" :image="item?.icon" >
+                                <v-icon v-if="!item?.icon" size="30">mdi-account-circle</v-icon>
                             </v-avatar>
                         </template>
                         <v-list-item-title>
@@ -90,6 +88,8 @@ import { computed, onMounted, ref, onUnmounted, toRefs } from "vue";
 import { useEmitter, useFollow, useVideo, useHelper } from "@/composables";
 import { useAuthStore, useCoreStore } from '@/store';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useChannel } from '@/views/channel/useChannel';
+import { all } from 'axios';
 
 const emits = defineEmits(['search'])
 const emitter = useEmitter()
@@ -98,6 +98,7 @@ const coreStore = useCoreStore()
 const { isAuthenticated } = toRefs(useAuthStore())
 
 const { getFollowedChannels } = useFollow()
+const { getChannel } = useChannel()
 const { service_id } = useVideo()
 const { uniqueArrayOfObjects } = useHelper()
 const { smAndDown } = useDisplay()
@@ -214,12 +215,14 @@ const moreChannels = () => {
     else channelLength.value = 3;
 }
 
-const mapChannelToPages = (channelArr) => {
-    return channelArr?.map(channel => {
+const mapChannelToPages = async (channelArr) => {
+    const getAllChannels = channelArr?.map(channel => getChannel(channel?.node?.member_id, channel.node.annotations[0]))
+    const allDaataa = await Promise.allSettled(getAllChannels)
+    return channelArr?.map((channel,index) => {
         return {
             title: channel.node.annotations[0],
             link: `/channels?member_id=${channel?.node?.member_id}&channel=${channel.node.annotations[0]}`,
-            icon: null
+            icon: allDaataa[index]?.value?.node?.channel_thumbnails[0]?.url
 
         }
     })
@@ -239,7 +242,7 @@ const getUniqueFollowing = (array) => {
 
 const getFollowData = async () => {
     const res = await getFollowedChannels(service_id)
-    items[2].pages = mapChannelToPages(getUniqueFollowing(res?.data.edges))
+    items[2].pages = await mapChannelToPages(getUniqueFollowing(res?.data.edges))
 }
 
 onMounted(async () => {

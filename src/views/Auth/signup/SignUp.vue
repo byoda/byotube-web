@@ -39,7 +39,7 @@
                     <p class="pl-0 mb-2">Already have an account? <span
                         class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Signin</span>
                     </p>
-                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loading" depressed @click="signup">
+                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loader" depressed @click="signup">
                       Sign up
                     </BaseBtn>
                     <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, get a BYODA Personal Data Server hosted by  <span
@@ -69,7 +69,7 @@ const route = useRoute()
 
 const loading = ref(false)
 
-const { signupData, signupForm, signup } = useSignup()
+const { loader, signupData, signupForm, signup } = useSignup()
 
 const accountType = ref(route.query['account-type'] || 'byotube')
 
