@@ -43,7 +43,7 @@
                       Sign up
                     </BaseBtn>
                     <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, get a BYODA Personal Data Server hosted by  <span
-                        class="text-primary cursor-pointer"> <a href="https://byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
+                        class="text-primary cursor-pointer"> <a href="https://api.byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
                     </p>
                   </div>
                 </BaseForm>
