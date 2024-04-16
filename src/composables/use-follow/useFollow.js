@@ -1,9 +1,12 @@
 import { useFollowService } from "@/services";
 import { ref } from "vue";
+import { useHelper } from "../use-helper/useHelper";
 
 export const useFollow = () => {
-  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite } =
+  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite, unfollowBtLite } =
     useFollowService();
+
+  const { toQueryString } = useHelper()
 
   const followedAccounts = ref(null);
 
@@ -40,6 +43,17 @@ export const useFollow = () => {
       created_timestamp: createdTimestamp,
     };
     return followBtLite(body);
+  };
+
+  const unfollowWithBtLiteAccount = (channelName, origin) => {
+    const body = {
+      relation: "follow",
+      annotation: channelName,
+      member_id: origin,
+    };
+
+    const query = toQueryString(body)
+    return unfollowBtLite(query);
   };
 
   const informPodAboutAccountFollow = ({
@@ -99,7 +113,10 @@ export const useFollow = () => {
         {}
       );
       const getFollowedIds = followedChannels?.data?.edges?.map(channel => {
-        return channel?.node?.member_id
+        return{
+          member_id: channel?.node?.member_id,
+          creator: channel?.node?.annotations[0]
+        }
       })
   
       localStorage.setItem('followedAccounts', JSON.stringify(getFollowedIds))
@@ -117,6 +134,7 @@ export const useFollow = () => {
     setFollowed,
     followChannel,
     getFollowedChannels,
-    followWithBtLiteAccount
+    followWithBtLiteAccount,
+    unfollowWithBtLiteAccount
   };
 };

@@ -70,11 +70,9 @@
                             : isBtLiteAccount
                               ? followChannelWithBtLiteAccount()
                               : followChannel()
-                          ">
-                            <p class="mb-0 text-subtitle-2" v-if="getFollowing &&
-                               getFollowing.includes(asset?.origin)
-                            ">
-                              Followed
+                          "> 
+                            <p class="mb-0 text-subtitle-2 follow-btn" v-if="isFollowed">
+                              Following
                             </p>
                             <p class="mb-0 text-subtitle-2" v-else>Follow</p>
                           </BaseBtn>
@@ -200,6 +198,7 @@ const {
   getFollowing,
   rightPanelVideos,
   videoNotfound,
+  isFollowed,
   getVideo,
   getAssetReactionsById,
   followChannel,
@@ -335,5 +334,10 @@ button.v-btn.remove-hover-bg {
   width: 100%;
   top: 30%;
   z-index: 1;
+}
+
+.follow-btn {
+  font-weight: 600;
+  font-size: 13px;
 }
 </style>

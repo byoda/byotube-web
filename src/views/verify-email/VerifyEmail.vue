@@ -17,7 +17,7 @@
             </div>
             <div class="text-center mt-6">
                 <BaseBtn class="bg-primary elevation-0 white-text" @click="$router.push({ name: 'Home' })">
-                    Move to Byo.tube
+                    Go to BYO.Tube
                     <template #append>
                         <v-icon class="text-white">
                             mdi-arrow-right

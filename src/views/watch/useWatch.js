@@ -20,6 +20,7 @@ export const useWatch = () => {
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
   const { showError } = useAlert();
+  const { getFollowedChannels } = useFollow();
   const {
     loader: videoLoading,
     showLoader: showVideoLoader,
@@ -45,6 +46,7 @@ export const useWatch = () => {
     setFollowed,
     informPodAboutAccountFollow,
     followWithBtLiteAccount,
+    unfollowWithBtLiteAccount
   } = useFollow();
 
   const { addOrUpdateReactionLite, fetchAssetReactionsLite } =
@@ -112,6 +114,21 @@ export const useWatch = () => {
     },
   });
 
+  const isFollowed = computed({
+    get(){
+      return getFollowing.value &&
+         getFollowing.value?.find(
+           (item) =>
+             item?.member_id === asset.value?.origin &&
+             item?.creator === asset.value?.creator
+         );
+    },
+    set(val){
+      getFollowing.value = null
+    }
+  }
+);
+
   const getVideoOptions = computed(() => videoOptions.value);
 
   const openAuthDialog = () => {
@@ -175,7 +192,7 @@ export const useWatch = () => {
                 );
           },
         },
-        autoplay:true,
+        autoplay: true,
         controls: true,
         responsive: true,
         poster: asset.value.video_thumbnail.url,
@@ -223,20 +240,32 @@ export const useWatch = () => {
   };
 
   const followChannelWithBtLiteAccount = async () => {
-    try{
+    try {
+      if(isFollowed.value) {
+        await unfollowWithBtLiteAccount(
+          asset.value.creator,
+          asset.value.origin,
+        )
+        isFollowed.value = null
+        const res = await getFollowedChannels();
+        getFollowing.value = mapFollowIds(res?.data?.edges);
+        return 
+      }
       await followWithBtLiteAccount(
         asset.value.creator,
         asset.value.origin,
         asset.value.created_timestamp
       );
-      setFollowed(asset.value.origin);
+      setFollowed({member_id: asset.value.origin, creator: asset?.value?.creator});
       followedAccounts.value = JSON.parse(
         window.localStorage.getItem("followedAccounts")
       );
-    }catch(error){
+    } catch (error) {
       console.log("Error", error);
-      const { response: { data } } = error
-      showError(data?.detail)
+      const {
+        response: { data },
+      } = error;
+      showError(data?.detail);
     }
   };
 
@@ -459,8 +488,8 @@ export const useWatch = () => {
 
   const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
-      if(assetReactions.value?.[0]?.node?.relation == relation){
-        relation = ""
+      if (assetReactions.value?.[0]?.node?.relation == relation) {
+        relation = "";
       }
       await addOrUpdateReactionLite({ asset: asset.value, bookmark, relation });
       assetReactions.value = await getAssetReactionsLiteAccount();
@@ -470,7 +499,12 @@ export const useWatch = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges?.map((edge) => edge?.node?.member_id);
+    return edges?.map((edge) => {
+      return {
+        member_id: edge?.node?.member_id,
+        creator: edge?.node?.annotations[0],
+      };
+    });
   };
 
   return {
@@ -506,6 +540,7 @@ export const useWatch = () => {
     getFollowing,
     rightPanelVideos,
     videoNotfound,
+    isFollowed,
     getVideo,
     followChannel,
     likeOrDislike,

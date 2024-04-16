@@ -23,7 +23,7 @@
                   </BaseTextfield>
 
                   <p class="ma-0 text-right">
-                    <BaseBtn variant="text" small class="pl-0 text-capitalize" color="primary" href="true">Forget
+                    <BaseBtn variant="text" small class="pl-0 text-capitalize" color="primary" href="true">Forgot
                       Password?</BaseBtn>
                   </p>
                   <BaseTextfield v-model="signinData.password" color="primary" name="Password" rules="required"

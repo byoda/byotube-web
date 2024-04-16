@@ -125,11 +125,7 @@
                 <template #body.append>
                   <tr>
                     <td></td>
-                    <td width="50">
-                      <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="openUrl('https://www.byo.tube/')">
-                        Back to BYO.Tube
-                      </BaseBtn>
-                    </td>
+                   
                     <td colspan="2" width="50">
                       <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
                         Get a Lite Account

@@ -90,6 +90,7 @@ import { useAuthStore, useCoreStore } from '@/store';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useChannel } from '@/views/channel/useChannel';
 import { all } from 'axios';
+import { onBeforeRouteUpdate } from 'vue-router';
 
 const emits = defineEmits(['search'])
 const emitter = useEmitter()
@@ -249,6 +250,7 @@ onMounted(async () => {
     if (isAuthenticated.value) {
         await getFollowData()
     }
+
     channelLength.value = 3
     emitter.on('channel-followed', async () => {
         await getFollowData()
@@ -257,6 +259,10 @@ onMounted(async () => {
 
 onUnmounted(() => {
     coreStore.CloseDialog(nonAuthSubscriptionDialog)
+})
+
+onBeforeRouteUpdate(async()=>{
+    await getFollowData()
 })
 
 

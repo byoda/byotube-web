@@ -14,8 +14,8 @@
                   <v-row>
                     <v-col cols="12">
                       <BaseRadioGroup v-model="accountType" hide-details label="Account Type" inline>
-                        <BaseRadio label="Lite" value="lite" />
-                        <BaseRadio  label="Byotube" value="byotube" />
+                        <BaseRadio label="BYO.Tube Lite" value="lite" />
+                        <BaseRadio  label="BYO.Tube with pod" value="byotube" />
                       </BaseRadioGroup>
                     </v-col>
                     <v-col cols="12" class="pb-0">
@@ -37,7 +37,7 @@
                   </v-row>
                   <div class="mt-6">
                     <p class="pl-0 mb-2">Already have an account? <span
-                        class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Signin</span>
+                        class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Sign in</span>
                     </p>
                     <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loader" depressed @click="signup">
                       Sign up
