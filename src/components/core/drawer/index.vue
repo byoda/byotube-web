@@ -15,19 +15,19 @@
                         <template #default>
                             <div class="font-weight-bold text-body-2">
                                 {{
-                                    parentItem.header
-                                }}
+        parentItem.header
+    }}
                             </div>
                         </template>
                     </v-list-subheader>
                     <v-list-item
                         v-for="(item, index) in parentItem.header == 'Following' ? parentItem?.pages?.filter((_, ind) => ind < channelLength) : parentItem.pages"
                         :key="index" rounded="xl" class="mb-0" :to="item.link && (item.link)
-                            " exact :href="item.href" :target="item.target" :value="item.link" color="primary"
+        " exact :href="item.href" :target="item.target" :value="item.link" color="primary"
                         @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
-                            <v-avatar v-else size="30" :image="item?.icon" >
+                            <v-avatar v-else size="30" :image="item?.icon">
                                 <v-icon v-if="!item?.icon" size="30">mdi-account-circle</v-icon>
                             </v-avatar>
                         </template>
@@ -41,15 +41,15 @@
                     </v-list-item>
 
                     <BaseBtn variant="text" id="showBtn" @click="moreChannels" v-if="parentItem.header === 'Following' &&
-                        isAuthenticated &&
-                        items[2]?.pages?.length > 3
-                        " class="text-none mt-1 rounded-pill"
+        isAuthenticated &&
+        items[2]?.pages?.length > 3
+        " class="text-none mt-1 rounded-pill"
                         :prepend-icon="channelLength === 3 ? 'mdi-chevron-down' : 'mdi-chevron-up'">
                         {{
-                            channelLength === 3
-                            ? `Show ${items[2]?.pages?.length - channelLength} more `
-                            : 'Show less'
-                        }}
+        channelLength === 3
+            ? `Show ${items[2]?.pages?.length - channelLength} more `
+            : 'Show less'
+    }}
                     </BaseBtn>
                     <BaseBtn class="pl-4" v-else-if="parentItem.header === 'Following' && !isAuthenticated" size="small"
                         variant="text" prepend-icon="mdi-shield-lock-outline"
@@ -60,20 +60,22 @@
             </v-list>
         </div>
         <template #append v-if="smAndDown">
-            <v-sheet :elevation="10" class="pa-2"  color="grey-lighten-3">
+            <v-sheet :elevation="10" class="pa-2" color="grey-lighten-3">
                 <div v-if="!isAuthenticated" class="text-center">
-                  <v-btn-toggle variant="elevated" density="compact" class="text- bg-white" dense :border="true" divided>
-                    <v-btn @click="$router.push({ name: 'SignIn' })">
-                      Signin
-                    </v-btn>
-                    <v-btn @click="$router.push({ name: 'AccountOptions' })">
-                      Signup
-                    </v-btn>
-                  </v-btn-toggle>
+                    <v-btn-toggle variant="elevated" density="compact" class="text- bg-white" dense :border="true"
+                        divided>
+                        <v-btn @click="$router.push({ name: 'SignIn' })">
+                            Signin
+                        </v-btn>
+                        <v-btn @click="$router.push({ name: 'AccountOptions' })">
+                            Signup
+                        </v-btn>
+                    </v-btn-toggle>
                 </div>
-                <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn bg-white w-100 secondary--text"
-                  v-else-if="isAuthenticated" @click="logout">
-                  <v-icon left size="26">mdi-account-circle</v-icon> Sign out
+                <BaseBtn variant="outlined" color="secondary"
+                    class="font-weight-bold auth-btn bg-white w-100 secondary--text" v-else-if="isAuthenticated"
+                    @click="logout">
+                    <v-icon left size="26">mdi-account-circle</v-icon> Sign out
                 </BaseBtn>
             </v-sheet>
         </template>
@@ -219,20 +221,22 @@ const moreChannels = () => {
 const mapChannelToPages = async (channelArr) => {
     const getAllChannels = channelArr?.map(channel => getChannel(channel?.node?.member_id, channel.node.annotations[0]))
     const allDaataa = await Promise.allSettled(getAllChannels)
-    return channelArr?.map((channel,index) => {
-        return {
-            title: channel.node.annotations[0],
-            link: `/channels?member_id=${channel?.node?.member_id}&channel=${channel.node.annotations[0]}`,
-            icon: allDaataa[index]?.value?.node?.channel_thumbnails[0]?.url
+    return channelArr?.reduce((prev, channel, index) => {
+        if (channel) {
+            return [...prev, {
+                title: channel?.node?.annotations[0],
+                link: `/channels?member_id=${channel?.node?.member_id}&channel=${channel?.node?.annotations[0]}`,
+                icon: allDaataa[index]?.value?.node?.channel_thumbnails?.[0]?.url
 
+            }]
         }
-    })
+    },[])
 }
 
 const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("domain");
-  window.location.reload();
+    localStorage.removeItem("token");
+    localStorage.removeItem("domain");
+    window.location.reload();
 }
 
 const getUniqueFollowing = (array) => {
@@ -244,6 +248,7 @@ const getUniqueFollowing = (array) => {
 const getFollowData = async () => {
     const res = await getFollowedChannels(service_id)
     items[2].pages = await mapChannelToPages(getUniqueFollowing(res?.data.edges))
+    console.log("Item", items[2].pages);
 }
 
 onMounted(async () => {
@@ -261,9 +266,6 @@ onUnmounted(() => {
     coreStore.CloseDialog(nonAuthSubscriptionDialog)
 })
 
-onBeforeRouteUpdate(async()=>{
-    await getFollowData()
-})
 
 
 </script>

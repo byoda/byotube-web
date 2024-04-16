@@ -85,6 +85,22 @@ export const useChannel = () => {
     },
   });
 
+  const isFollowed = computed({
+    get() {
+      return (
+        getFollowing.value &&
+        getFollowing.value?.find(
+          (item) =>
+            item?.member_id === asset.value?.origin &&
+            item?.creator === asset.value?.creator
+        )
+      );
+    },
+    set(val) {
+      getFollowing.value = null;
+    },
+  });
+
   const getChannel = async (memberId, creator) => {
     loading.value = true;
 
@@ -220,6 +236,7 @@ export const useChannel = () => {
     getFollowing,
     followLoading,
     channelCover,
+    isFollowed,
     getChannel,
     getChannelVideos,
     refreshData,

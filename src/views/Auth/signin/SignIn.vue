@@ -9,9 +9,9 @@
             </div>
             <v-card-title class="my-2">Sign in</v-card-title>
             <v-card-text>
-              <p class="mb-5">To become a member of BYO.Tube, you will need a BYODA personal data server. Please sign up
+              <!-- <p class="mb-5">To become a member of BYO.Tube, you will need a BYODA personal data server. Please sign up
                 for a personal data server at <a href="https://byo.host/"
-                  class="text-primary text-decoration-none">BYO.Host</a> </p>
+                  class="text-primary text-decoration-none">BYO.Host</a> </p> -->
               <BaseForm ref="signinForm">
                 <form @submit.prevent="signin">
                   <BaseRadioGroup v-model="accountType" class="ml-n4" hide-details label="Account Type" inline>
@@ -36,7 +36,7 @@
                     </BaseBtn>
                   </div>
                   <p class="pl-0 mb-2 mt-3">Don't have an account? <span class="text-primary cursor-pointer"
-                      @click="$router.push({ name: 'AccountOptions' })">Signup</span>
+                      @click="$router.push({ name: 'AccountOptions' })">Sign Up</span>
                   </p>
                 </form>
               </BaseForm>

@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 export const useSignup = () => {
-  const { showError, showSucces, showErrorPopup } = useAlert();
+  const { showError, showSuccess, showErrorPopup } = useAlert();
   const { loader, showLoader, hideLoader } = useLoader();
   const { createAccountLite } = useAuthService();
   const router = useRouter();

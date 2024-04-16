@@ -46,7 +46,7 @@ export const useWatch = () => {
     setFollowed,
     informPodAboutAccountFollow,
     followWithBtLiteAccount,
-    unfollowWithBtLiteAccount
+    unfollowWithBtLiteAccount,
   } = useFollow();
 
   const { addOrUpdateReactionLite, fetchAssetReactionsLite } =
@@ -115,19 +115,20 @@ export const useWatch = () => {
   });
 
   const isFollowed = computed({
-    get(){
-      return getFollowing.value &&
-         getFollowing.value?.find(
-           (item) =>
-             item?.member_id === asset.value?.origin &&
-             item?.creator === asset.value?.creator
-         );
+    get() {
+      return (
+        getFollowing.value &&
+        getFollowing.value?.find(
+          (item) =>
+            item?.member_id === asset.value?.origin &&
+            item?.creator === asset.value?.creator
+        )
+      );
     },
-    set(val){
-      getFollowing.value = null
-    }
-  }
-);
+    set(val) {
+      getFollowing.value = null;
+    },
+  });
 
   const getVideoOptions = computed(() => videoOptions.value);
 
@@ -241,22 +242,25 @@ export const useWatch = () => {
 
   const followChannelWithBtLiteAccount = async () => {
     try {
-      if(isFollowed.value) {
+      if (isFollowed.value) {
         await unfollowWithBtLiteAccount(
           asset.value.creator,
-          asset.value.origin,
-        )
-        isFollowed.value = null
+          asset.value.origin
+        );
+        isFollowed.value = null;
         const res = await getFollowedChannels();
         getFollowing.value = mapFollowIds(res?.data?.edges);
-        return 
+        return;
       }
       await followWithBtLiteAccount(
         asset.value.creator,
         asset.value.origin,
         asset.value.created_timestamp
       );
-      setFollowed({member_id: asset.value.origin, creator: asset?.value?.creator});
+      setFollowed({
+        member_id: asset.value.origin,
+        creator: asset?.value?.creator,
+      });
       followedAccounts.value = JSON.parse(
         window.localStorage.getItem("followedAccounts")
       );

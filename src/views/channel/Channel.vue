@@ -34,7 +34,7 @@
                           class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
                           @click="isAuthenticated ? (isBtLiteAccount ? followChannelWithBtLiteAccount() : followChannel()) : openAuthDialog()">
                           <p class="subscribe-btn mb-0 px-2">
-                            {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }} 
+                            {{ isFollowed ? 'Following' : 'Follow' }} 
                           </p>
                         </BaseBtn>
                       </div>
@@ -141,6 +141,7 @@ const {
   remoteId,
   followLoading,
   channelCover,
+  isFollowed,
   refreshData,
   getChannel,
   getChannelVideos,
