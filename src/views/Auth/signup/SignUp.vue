@@ -23,7 +23,7 @@
                         class="mb-1" variant="outlined" rules="required" />
                     </v-col>
                     <v-col cols="12">
-                      <BaseTextfield v-model="signupData.handle" label="Domain" name="Domain" color="primary"
+                      <BaseTextfield v-model="signupData.handle" :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'" name="Domain" color="primary"
                         variant="outlined" :rules="isByotubeAccount ? 'required' : ''" :disabled="!isByotubeAccount" :key="accountType" />
                     </v-col>
                     <v-col cols="12"  class="py-0">

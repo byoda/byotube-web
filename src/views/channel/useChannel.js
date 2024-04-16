@@ -91,8 +91,8 @@ export const useChannel = () => {
         getFollowing.value &&
         getFollowing.value?.find(
           (item) =>
-            item?.member_id === asset.value?.origin &&
-            item?.creator === asset.value?.creator
+            item?.member_id === remoteId.value &&
+            item?.creator === channelName.value
         )
       );
     },
@@ -213,7 +213,12 @@ export const useChannel = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges.map((edge) => edge?.node?.member_id);
+    return edges.map((edge) => {
+      return {
+        member_id: edge?.node?.member_id,
+        creator: edge?.node?.annotations[0],
+      };
+    });
   };
 
   return {
