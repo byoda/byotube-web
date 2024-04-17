@@ -8,7 +8,7 @@
           </div>
           <v-row class="justify-space-between px-4 pt-6 pb-5">
             <v-col cols="12">
-              <v-card-subtitle class="mb-5">Create your BYO.Tube Lite account</v-card-subtitle>
+              <v-card-subtitle class="mb-5">Create your BYO.Tube account</v-card-subtitle>
               <v-card-text>
                 <BaseForm ref="signupForm">
                   <v-row>
@@ -74,7 +74,7 @@ const { loader, signupData, signupForm, signup } = useSignup()
 const accountType = ref(route.query['account-type'] || 'byotube')
 
 const isByotubeAccount = computed(()=>{
-  return accountType.value === AccountType.BYOTUBE 
+  return accountType.value === AccountType.BYOTUBE
 })
 
 </script>
