@@ -2,7 +2,7 @@
     <div>
         <v-container class="container" fluid>
             <v-row>
-                <v-col cols="8">
+                <v-col offset="2" cols="8">
                     <v-sheet v-for="(video, i) in sections.videos" :key="i" class="long-text-ellipses mt-8"
                         position="relative" style="cursor: pointer;">
                         <video-card thumbnail-width="248" thumbnail-max-width="248" thumbnail-height="138"
@@ -31,7 +31,7 @@
                     <BaseInfiniteScroller class="mt-3" @load="isBtLiteAccount ? getHistoryVideosBtLite($event, sections, 20) : getHistoryVideos($event, sections, 20)" />
 
                 </v-col>
-                <v-col cols="4" class="d-none d-md-block px-5">
+                <!-- <v-col cols="4" class="d-none d-md-block px-5">
                     <div class="sticky-menu">
                         <div>
                             <BaseTextfield v-model="search" color="primary" variant="underlined" rounded hide-details
@@ -53,7 +53,7 @@
                             </v-list-item>
                         </div>
                     </div>
-                </v-col>
+                </v-col> -->
             </v-row>
         </v-container>
 

@@ -4,7 +4,7 @@
             <v-col col='3'>
                 <div class="d-flex flex-column align-center">
                     <v-img class="rounded-circle" width="136" height="136" cover
-                        :src="channel.channel_thumbnails[channel.channel_thumbnails.length - 1]?.url" />
+                        :src="findThumbnailWithMaxHeight(channel.channel_thumbnails,176)?.url" />
                 </div>
             </v-col>
             <v-col cols="8">
@@ -37,7 +37,7 @@ const props = defineProps({
     }
 })
 
-const { textEllipsis } = useHelper()
+const { textEllipsis, findThumbnailWithMaxHeight } = useHelper()
 
 </script>
 
