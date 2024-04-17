@@ -42,7 +42,7 @@
                     <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loader" depressed @click="signup">
                       Sign up
                     </BaseBtn>
-                    <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, get a BYODA Personal Data Server hosted by  <span
+                    <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, you need a BYODA Personal Data Server. You can get one from <span
                         class="text-primary cursor-pointer"> <a href="https://api.byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
                     </p>
                   </div>
