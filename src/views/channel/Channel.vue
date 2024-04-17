@@ -164,11 +164,10 @@ onMounted(async () => {
 
     const { data } = await getFollowedChannels()
     getFollowing.value = mapFollowIds(data.edges)
-
   }
 })
 
-watch(() => (route.query.member_id || route.query.channel), async () => {
+watch(() => (route.query.member_id , route.query.channel), async () => {
   refreshData(route.query.member_id, route.query.channel)
 }, { immediate: false })
 

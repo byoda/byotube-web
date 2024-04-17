@@ -23,8 +23,7 @@
                     <v-list-item
                         v-for="(item, index) in parentItem.header == 'Following' ? parentItem?.pages?.filter((_, ind) => ind < channelLength) : parentItem.pages"
                         :key="index" rounded="xl" class="mb-0" :to="item.link && (item.link)
-        " exact :href="item.href" :target="item.target" :value="item.link" color="primary"
-                        @click="item.method">
+        " exact :href="item.href" :target="item.target" :value="item.link" color="primary" @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
                             <v-avatar v-else size="30" :image="item?.icon">
@@ -219,18 +218,30 @@ const moreChannels = () => {
 }
 
 const mapChannelToPages = async (channelArr) => {
-    const getAllChannels = channelArr?.map(channel => getChannel(channel?.node?.member_id, channel.node.annotations[0]))
-    const allDaataa = await Promise.allSettled(getAllChannels)
+    const getAllChannels = channelArr?.map(channel => channel?.node?.annotations?.map(channelAnnotation => getChannel(channel?.node?.member_id, channelAnnotation)))?.flat()
+    const allData = await Promise.allSettled(getAllChannels)
+    const urls = allData?.filter((curr) => {
+        return curr.status == "fulfilled"
+    })
+
     return channelArr?.reduce((prev, channel, index) => {
         if (channel) {
-            return [...prev, {
-                title: channel?.node?.annotations[0],
-                link: `/channels?member_id=${channel?.node?.member_id}&channel=${channel?.node?.annotations[0]}`,
-                icon: allDaataa[index]?.value?.node?.channel_thumbnails?.[0]?.url
-
-            }]
+            return [
+                ...prev,
+                channel?.node?.annotations?.reduce((prevChannel, channelAnnotation, innerIndex) => {
+                    return [...prevChannel, {
+                        title: channelAnnotation,
+                        link: `/channels?member_id=${channel?.node?.member_id}&channel=${channelAnnotation}`,
+                        icon: findUrl(urls, channelAnnotation)
+                    }]
+                }, [])
+            ]
         }
-    },[])
+    }, [])?.flat()
+}
+
+const findUrl = (allChannels, creator) => {
+    return allChannels?.find(channel => channel?.value?.node?.creator === creator)?.value?.node?.channel_thumbnails?.[0]?.url
 }
 
 const logout = () => {
@@ -248,7 +259,6 @@ const getUniqueFollowing = (array) => {
 const getFollowData = async () => {
     const res = await getFollowedChannels(service_id)
     items[2].pages = await mapChannelToPages(getUniqueFollowing(res?.data.edges))
-    console.log("Item", items[2].pages);
 }
 
 onMounted(async () => {

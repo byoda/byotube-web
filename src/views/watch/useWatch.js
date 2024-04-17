@@ -503,12 +503,16 @@ export const useWatch = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges?.map((edge) => {
-      return {
-        member_id: edge?.node?.member_id,
-        creator: edge?.node?.annotations[0],
-      };
-    });
+    return edges
+      .map((edge) => {
+        return edge?.node?.annotations?.map((channel) => {
+          return {
+            member_id: edge?.node?.member_id,
+            creator: channel,
+          };
+        });
+      })
+      ?.flat();
   };
 
   return {

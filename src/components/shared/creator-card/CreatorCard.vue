@@ -17,7 +17,7 @@
                             @{{ channel?.creator?.replace(/\s/g, "") }}
                         </p>
                         <p class="channel-subtitle mb-0 mt-1">
-                            {{ channel?.description }}
+                            {{ textEllipsis(channel?.description, 300) }}
                         </p>
                     </div>
                 </div>
@@ -28,6 +28,7 @@
 
 <script setup>
 import { BaseBtn } from "@/components/base";
+import { useHelper } from "@/composables";
 
 const props = defineProps({
     channel: {
@@ -35,6 +36,8 @@ const props = defineProps({
         default: null
     }
 })
+
+const { textEllipsis } = useHelper()
 
 </script>
 

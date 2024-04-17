@@ -3,10 +3,15 @@ import { ref } from "vue";
 import { useHelper } from "../use-helper/useHelper";
 
 export const useFollow = () => {
-  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite, unfollowBtLite } =
-    useFollowService();
+  const {
+    follow,
+    informPodAboutFollow,
+    getFollowedAccounts,
+    followBtLite,
+    unfollowBtLite,
+  } = useFollowService();
 
-  const { toQueryString } = useHelper()
+  const { toQueryString } = useHelper();
 
   const followedAccounts = ref(null);
 
@@ -52,7 +57,7 @@ export const useFollow = () => {
       member_id: origin,
     };
 
-    const query = toQueryString(body)
+    const query = toQueryString(body);
     return unfollowBtLite(query);
   };
 
@@ -104,25 +109,27 @@ export const useFollow = () => {
   };
 
   const getFollowedChannels = async (serviceId) => {
-    try{
-      const followedChannels =  await getFollowedAccounts(
+    try {
+      const followedChannels = await getFollowedAccounts(
         {
           domain: initialState.domain,
           serviceId: serviceId ? serviceId : service_id,
         },
         {}
       );
-      const getFollowedIds = followedChannels?.data?.edges?.map(channel => {
-        return{
-          member_id: channel?.node?.member_id,
-          creator: channel?.node?.annotations[0]
-        }
-      })
-  
-      localStorage.setItem('followedAccounts', JSON.stringify(getFollowedIds))
-  
-      return followedChannels
-    }catch(error){
+      const getFollowedIds = followedChannels?.data?.edges?.map((channel) => {
+        return channel?.node?.annotations?.map((channelAnnotation) => {
+          return {
+            member_id: channel?.node?.member_id,
+            creator: channelAnnotation,
+          };
+        });
+      })?.flat();
+
+      localStorage.setItem("followedAccounts", JSON.stringify(getFollowedIds));
+
+      return followedChannels;
+    } catch (error) {
       console.error("Error", error);
     }
   };
@@ -135,6 +142,6 @@ export const useFollow = () => {
     followChannel,
     getFollowedChannels,
     followWithBtLiteAccount,
-    unfollowWithBtLiteAccount
+    unfollowWithBtLiteAccount,
   };
 };

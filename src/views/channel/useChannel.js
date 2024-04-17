@@ -120,7 +120,6 @@ export const useChannel = () => {
 
   const getChannelVideos = async (load) => {
     try {
-      console.log("Deep inside");
       sections.value.loading = true;
       const data = await getSegmentedVideos(
         channelName.value,
@@ -157,7 +156,6 @@ export const useChannel = () => {
     if (isAuthenticated.value) {
       await getChannel();
     }
-    console.log(" acadasd");
     await getChannelVideos();
   };
 
@@ -214,11 +212,13 @@ export const useChannel = () => {
 
   const mapFollowIds = (edges) => {
     return edges.map((edge) => {
-      return {
-        member_id: edge?.node?.member_id,
-        creator: edge?.node?.annotations[0],
-      };
-    });
+      return edge?.node?.annotations?.map(channel => {
+        return {
+          member_id: edge?.node?.member_id,
+          creator: channel,
+        };
+      })
+    })?.flat();
   };
 
   return {
