@@ -8,8 +8,6 @@
           <img src="@/assets/byotube-logo.png" :width="170" :height="39" contain
             @click="$router.push({ name: 'Home' })" />
         </div>
-        <!-- <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom
-            color="primary"></v-progress-linear> -->
         <div v-if="mdAndUp" class="search-field d-flex align-center">
           <BaseTextfield v-model="searchText" color="primary" variant="outlined" rounded hide-details
             append-inner-icon="mdi-magnify" placeholder="Search" label="Search" outlined density="compact"
@@ -21,14 +19,12 @@
               <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-tune-variant" color="secondary"
                 size="small" />
             </template>
-            <v-list>
-              <v-list-item v-for="(item, index) in options" :key="index">
-                <v-list-item-title>
-                  <v-checkbox :key="index" v-model="filter" :value="item" class="mt-0" hide-details :label="item.name"
-                    @change="emitter.emit('filter-changed', filter)" />
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
+            <BaseCard class="pt-3 pl-4 pr-7 rounded-lg shadow-smooth">
+              <v-radio-group v-model="filter" @update:model-value="emitter.emit('filter-changed', filter)">
+                <v-radio v-for="(item, index) in options" :key="index" :value="item" class="mt-0" hide-details :label="item.name">
+                </v-radio>
+              </v-radio-group>
+            </BaseCard>
           </v-menu>
           <template v-if="mdAndUp">
             <div v-if="!isAuthenticated" class="auth-toggle-btn-class">
@@ -59,7 +55,7 @@
 </template>
 
 <script setup>
-import { BaseTextfield, BaseBtn } from '@/components/base'
+import { BaseTextfield, BaseBtn, BaseCard } from '@/components/base'
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useEmitter } from "@/composables";
@@ -79,9 +75,10 @@ const route = useRoute()
 const router = useRouter()
 const emitter = useEmitter()
 
-const filter = ref([])
+const filter = ref({ name: "All", value: "" })
 
 const options = [
+  { name: "All", value: "" },
   { name: "YouTube Hosted", value: "external" },
   { name: "BYODA Hosted", value: "published" },
 ]
@@ -106,7 +103,7 @@ const search = async () => {
 }
 
 onMounted(() => {
-  filter.value = JSON.parse(localStorage.getItem('videos-filter')) || []
+  filter.value = JSON.parse(localStorage.getItem('videos-filter')) ||  { name: "All", value: "" }
 })
 
 </script>

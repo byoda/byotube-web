@@ -92,6 +92,7 @@ import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useChannel } from '@/views/channel/useChannel';
 import { all } from 'axios';
 import { onBeforeRouteUpdate } from 'vue-router';
+import router from '@/router';
 
 const emits = defineEmits(['search'])
 const emitter = useEmitter()
@@ -116,12 +117,14 @@ const items = [
             { title: "FAQ", link: null, target: "_blank", href: 'https://about.byo.tube/faq', icon: "mdi-frequently-asked-questions", method: () => { } },
             {
                 title: "Following",
-                link: '/following',
+                link: null,
                 icon: "mdi-youtube-subscription",
                 method: () => {
                     if (!isAuthenticated.value) {
                         coreStore.OpenDialog(nonAuthSubscriptionDialog)
+                        return
                     }
+                    router.push('/following')
                 }
             },
         ],
@@ -131,12 +134,14 @@ const items = [
         pages: [
             {
                 title: "History",
-                link: '/history',
+                link: null,
                 icon: "mdi-history",
                 method: () => {
                     if (!isAuthenticated.value) {
                         coreStore.OpenDialog(nonAuthSubscriptionDialog)
+                        return
                     }
+                    router.push('/history')
                 }
             },
         ],

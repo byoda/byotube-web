@@ -20,7 +20,7 @@
                     </v-col>
                     <v-col cols="12" class="pb-0">
                       <BaseTextfield v-model="signupData.email" label="Email" color="primary" name="Email"
-                        class="mb-1" variant="outlined" rules="required" />
+                        class="mb-1" variant="outlined" rules="required|email" />
                     </v-col>
                     <v-col cols="12">
                       <BaseTextfield v-model="signupData.handle" :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'" name="Domain" color="primary"
