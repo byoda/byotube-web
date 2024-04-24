@@ -11,11 +11,12 @@ import { useApp } from "@/composables"
 import { onUnmounted } from "vue";
 import { onMounted } from "vue";
 
-const { setSessionIdLocalStorage, removeSessionIdLocalStorage, setAuthAccountType } = useApp()
+const { setSessionIdLocalStorage, removeSessionIdLocalStorage, setAuthAccountType, setAccountStatus } = useApp()
 
 onMounted(()=>{
   setSessionIdLocalStorage()
   setAuthAccountType()
+  setAccountStatus()
 })
 
 onUnmounted(()=>{

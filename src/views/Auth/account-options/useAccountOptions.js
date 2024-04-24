@@ -139,13 +139,7 @@ export const useAccountOptions = () => {
       sortable: false,
       width: "120",
     },
-    {
-      title: "Standard",
-      key: "plain",
-      align: "center",
-      sortable: false,
-      width: "120",
-    },
+
     {
       title: "Creator",
       key: "creator",

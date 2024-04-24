@@ -36,6 +36,10 @@ export const useAuthService = () => {
     return Api.get(`lite/account/verify?${params}`);;
   };
 
+  const getStatus = async () => {
+    return Api.get(`status`);;
+  };
+
   return {
     signIn,
     signUp,
@@ -45,5 +49,6 @@ export const useAuthService = () => {
     me,
     createAccountLite,
     verifyEmail,
+    getStatus
   };
 };
