@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <p class="text-center text-grey-darken-3 mt-4">
-                    This feature requires you to be funded
+                    This features requires you to have funded your account
                 </p>
                 <div class="d-flex justify-center py-5 ga-3">
                     <BaseBtn variant="tonal" color="error" @click="coreStore.CloseDialog(nonFundedDialog)">
