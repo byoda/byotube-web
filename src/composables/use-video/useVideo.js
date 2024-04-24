@@ -69,7 +69,6 @@ export const useVideo = () => {
     ingestStatus = {}, //optional ingest status array for filtering on base external and pod content
     options = null //options to compare with ingest status array and it is required with ingest staus array
   ) => {
-    console.log("Ingesr stat", ingestStatus);
     const filter = {
       first: first,
       list_name: listName,

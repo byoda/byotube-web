@@ -15,35 +15,41 @@
                     <v-col cols="12">
                       <BaseRadioGroup v-model="accountType" hide-details label="Account Type" inline>
                         <BaseRadio label="BYO.Tube Lite" value="lite" />
-                        <BaseRadio  label="BYO.Tube with pod" value="byotube" />
+                        <BaseRadio label="BYO.Tube Creator" value="byotube" />
                       </BaseRadioGroup>
                     </v-col>
                     <v-col cols="12" class="pb-0">
-                      <BaseTextfield v-model="signupData.email" label="Email" color="primary" name="Email"
-                        class="mb-1" variant="outlined" rules="required|email" />
+                      <BaseTextfield v-model="signupData.email" label="Email" color="primary" name="Email" class="mb-1"
+                        variant="outlined" rules="required|email" />
                     </v-col>
                     <v-col cols="12">
-                      <BaseTextfield v-model="signupData.handle" :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'" name="Domain" color="primary"
-                        variant="outlined" :rules="isByotubeAccount ? 'required' : ''" :disabled="!isByotubeAccount" :key="accountType" />
+                      <BaseTextfield v-model="signupData.handle"
+                        :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'"
+                        name="Domain" color="primary" variant="outlined" :rules="isByotubeAccount ? 'required' : ''"
+                        :disabled="!isByotubeAccount" :key="accountType" />
                     </v-col>
-                    <v-col cols="12"  class="py-0">
-                      <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password" color="primary"
-                        variant="outlined" rules="required" />
+                    <v-col cols="12" class="py-0">
+                      <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password"
+                        color="primary" variant="outlined" rules="required" />
                     </v-col>
                     <v-col cols="12" class="">
-                      <BaseTextfield type="password" v-model="signupData.confirmPassword" name="Confirm Password" color="primary"
-                        label="Confirm Password" variant="outlined" rules="confirmed:@Password" />
+                      <BaseTextfield type="password" v-model="signupData.confirmPassword" :disabled="isByotubeAccount"
+                        name="Confirm Password" color="primary"
+                        :label="isByotubeAccount ? 'Password confirmation not needed for BYO.Tube Creator accounts' : 'Confirm Password'"
+                        variant="outlined" :rules="!isByotubeAccount ? 'confirmed:@Password' : ''" />
                     </v-col>
                   </v-row>
                   <div class="mt-6">
-                    <p class="pl-0 mb-2">Already have an account? <span
-                        class="text-primary cursor-pointer" @click="$router.push({ name: 'SignIn' })">Sign in</span>
+                    <p class="pl-0 mb-2">Already have an account? <span class="text-primary cursor-pointer"
+                        @click="$router.push({ name: 'SignIn' })">Sign in</span>
                     </p>
-                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loader" depressed @click="signup">
+                    <BaseBtn block type="submit" class="bg-primary elevation-0 white-text" :loading="loader" depressed
+                      @click="signup">
                       Sign up
                     </BaseBtn>
-                    <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, you need a BYODA Personal Data Server. You can get one from <span
-                        class="text-primary cursor-pointer"> <a href="https://api.byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
+                    <p class="pl-0 mb-2 mt-4">To create a full featured BYO.Tube account, you need a BYODA Personal Data
+                      Server. You can get one from <span class="text-primary cursor-pointer"> <a
+                          href="https://api.byo.host/signup" target="_blank" class="text-primary">BYO.Host</a></span>
                     </p>
                   </div>
                 </BaseForm>
@@ -73,12 +79,10 @@ const { loader, signupData, signupForm, signup } = useSignup()
 
 const accountType = ref(route.query['account-type'] || 'byotube')
 
-const isByotubeAccount = computed(()=>{
+const isByotubeAccount = computed(() => {
   return accountType.value === AccountType.BYOTUBE
 })
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

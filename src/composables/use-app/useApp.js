@@ -5,7 +5,7 @@ import { uuid } from "vue-uuid"
 
 export const useApp = () => {
 
-    const { setAccountType } = toRefs(useAuthStore())
+    const { setAccountType, setFunded } = toRefs(useAuthStore())
     const { getStatus } = useAuthService()
     
     const setSessionIdLocalStorage = () => {
@@ -25,7 +25,9 @@ export const useApp = () => {
     const setAccountStatus = async () => {
         try {
             const { data } = await getStatus()
-            console.log("Data", data);
+            if(data?.status === 'healthy'){
+                setFunded(false)
+            }
         } catch (error) {
             console.error("Error", error)
         }

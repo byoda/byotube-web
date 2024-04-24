@@ -15,7 +15,7 @@ export const useChannel = () => {
   const route = useRoute();
   const emitter = useEmitter();
 
-  const { isAuthenticated } = toRefs(useAuthStore());
+  const { isAuthenticated, isFunded } = toRefs(useAuthStore());
   const coreStore = useCoreStore();
 
   const {
@@ -59,6 +59,7 @@ export const useChannel = () => {
   const videos = ref({});
   const channel = ref({});
   const details = ref({});
+  const nonFundedDialog = "nonFundedDialog";
   const sections = ref({
     title: "Videos",
     key: "",
@@ -188,6 +189,10 @@ export const useChannel = () => {
 
   const followChannelWithBtLiteAccount = async () => {
     try{
+      if (!isFunded.value) {
+        coreStore.OpenDialog(nonFundedDialog);
+        return;
+      }
       showFollowLoading();
       await followWithBtLiteAccount(
         channelName.value,

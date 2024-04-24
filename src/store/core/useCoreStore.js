@@ -6,7 +6,7 @@ export const useCoreStore = defineStore("core", () => {
   const { mdAndUp } = useDisplay();
 
   const _drawer = ref(mdAndUp.value ? true : false);
-  // const filter
+  const fundedDialog = ref(false)
 
   const setDrawer = (val) => {
     _drawer.value = val;
@@ -40,6 +40,7 @@ export const useCoreStore = defineStore("core", () => {
   return {
     isDrawerOpen,
     getOpenedDialogs,
+    fundedDialog,
     setDrawer,
     OpenDialog,
     CloseDialog,

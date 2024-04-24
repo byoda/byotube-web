@@ -16,7 +16,7 @@ export const useWatch = () => {
   const router = useRouter();
 
   const coreStore = useCoreStore();
-  const { isBtLiteAccount } = toRefs(useAuthStore());
+  const { isBtLiteAccount, isFunded } = toRefs(useAuthStore());
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
   const { showError } = useAlert();
@@ -75,6 +75,7 @@ export const useWatch = () => {
   const showFull = ref(false);
   const videoJs = ref();
   const videoNotfound = ref(false);
+  const nonFundedDialog = "nonFundedDialog";
   const rightPanelVideos = ref({
     title: "",
     key: "",
@@ -242,6 +243,10 @@ export const useWatch = () => {
 
   const followChannelWithBtLiteAccount = async () => {
     try {
+      if (!isFunded.value) {
+        coreStore.OpenDialog(nonFundedDialog);
+        return;
+      }
       if (isFollowed.value) {
         await unfollowWithBtLiteAccount(
           asset.value.creator,
@@ -492,6 +497,10 @@ export const useWatch = () => {
 
   const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
+      if ((relation === LIKE || relation === DISLIKE) && !isFunded.value) {
+        coreStore.OpenDialog(nonFundedDialog);
+        return;
+      }
       if (assetReactions.value?.[0]?.node?.relation == relation) {
         relation = "";
       }
