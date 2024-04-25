@@ -125,7 +125,7 @@
                 <template #body.append>
                   <tr>
                     <td></td>
-                   
+
                     <td colspan="2" width="50">
                       <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'lite'}})">
                         Get a Lite Account
@@ -133,7 +133,7 @@
                     </td>
                     <td colspan="2" width="50">
                       <BaseBtn block color="primary" class="white-text elevation-0" size="small" @click="$router.push({name:'SignUp', query:{'account-type':'byotube'}})">
-                        Get a Byo.Tube Account
+                        Get a Creator Account
                       </BaseBtn>
                     </td>
                   </tr>
