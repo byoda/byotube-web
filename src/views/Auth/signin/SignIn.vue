@@ -14,12 +14,13 @@
                   class="text-primary text-decoration-none">BYO.Host</a> </p> -->
               <BaseForm ref="signinForm">
                 <form @submit.prevent="signin">
-                  <BaseRadioGroup v-model="accountType" class="ml-n4" hide-details label="Account Type" inline>
+                  <BaseRadioGroup v-model="accountType" class="ml-n4" hide-details label="Account Type" inline
+                    @update:modelValue="signinData.domain = null">
                     <BaseRadio label="BYO.Tube Lite" value="lite" />
                     <BaseRadio label="BYO.Tube with Pod" value="byotube" />
                   </BaseRadioGroup>
-                  <BaseTextfield v-model="signinData.email" class="mt-6" color="primary" name="Username" rules="required"
-                    label="Username" variant="outlined">
+                  <BaseTextfield v-model="signinData.email" class="mt-6" color="primary" name="Username"
+                    rules="required" label="Username" variant="outlined">
                   </BaseTextfield>
 
                   <p class="ma-0 text-right">
@@ -27,10 +28,12 @@
                       Password?</BaseBtn>
                   </p>
                   <BaseTextfield v-model="signinData.password" color="primary" name="Password" rules="required"
-                    type="password" label="Password" variant="outlined"></BaseTextfield>
-                  <BaseTextfield v-model="signinData.domain" color="primary" :disabled="accountType == AccountType.LITE" name="Domain"
-                    :rules="{ regex: /[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/ }" :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'" variant="outlined"
-                    class="mt-3"></BaseTextfield>
+                  :type="visible ? 'text' : 'password'" label="Password" variant="outlined"
+                    :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="visible = !visible" />
+                  <BaseTextfield v-model="signinData.domain" color="primary" :disabled="accountType == AccountType.LITE"
+                    name="Domain" :rules="{ regex: /[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}/ }"
+                    :label="accountType === AccountType.LITE ? 'Domain is not needed for BYO.Tube Lite accounts' : 'Domain'"
+                    variant="outlined" class="mt-3"></BaseTextfield>
                   <div class="mt-2 d-flex justify-space-between white-text">
                     <BaseBtn type="submit" block class="bg-primary elevation-0" :loading="loader" depressed>Sign in
                     </BaseBtn>
@@ -53,7 +56,7 @@ import { BaseBtn, BaseTextfield, BaseForm, BaseRadioGroup, BaseRadio } from '@/c
 import { useSignin } from './useSignin';
 import { AccountType } from '@/globals/constants';
 
-const { signinForm, loader, signinData, accountType, signin } = useSignin()
+const { signinForm, loader, signinData, accountType, visible, signin } = useSignin()
 
 </script>
 

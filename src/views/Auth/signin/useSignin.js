@@ -15,6 +15,7 @@ export const useSignin = () => {
 
   const signinForm = ref();
   const accountType = ref('lite')
+  const visible = ref(false)
 
   const signinData = ref({
     email: null,
@@ -75,6 +76,7 @@ export const useSignin = () => {
     loader,
     signinData,
     accountType,
+    visible,
     signin,
   };
 };

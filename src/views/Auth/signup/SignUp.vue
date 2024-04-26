@@ -29,14 +29,14 @@
                         :disabled="!isByotubeAccount" :key="accountType" />
                     </v-col>
                     <v-col cols="12" class="py-0">
-                      <BaseTextfield v-model="signupData.password" type="password" name="Password" label="Password"
-                        color="primary" variant="outlined" rules="required" />
+                      <BaseTextfield v-model="signupData.password" :type="passwordVisible ? 'text' : 'password'" name="Password" label="Password"
+                        color="primary" variant="outlined" rules="required"  :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="passwordVisible = !passwordVisible" />
                     </v-col>
                     <v-col cols="12" class="">
-                      <BaseTextfield type="password" v-model="signupData.confirmPassword" :disabled="isByotubeAccount"
+                      <BaseTextfield :type="confirmPasswordVisible ? 'text' : 'password'" v-model="signupData.confirmPassword" :disabled="isByotubeAccount"
                         name="Confirm Password" color="primary"
                         :label="isByotubeAccount ? 'Password confirmation not needed for BYO.Tube Creator accounts' : 'Confirm Password'"
-                        variant="outlined" :rules="!isByotubeAccount ? 'confirmed:@Password' : ''" />
+                        variant="outlined" :rules="!isByotubeAccount ? 'confirmed:@Password' : ''" :append-inner-icon="confirmPasswordVisible ? 'mdi-eye-off' : 'mdi-eye'" @click:append-inner="confirmPasswordVisible = !confirmPasswordVisible" />
                     </v-col>
                   </v-row>
                   <div class="mt-6">
@@ -75,7 +75,7 @@ const route = useRoute()
 
 const loading = ref(false)
 
-const { loader, signupData, signupForm, signup } = useSignup()
+const { loader, signupData, signupForm, passwordVisible, confirmPasswordVisible, signup } = useSignup()
 
 const accountType = ref(route.query['account-type'] || 'byotube')
 

@@ -9,9 +9,9 @@ export const useHelper = () => {
     });
   };
 
-  const textEllipsis = (text, length) => {
+  const textEllipsis = (text, length, dots = true) => {
     if (text?.length > length) {
-      return `${text?.slice(0, length)}...`;
+      return `${text?.slice(0, length)}${ dots ? '...' : ''}`;
     }
 
     return text

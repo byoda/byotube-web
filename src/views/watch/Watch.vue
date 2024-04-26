@@ -118,13 +118,11 @@
                       <!-- <p class="black--text" v-html="asset?.contents">
                       </p> -->
                       <p v-if="asset?.contents.length > 205 && !showFull">
-                        {{ textEllipsis(asset?.contents, 205) }}
+                        <span  v-html="textEllipsis(asset?.contents, 205, false)"></span>
                         <span v-if="asset?.contents.length > 205" class="font-weight-medium cursor-pointer"
                           @click="showFull = true">...more</span>
                       </p>
-                      <p v-else>
-                        {{ asset.contents }}
-                      </p>
+                      <p v-else v-html="asset.contents" />
                     </div>
                   </v-responsive>
                 </div>

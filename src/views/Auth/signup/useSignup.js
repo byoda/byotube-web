@@ -10,6 +10,8 @@ export const useSignup = () => {
   const router = useRouter();
 
   const signupForm = ref();
+  const passwordVisible = ref(false)
+  const confirmPasswordVisible = ref(false)
 
   const signupData = ref({
     email: null,
@@ -51,6 +53,8 @@ export const useSignup = () => {
     loader,
     signupData,
     signupForm,
+    passwordVisible,
+    confirmPasswordVisible,
     signup,
   };
 };
