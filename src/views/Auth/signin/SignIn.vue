@@ -17,7 +17,7 @@
                   <BaseRadioGroup v-model="accountType" class="ml-n4" hide-details label="Account Type" inline
                     @update:modelValue="signinData.domain = null">
                     <BaseRadio label="BYO.Tube Lite" value="lite" />
-                    <BaseRadio label="BYO.Tube with Pod" value="byotube" />
+                    <BaseRadio label="BYO.Tube Creator" value="byotube" />
                   </BaseRadioGroup>
                   <BaseTextfield v-model="signinData.email" class="mt-6" color="primary" name="Username"
                     rules="required" label="Username" variant="outlined">
