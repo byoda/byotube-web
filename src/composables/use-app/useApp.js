@@ -5,7 +5,8 @@ import { uuid } from "vue-uuid"
 
 export const useApp = () => {
 
-    const { setAccountType, setFunded } = toRefs(useAuthStore())
+    const { setAccountType } = toRefs(useAuthStore())
+    const { setFunded } = useAuthStore()
     const { getStatus } = useAuthService()
     
     const setSessionIdLocalStorage = () => {

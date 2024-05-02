@@ -12,6 +12,7 @@ import AccountOptions from "@/views/Auth/account-options/AccountOptions.vue";
 import Lists from "@/views/lists/Lists.vue";
 import { useAuthStore } from "@/store";
 import VerifyEmail from "@/views/verify-email/VerifyEmail.vue";
+import Payment from "@/views/payment/Payment.vue";
 
 const routes = [
   {
@@ -59,6 +60,11 @@ const routes = [
         path: "history",
         name: "History",
         component: History,
+      },
+      {
+        path: "payment",
+        name: "Payment",
+        component: Payment,
       },
     ],
   },
