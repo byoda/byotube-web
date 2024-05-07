@@ -1,10 +1,12 @@
 <template>
     <StripeElements v-if="stripeLoaded" v-slot="{ elements }" ref="elms" :stripe-key="stripeKey"
         :instance-options="instanceOptions" :elements-options="elementsOptions">
-        <StripeElement ref="card" :elements="elements" :options="cardOptions" class="stripe-input" />
-        <BaseBtn @click="pay(elements)">
-            Pay
-        </BaseBtn>
+        <StripeElement type="payment" ref="card" :elements="elements" :options="cardOptions" class="stripe-input" />
+        <div class="text-end mt-8">
+            <BaseBtn class="elevation-0 bg-primary white-text" :loading="loader" @click="pay(elements)">
+                Pay
+            </BaseBtn>
+        </div>
     </StripeElements>
 </template>
 
@@ -13,6 +15,7 @@ import { StripeElements, StripeElement, } from 'vue-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { ref, onBeforeMount } from 'vue'
 import { BaseBtn } from '@/components/base';
+import { useLoader } from '@/composables';
 
 const props = defineProps({
     secretKey: {
@@ -20,6 +23,8 @@ const props = defineProps({
         default: null
     }
 })
+
+const { loader, showLoader, hideLoader } = useLoader()
 
 
 const stripeKey = ref('pk_test_51Op1bNEDh9W5MMcuHw0GxVCNusal3VC7jtaRUPizccYqKlRLzJqoC3CQTaw9jQyyqTfuG7R5T7wp9O2ugCW12kVr00r3tO3AJG') // test key
@@ -46,16 +51,18 @@ onBeforeMount(() => {
     })
 })
 
-const pay = (elements) => {
-    // Get stripe element
-    const cardElement = card.value.stripeElement
+const pay = async (elements) => {
+    try {
+        showLoader()
+        const { error: submitError } = await elements.submit()
+        await elms.value.instance.confirmPayment({ clientSecret: props.secretKey, elements: elements, redirect: 'if_required' })
 
-    console.log("Elements", elements);
-    // Access instance methods, e.g. createToken()
-    elms.value.instance.confirmPayment({clientSecret: props.secretKey, elements: elements}).then((result) => {
-        // Handle result.error or result.token
-        console.log(result)
-    })
+    } catch (error) {
+        console.error("Error", error)
+    } finally {
+        hideLoader()
+    }
+
 }
 
 

@@ -42,13 +42,8 @@
                         </template>
                         Back
                     </BaseBtn>
-                    <div class="my-10">
-                        <PaymentCard :secret-key="secretKey" />
-                    </div>
-                    <div class="text-end">
-                        <BaseBtn class="elevation-0 bg-primary white-text" @click="step = 1">
-                            Pay
-                        </BaseBtn>
+                    <div class="mt-10">
+                        <PaymentCard ref="payment" :secret-key="secretKey" />
                     </div>
                 </div>
             </Transition>
@@ -71,6 +66,7 @@ const { loader, showLoader, hideLoader } = useLoader()
 const secretKey = ref('')
 const amount = ref(null)
 const step = ref(1)
+const payment = ref()
 
 const requestToken = async () => {
     try {
