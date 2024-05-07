@@ -2,7 +2,9 @@
     <StripeElements v-if="stripeLoaded" v-slot="{ elements }" ref="elms" :stripe-key="stripeKey"
         :instance-options="instanceOptions" :elements-options="elementsOptions">
         <StripeElement ref="card" :elements="elements" :options="cardOptions" class="stripe-input" />
-        
+        <BaseBtn @click="pay(elements)">
+            Pay
+        </BaseBtn>
     </StripeElements>
 </template>
 
@@ -10,10 +12,11 @@
 import { StripeElements, StripeElement, } from 'vue-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { ref, onBeforeMount } from 'vue'
+import { BaseBtn } from '@/components/base';
 
 const props = defineProps({
-    secretKey:{
-        type:String,
+    secretKey: {
+        type: String,
         default: null
     }
 })
@@ -43,12 +46,13 @@ onBeforeMount(() => {
     })
 })
 
-const pay = () => {
+const pay = (elements) => {
     // Get stripe element
     const cardElement = card.value.stripeElement
 
+    console.log("Elements", elements);
     // Access instance methods, e.g. createToken()
-    elms.value.instance.createToken(cardElement).then((result) => {
+    elms.value.instance.confirmPayment({clientSecret: props.secretKey, elements: elements}).then((result) => {
         // Handle result.error or result.token
         console.log(result)
     })
@@ -62,7 +66,7 @@ defineExpose({
 </script>
 
 <style>
-.stripe-input{
+.stripe-input {
     background-color: white;
     padding: 10px;
     border-radius: 8px;
