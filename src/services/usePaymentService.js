@@ -5,7 +5,8 @@ export const usePaymentService = () => {
   const { Api:byopayApi } = useAxios();
 
   const setByopayToken = (token) => {
-    byopayApi.defaults.headers.common.Authorization = `Bearer ${token}`
+    const byopayToken = localStorage.getItem('byopay-token')
+    byopayApi.defaults.headers.common.Authorization = `Bearer ${token || byopayToken}`
   }
   
   const requestThirdPartyToken = (appId) => {

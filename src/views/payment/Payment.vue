@@ -76,6 +76,7 @@ const requestToken = async () => {
         const { data } = await requestThirdPartyToken(appId)
         const { data: byopayData } = await requestByopayToken(data?.auth_token)
         setByopayToken(byopayData?.auth_token)
+        localStorage.setItem('byopay-token', byopayData?.auth_token)
         await getSecretKey()
 
     } catch (error) {

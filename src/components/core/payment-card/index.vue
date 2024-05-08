@@ -30,7 +30,7 @@ const props = defineProps({
 })
 
 const { loader, showLoader, hideLoader } = useLoader()
-const { getReceipt } = usePaymentService()
+const { getReceipt, setByopayToken } = usePaymentService()
 
 const stripeKey = ref('pk_test_51Op1bNEDh9W5MMcuHw0GxVCNusal3VC7jtaRUPizccYqKlRLzJqoC3CQTaw9jQyyqTfuG7R5T7wp9O2ugCW12kVr00r3tO3AJG') // test key
 const instanceOptions = ref({
@@ -70,6 +70,7 @@ const pay = async (elements) => {
         showLoader()
         const { error: submitError } = await elements.submit()
         await elms.value.instance.confirmPayment({ clientSecret: props.secretKey, elements: elements, redirect: 'if_required' })
+        setByopayToken()
         await receipt(props.paymentId)
 
     } catch (error) {
