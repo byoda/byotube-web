@@ -16,16 +16,21 @@ import { loadStripe } from '@stripe/stripe-js'
 import { ref, onBeforeMount } from 'vue'
 import { BaseBtn } from '@/components/base';
 import { useLoader } from '@/composables';
+import { usePaymentService } from '@/services';
 
 const props = defineProps({
     secretKey: {
+        type: String,
+        default: null
+    },
+    paymentId: {
         type: String,
         default: null
     }
 })
 
 const { loader, showLoader, hideLoader } = useLoader()
-
+const { getReceipt } = usePaymentService()
 
 const stripeKey = ref('pk_test_51Op1bNEDh9W5MMcuHw0GxVCNusal3VC7jtaRUPizccYqKlRLzJqoC3CQTaw9jQyyqTfuG7R5T7wp9O2ugCW12kVr00r3tO3AJG') // test key
 const instanceOptions = ref({
@@ -51,19 +56,29 @@ onBeforeMount(() => {
     })
 })
 
+
+const receipt = async (paymentId) => {
+    try {
+        await getReceipt(paymentId)
+    } catch (error) {
+        console.error("Error", error)
+    }
+}
+
 const pay = async (elements) => {
     try {
         showLoader()
         const { error: submitError } = await elements.submit()
         await elms.value.instance.confirmPayment({ clientSecret: props.secretKey, elements: elements, redirect: 'if_required' })
+        await receipt(props.paymentId)
 
     } catch (error) {
         console.error("Error", error)
     } finally {
         hideLoader()
     }
-
 }
+
 
 
 defineExpose({

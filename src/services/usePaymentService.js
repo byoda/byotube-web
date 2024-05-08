@@ -30,10 +30,15 @@ export const usePaymentService = () => {
     return byopayApi.post(`https://staging.byopay.me/api/v1/pay/purchase`, body)
   }
 
+  const getReceipt = (paymentId) => {
+    return byopayApi.get(`https://staging.byopay.me/api/v1/pay/receipt?payment_id=${paymentId}`)
+  }
+
   return {
     setByopayToken,
     requestThirdPartyToken,
     requestByopayToken,
-    requestSecretKey
+    requestSecretKey,
+    getReceipt
   };
 };

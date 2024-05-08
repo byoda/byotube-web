@@ -43,7 +43,7 @@
                         Back
                     </BaseBtn>
                     <div class="mt-10">
-                        <PaymentCard ref="payment" :secret-key="secretKey" />
+                        <PaymentCard ref="payment" :secret-key="secretKey" :payment-id="paymentId" />
                     </div>
                 </div>
             </Transition>
@@ -64,6 +64,7 @@ const { mdAndUp } = useDisplay()
 const { loader, showLoader, hideLoader } = useLoader()
 
 const secretKey = ref('')
+const paymentId = ref('')
 const amount = ref(null)
 const step = ref(1)
 const payment = ref()
@@ -92,6 +93,7 @@ const getSecretKey = async () => {
         }
         const { data } = await requestSecretKey(secretKeyBody)
         secretKey.value = data.client_secret
+        paymentId.value = data?.payment_id
         step.value = 2
     } catch (error) {
         console.error("Error", error)
