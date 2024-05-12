@@ -35,11 +35,16 @@ export const usePaymentService = () => {
     return byopayApi.get(`https://staging.byopay.me/api/v1/pay/receipt?payment_id=${paymentId}`)
   }
 
+  const attestBurstPoints = (claimedPoints) => {
+    return byopayApi.get(`https://staging.byopay.me/api/v1/pay/burst/attest?claimed_points=${claimedPoints}`)
+  }
+
   return {
     setByopayToken,
     requestThirdPartyToken,
     requestByopayToken,
     requestSecretKey,
-    getReceipt
+    getReceipt,
+    attestBurstPoints
   };
 };
