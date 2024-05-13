@@ -243,10 +243,6 @@ export const useWatch = () => {
 
   const followChannelWithBtLiteAccount = async () => {
     try {
-      if (!isFunded.value) {
-        coreStore.OpenDialog(nonFundedDialog);
-        return;
-      }
       if (isFollowed.value) {
         await unfollowWithBtLiteAccount(
           asset.value.creator,
@@ -497,10 +493,6 @@ export const useWatch = () => {
 
   const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
-      if ((relation === LIKE || relation === DISLIKE) && !isFunded.value) {
-        coreStore.OpenDialog(nonFundedDialog);
-        return;
-      }
       if (assetReactions.value?.[0]?.node?.relation == relation) {
         relation = "";
       }

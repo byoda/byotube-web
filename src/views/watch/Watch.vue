@@ -37,7 +37,7 @@
                       </div>
                       <video-player style="min-height: 480px; width: 100%" ref="videoJs" :options="getVideoOptions"
                         :key-id="key_id" :content-token="content_token" :key="playerKey" :asset-id="asset?.asset_id"
-                        :origin="asset?.origin" />
+                        :origin="asset?.origin" :member-id="memberId" :member-type="!isAuthenticated ? 'ANONYMOUS' : (isBtLiteAccount ? 'btlite' : 'member') " />
                     </div>
                     <v-card flat tile class="card" v-if="!videoNotfound">
                       <div class="d-flex justify-space-between">
@@ -173,6 +173,7 @@ const router = useRouter();
 const route = useRoute();
 
 const path = window.location.href;
+const account = localStorage.getItem('account')
 
 const { textEllipsis } = useHelper();
 const { getFollowedChannels } = useFollow();
