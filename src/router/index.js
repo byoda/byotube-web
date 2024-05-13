@@ -17,12 +17,12 @@ import Payment from "@/views/payment/Payment.vue";
 const routes = [
   {
     path: "/",
-    alias: "/byotube",
     name: "NonAuth",
     component: NonAuth,
     children: [
       {
         path: "/",
+        alias: "/index.html",
         name: "Home",
         component: Home,
       },
