@@ -34,7 +34,7 @@
                           class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
                           @click="isAuthenticated ? (isBtLiteAccount ? followChannelWithBtLiteAccount() : followChannel()) : openAuthDialog()">
                           <p class="subscribe-btn mb-0 px-2">
-                            {{ isFollowed ? 'Following' : 'Follow' }} 
+                            {{ isFollowed ? 'Following' : 'Follow' }}
                           </p>
                         </BaseBtn>
                       </div>
@@ -122,7 +122,7 @@ import { NonAuthDialog } from '@/components/shared';
 
 
 const { mdAndUp } = useDisplay()
-const dar = " <html><body>Check out all of Jackery's products here!  <a href='https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873'>https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873</a><p><p><p>summer feels like its over now... feeling happy and sad 😦</body></html>"
+const dar = " <html><body></body></html>"
 const route = useRoute()
 
 const { isAuthenticated } = toRefs(useAuthStore());
