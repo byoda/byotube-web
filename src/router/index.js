@@ -62,7 +62,7 @@ const routes = [
         component: History,
       },
       {
-        path: "payment",
+        path: "purchase",
         name: "Payment",
         component: Payment,
       },

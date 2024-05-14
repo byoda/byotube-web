@@ -2,7 +2,7 @@
     <div class="pa-5 ">
         <div class="d-flex flex-column align-center">
             <Transition name="slide-fade">
-                <div v-if="step === 1" class="border rounded-lg pa-10 bg-white " :class="{ 'w-50': mdAndUp }">
+                <div class="border rounded-lg pa-10 bg-white " :class="{ 'w-50': mdAndUp }">
                     <BaseForm ref="form">
                         <p class="font-weight-medium text-h4">
                             Buy burst points
@@ -29,24 +29,24 @@
                             </BaseBtn>
                         </div>
                     </BaseForm>
+                    <Transition name="slide-fade">
+                        <div v-if="step == 2"  class=" rounded-lg bg-white ">
+                            <!-- <BaseBtn variant="text" @click="step = 1">
+                                <template #prepend>
+                                    <v-icon>
+                                        mdi-chevron-left
+                                    </v-icon>
+                                </template>
+                                Back
+                            </BaseBtn> -->
+                            <div class="mt-10">
+                                <PaymentCard ref="payment" :secret-key="secretKey" :payment-id="paymentId" />
+                            </div>
+                        </div>
+                    </Transition>
                 </div>
             </Transition>
 
-            <Transition name="slide-fade">
-                <div v-if="step == 2" :class="{ 'w-50': mdAndUp }" class="border rounded-lg pa-10 bg-white ">
-                    <BaseBtn variant="text" @click="step = 1">
-                        <template #prepend>
-                            <v-icon>
-                                mdi-chevron-left
-                            </v-icon>
-                        </template>
-                        Back
-                    </BaseBtn>
-                    <div class="mt-10">
-                        <PaymentCard ref="payment" :secret-key="secretKey" :payment-id="paymentId" />
-                    </div>
-                </div>
-            </Transition>
         </div>
 
     </div>
