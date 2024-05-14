@@ -1,7 +1,6 @@
 <template>
   <nav id="navbar">
     <v-app-bar class="white" flat app clipped-left>
-
       <div class="d-flex justify-space-between toolbar-container px-4">
 
         <div class="d-flex align-center cursor-pointer">
@@ -26,6 +25,9 @@
               </v-radio-group>
             </BaseCard>
           </v-menu>
+          <div class="mr-5 mt-1 cursor-pointer" @click="$router.push({name:'Burst Points'})">
+            <img height="35" src="@/assets/Burst_icon.svg" alt="" srcset="">
+          </div>
           <template v-if="mdAndUp">
             <div v-if="!isAuthenticated" class="auth-toggle-btn-class">
               <v-btn-toggle variant="outlined" density="compact" dense rounded="xl" :border="true" divided>

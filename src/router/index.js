@@ -13,6 +13,7 @@ import Lists from "@/views/lists/Lists.vue";
 import { useAuthStore } from "@/store";
 import VerifyEmail from "@/views/verify-email/VerifyEmail.vue";
 import Payment from "@/views/payment/Payment.vue";
+import BurstPoints from "@/views/burst-points/BurstPoints.vue";
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
         path: "purchase",
         name: "Payment",
         component: Payment,
+      },
+      {
+        path: "burst",
+        name: "Burst Points",
+        component: BurstPoints,
       },
     ],
   },

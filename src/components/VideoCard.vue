@@ -4,8 +4,10 @@
       :max-width="setThumbnailMaxWidth" :max-height="searchCard ? 202 : 281" cover class="thumbnail cursor-pointer"
       :class="{ 'search-thumbnail': searchCard }"></v-img>
     <v-row no-gutters>
-      <v-col class="cursor-pointer" cols="1" v-if="card.type != 'noAvatar' && !smallCard && !searchCard" @click.stop="movetoChannel">
-        <div class="pl-0 pt-3" router :to="`/channels?member_id=${video?.node?.member_id}&channel=${video?.node?.annotations[0]}`">
+      <v-col class="cursor-pointer" cols="1" v-if="card.type != 'noAvatar' && !smallCard && !searchCard"
+        @click.stop="movetoChannel">
+        <div class="pl-0 pt-3" router
+          :to="`/channels?member_id=${video?.node?.member_id}&channel=${video?.node?.annotations[0]}`">
           <v-menu v-if="isAuthenticated" v-model="showMenu" offset-y origin="center center" :min-width="150" rounded
             transition="scale-transition" style="max-width: 600px;" :nudge-bottom="10" :close-on-content-click="false"
             :elevated="false">
@@ -43,11 +45,13 @@
         <v-card-title class="pl-2 pb-0 font-weight-bold whitespace-wrap cursor-pointer"
           :class="{ 'text-sm': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'py-0': smallCard, 'pb-1': searchCard }"
           style="line-height: 1.2rem" :style="{ 'font-size': searchCard ? '18px !important' : '16px' }">
-          {{ smallCard ? `${video?.title?.length > 35 ? `${video?.title?.slice(0, 35)}...` : video?.title}` : video?.title }}
+          {{ smallCard ? `${video?.title?.length > 35 ? `${video?.title?.slice(0, 35)}...` : video?.title}` :
+    video?.title }} 
         </v-card-title>
 
-        <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0 cursor-pointer" :class="{ 'text-xs': smallCard }" @click.stop="movetoChannel">
-          {{ video?.creator }} 
+        <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0 cursor-pointer" :class="{ 'text-xs': smallCard }"
+          @click.stop="movetoChannel">
+          {{ video?.creator }}
         </v-card-subtitle>
         <v-card-subtitle class="pl-2 pb-0 pt-0 mt-n1">
           {{ convertDateToDuration(video?.published_timestamp) }}
@@ -64,12 +68,16 @@
           </v-card-subtitle>
 
         </div>
-        <v-card-subtitle v-if="searchCard" class="pl-2 pb-0 pt-0 mt-n1 description-ellipses" @click.stop="movetoChannel">
+        <v-card-subtitle v-if="searchCard" class="pl-2 pb-0 pt-0 mt-n1 description-ellipses"
+          @click.stop="movetoChannel">
           {{ video?.contents }}
         </v-card-subtitle>
       </v-col>
       <v-col v-if="video?.ingest_status === EXTERNAL && !smallCard" cols="1" class="pt-2">
         <img src="@/assets/YouTube_icon.png" height="36" width="36" />
+      </v-col>
+      <v-col v-if="video?.ingest_status !== EXTERNAL && !smallCard && showBurstIcon" cols="1" class="pt-2">
+        <img height="30" src="@/assets/Burst_icon.svg" alt="" srcset="" class="mr-2">
       </v-col>
     </v-row>
   </v-card>
@@ -102,17 +110,17 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  thumbnailHeight:{
+  thumbnailHeight: {
     type: [Number, String],
-    default:203
+    default: 203
   },
-  thumbnailWidth:{
+  thumbnailWidth: {
     type: [Number, String],
-    default:null
+    default: null
   },
-  thumbnailMaxWidth:{
+  thumbnailMaxWidth: {
     type: [Number, String],
-    default:null
+    default: null
   },
   card: Object,
 })
@@ -124,7 +132,7 @@ const router = useRouter()
 const EXTERNAL = "external"
 const showMenu = ref(false)
 
-const movetoChannel = ()=>{
+const movetoChannel = () => {
   router.push(`/channels?member_id=${props.channel}&channel=${props.video?.creator}`)
 
 
@@ -138,15 +146,18 @@ const thumbnailForVideo = (video) => {
   else return video?.video_thumbnails?.[video?.video_thumbnails?.length - 1];
 };
 
-const setThumbnailWidth = computed(()=>{
+const setThumbnailWidth = computed(() => {
   return props.thumbnailWidth ? props.thumbnailWidth : (props.searchCard ? 360 : '100%')
 })
 
 
-const setThumbnailMaxWidth = computed(()=>{
+const setThumbnailMaxWidth = computed(() => {
   return props.thumbnailMaxWidth ? props.thumbnailMaxWidth : props.searchCard ? 360 : 'auto'
 })
 
+const showBurstIcon = computed(() => {
+  return !!props.video?.monetizations?.find(item => item.monetization_type !== 'free')
+})
 
 
 </script>
