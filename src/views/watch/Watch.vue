@@ -40,7 +40,7 @@
                         :origin="asset?.origin" :member-id="memberId" :member-type="!isAuthenticated ? 'ANONYMOUS' : (isBtLiteAccount ? 'btlite' : 'member') " />
                     </div>
                     <v-card flat tile class="card" v-if="!videoNotfound">
-                      <div class="d-flex justify-space-between">
+                      <div class="d-flex justify-space-between mt-2">
                         <div class="d-flex align-center mt-3">
                           <v-card-title class="pl-0 pb-0 pt-0 font-weight-medium">
                             {{ asset?.title }}
@@ -49,8 +49,11 @@
                         <div v-if="asset?.ingest_status === EXTERNAL" cols="1" class="pt-2">
                           <img src="@/assets/YouTube_icon.png" height="50" width="50" />
                         </div>
+                        <v-col v-if="asset?.ingest_status !== EXTERNAL && showBurstIcon" cols="1" class="mb-n4">
+                          <img height="35" src="@/assets/Burst_icon.svg" alt="" srcset="" class="ml-n3">
+                        </v-col>
                       </div>
-                      <div class="d-flex justify-space-between align-center">
+                      <div class="d-flex justify-space-between align-center mt-3">
                         <div class="d-flex align-center">
                           <v-avatar class="cursor-pointer" color="red" @click="movetoChannel">
                             <v-img v-if="asset?.creator_thumbnail" class="elevation-6"
@@ -166,6 +169,7 @@ import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
 import { NonAuthDialog, CopyUrlDialog } from "@/components/shared";
 import { useRouter, useRoute } from "vue-router";
 import { toRefs } from "vue";
+import { computed } from "vue";
 
 const coreStore = useCoreStore();
 const { isAuthenticated } = toRefs(useAuthStore());
@@ -226,6 +230,11 @@ const movetoChannel = () => {
     `/channels?member_id=${memberId}&channel=${asset.value?.creator}`
   );
 };
+
+const showBurstIcon = computed(() => {
+  return !!asset.value?.monetizations?.find(item => item.monetization_type !== 'free')
+})
+
 
 onMounted(async () => {
   if (!assetId && !memberId && !cursor) {
