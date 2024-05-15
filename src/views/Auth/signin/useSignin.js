@@ -1,11 +1,13 @@
-import { useAlert, useLoader } from "@/composables";
+import { useAlert, useBurstPoints, useLoader } from "@/composables";
 import { useAuthService } from "@/services";
 import { useAuthStore } from "@/store";
-import { ref, toRefs } from "vue";
+import { nextTick, ref, toRefs } from "vue";
 import { useRouter } from "vue-router";
 
 export const useSignin = () => {
   const router = useRouter();
+
+  const { attestUserBurstPoints } = useBurstPoints()
 
   const { setAccountType, setAuth } = toRefs(useAuthStore());
 
@@ -47,7 +49,9 @@ export const useSignin = () => {
         localStorage.setItem("token", data?.auth_token);
         localStorage.setItem("domain", signinData.value.domain);
         setAuth.value(true);
-          setAuthAccountType();
+        setAuthAccountType();
+        await nextTick()
+        await attestUserBurstPoints()
         router.push({ name: "Home" });
       }
     } catch (error) {

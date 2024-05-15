@@ -2,14 +2,18 @@ import { useAxios } from "@/composables";
 
 export const usePaymentService = () => {
   const { Api } = useAxios();
-  const { Api:byopayApi } = useAxios();
+  const { Api: byopayApi } = useAxios("https://staging.byopay.me/api/v1", true);
 
   const setByopayToken = (token) => {
-    const byopayToken = localStorage.getItem('byopay-token')
-    byopayApi.defaults.headers.common.Authorization = `Bearer ${token || byopayToken}`
-  }
-  
-  const requestThirdPartyToken = (appId) => {
+    const byopayToken = localStorage.getItem("byopay-token");
+    byopayApi.defaults.headers.Authorization = `Bearer ${
+      token || byopayToken
+    }`;
+
+    console.log("Auth token", byopayApi.defaults.headers.Authorization);
+  };
+
+  const requestThirdPartyToken = (appId) => {;
     return Api.post(`lite/account/app_token?app_id=${appId}`);
   };
 
@@ -28,16 +32,20 @@ export const usePaymentService = () => {
   };
 
   const requestSecretKey = (body) => {
-    return byopayApi.post(`https://staging.byopay.me/api/v1/pay/purchase`, body)
-  }
+    return byopayApi.post(`/pay/purchase`, body);
+  };
 
   const getReceipt = (paymentId) => {
-    return byopayApi.get(`https://staging.byopay.me/api/v1/pay/receipt?payment_id=${paymentId}`)
-  }
+    return byopayApi.get(`/pay/receipt?payment_id=${paymentId}`);
+  };
 
-  const attestBurstPoints = (claimedPoints) => {
-    return byopayApi.get(`https://staging.byopay.me/api/v1/pay/burst/attest?claimed_points=${claimedPoints}`)
-  }
+  const attestBurstPoints = (claimedPoints=1000) => {
+    return byopayApi.get(`/pay/burst/attest?claimed_points?claimed_points=${claimedPoints}`);
+  };
+
+  const getUserBurstPoints = () => {
+    return byopayApi.get(`/pay/burst/balance`);
+  };
 
   return {
     setByopayToken,
@@ -45,6 +53,7 @@ export const usePaymentService = () => {
     requestByopayToken,
     requestSecretKey,
     getReceipt,
-    attestBurstPoints
+    attestBurstPoints,
+    getUserBurstPoints
   };
 };

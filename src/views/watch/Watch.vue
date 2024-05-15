@@ -37,7 +37,8 @@
                       </div>
                       <video-player style="min-height: 480px; width: 100%" ref="videoJs" :options="getVideoOptions"
                         :key-id="key_id" :content-token="content_token" :key="playerKey" :asset-id="asset?.asset_id"
-                        :origin="asset?.origin" :member-id="memberId" :member-type="!isAuthenticated ? 'ANONYMOUS' : (isBtLiteAccount ? 'btlite' : 'member') " />
+                        :origin="asset?.origin" :member-id="memberId"
+                        :member-type="!isAuthenticated ? 'ANONYMOUS' : (isBtLiteAccount ? 'btlite' : 'member')" />
                     </div>
                     <v-card flat tile class="card" v-if="!videoNotfound">
                       <div class="d-flex justify-space-between mt-2">
@@ -66,14 +67,16 @@
                           <p class="ml-3 pb-0 pt-0 channel-name mr-4 cursor-pointer" @click="movetoChannel">
                             {{ asset?.creator }}
                           </p>
-                         
-                          <BaseBtn height="36" width="95" color="black" class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded  @click="
-                          !isAuthenticated
-                            ? openAuthDialog()
-                            : isBtLiteAccount
-                              ? followChannelWithBtLiteAccount()
-                              : followChannel()
-                          "> 
+
+                          <BaseBtn height="36" width="95" color="black"
+                            class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
+                            @click="
+    !isAuthenticated
+      ? openAuthDialog()
+      : isBtLiteAccount
+        ? followChannelWithBtLiteAccount()
+        : followChannel()
+    ">
                             <p class="mb-0 text-subtitle-2 follow-btn" v-if="isFollowed">
                               Following
                             </p>
@@ -84,22 +87,22 @@
                           <v-btn-toggle density="compact" class="toggle-btn-class" dense rounded="xl" :border="true"
                             divided>
                             <v-btn icon @click="
-                              !isAuthenticated
-                                ? openAuthDialog()
-                                : isBtLiteAccount
-                                  ? saveOrUpdateReactionLite({ relation: LIKE })
-                                  : likeOrDislike(LIKE)
-                            ">
+    !isAuthenticated
+      ? openAuthDialog()
+      : isBtLiteAccount
+        ? saveOrUpdateReactionLite({ relation: LIKE })
+        : likeOrDislike(LIKE)
+    ">
                               <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon>
                               <v-icon v-else size="24">mdi-thumb-up-outline</v-icon>
                             </v-btn>
                             <v-btn icon @click="
-                              !isAuthenticated
-                                ? openAuthDialog()
-                                : isBtLiteAccount
-                                  ? saveOrUpdateReactionLite({ relation: DISLIKE })
-                                  : likeOrDislike(DISLIKE)
-                            ">
+    !isAuthenticated
+      ? openAuthDialog()
+      : isBtLiteAccount
+        ? saveOrUpdateReactionLite({ relation: DISLIKE })
+        : likeOrDislike(DISLIKE)
+    ">
                               <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
                               <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
                             </v-btn>
@@ -121,7 +124,7 @@
                       <!-- <p class="black--text" v-html="asset?.contents">
                       </p> -->
                       <p v-if="asset?.contents.length > 205 && !showFull">
-                        <span  v-html="textEllipsis(asset?.contents, 205, false)"></span>
+                        <span v-html="textEllipsis(asset?.contents, 205, false)"></span>
                         <span v-if="asset?.contents.length > 205" class="font-weight-medium cursor-pointer"
                           @click="showFull = true">...more</span>
                       </p>
@@ -152,6 +155,7 @@
     </v-container>
     <NonAuthDialog />
     <CopyUrlDialog :url="path" />
+    <NonAuthMonitizedVideoDialog />
   </div>
 </template>
 
@@ -162,14 +166,15 @@ import VideoCard from "@/components/VideoCard.vue";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import { useWatch } from "./useWatch";
 import { onMounted } from "vue";
-import { useFollow, useHelper, useVideo } from "@/composables";
+import { useFollow, useHelper, useVideo, useBurstPoints } from "@/composables";
 import { useAuthStore, useCoreStore } from "@/store";
 import { onUnmounted } from "vue";
 import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
-import { NonAuthDialog, CopyUrlDialog } from "@/components/shared";
+import { NonAuthDialog, CopyUrlDialog, NonAuthMonitizedVideoDialog } from "@/components/shared";
 import { useRouter, useRoute } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
+
 
 const coreStore = useCoreStore();
 const { isAuthenticated } = toRefs(useAuthStore());
@@ -181,6 +186,7 @@ const account = localStorage.getItem('account')
 
 const { textEllipsis } = useHelper();
 const { getFollowedChannels } = useFollow();
+const { checkUserBurstPoints } = useBurstPoints()
 
 const {
   asset,
@@ -232,7 +238,13 @@ const movetoChannel = () => {
 };
 
 const showBurstIcon = computed(() => {
-  return !!asset.value?.monetizations?.find(item => item.monetization_type !== 'free')
+  const isMonitized = !!asset.value?.monetizations?.find(item => item.monetization_type !== 'free')
+  if(isMonitized && !isAuthenticated.value){
+    coreStore.OpenDialog('nonAuthMonitizedVideoDialog')
+    console.log("Video", videoJs.value?.player);
+    videoJs.value?.player?.autoplay(false)
+  }
+  return isMonitized
 })
 
 
@@ -253,20 +265,24 @@ onMounted(async () => {
 
   await getVideo(); // get Video from the route params
   if (isAuthenticated.value) {
-    assetReactions.value = isBtLiteAccount.value ?  await getAssetReactionsLiteAccount() :  await getAssetReactionsById(assetId);
+    assetReactions.value = isBtLiteAccount.value ? await getAssetReactionsLiteAccount() : await getAssetReactionsById(assetId);
     if (assetReactions.value.length) {
-      videoJs.value.player.on("loadstart", async() => {
+      videoJs.value.player.on("loadstart", async () => {
         videoJs.value.player.currentTime(
           +assetReactions.value[0]?.node?.bookmark
         );
-        await videoJs.value.player?.play()
-        videoJs.value.player?.autoplay('play')
+          await videoJs.value.player?.play()
+          videoJs.value.player?.autoplay('play')
       });
     }
     if (!assetReactions.value.length) {
-      isBtLiteAccount.value ? await saveOrUpdateReactionLite({bookmark:'0'}) : await addReactionAndBookmark(asset.value);
+      isBtLiteAccount.value ? await saveOrUpdateReactionLite({ bookmark: '0' }) : await addReactionAndBookmark(asset.value);
     }
   }
+
+  await checkUserBurstPoints()
+
+  
 });
 
 onUnmounted(() => [coreStore.setDrawer(true)]);
