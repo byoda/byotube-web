@@ -174,7 +174,6 @@ import { NonAuthDialog, CopyUrlDialog, NonAuthMonitizedVideoDialog } from "@/com
 import { useRouter, useRoute } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
-import { useDate } from "vuetify/lib/framework.mjs";
 
 
 const coreStore = useCoreStore();
@@ -183,17 +182,11 @@ const router = useRouter();
 const route = useRoute();
 
 const path = window.location.href;
-const account = localStorage.getItem('account')
 
 const { textEllipsis } = useHelper();
 const { getFollowedChannels } = useFollow();
 const { checkUserBurstPoints } = useBurstPoints()
 
-const attestation = JSON.parse(localStorage.getItem('attestation'))
-
-const { getMinutes, getDiff } = useDate()
-
-console.log("Minutes", getDiff(new Date(attestation?.created_timestamp),new Date(), 'minutes'));
 
 const {
   asset,

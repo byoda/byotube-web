@@ -6,6 +6,7 @@ import { useHelper } from "../use-helper/useHelper";
 import { uuid } from "vue-uuid";
 import { useAxios } from "../use-axios/useAxios";
 import { useDate } from "vuetify/lib/framework.mjs";
+import { useBurstPoints } from "../use-burstpoints/useBurstPoints";
 
 export const useVideo = () => {
   const route = useRoute();
@@ -26,6 +27,10 @@ export const useVideo = () => {
     queryPodForVideo,
     getAssetFromCentralData,
   } = useVideoService();
+
+  const { attestUserBurstPoints } = useBurstPoints()
+
+
 
   const { compareArrays } = useHelper();
 
@@ -240,9 +245,18 @@ export const useVideo = () => {
     }
   };
 
+  const isAttestationSixtyMinutesOld = () => {
+    const attestation = JSON.parse(localStorage.getItem("attestation"));
+    return ((new Date() - new Date(attestation?.created_timestamp))/60000) > 60
+  }
+
   const getItem = async (edge) => {
     const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
     const SIGNED_TOKEN = "dummy";
+
+    if(isAttestationSixtyMinutesOld()){
+      await attestUserBurstPoints()
+    }
 
     const attestation = JSON.parse(localStorage.getItem("attestation"));
     const memberIdType = localStorage.getItem("account")
