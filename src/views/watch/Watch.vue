@@ -193,7 +193,7 @@ const attestation = JSON.parse(localStorage.getItem('attestation'))
 
 const { getMinutes, getDiff } = useDate()
 
-console.log("Minutes", getDiff(new Date(),attestation?.created_timestamp, 'minutes'),);
+console.log("Minutes", getDiff(new Date(attestation?.created_timestamp),new Date(), 'minutes'));
 
 const {
   asset,

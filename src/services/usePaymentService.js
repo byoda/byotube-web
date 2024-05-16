@@ -40,7 +40,7 @@ export const usePaymentService = () => {
   };
 
   const attestBurstPoints = (claimedPoints=1000) => {
-    return byopayApi.get(`/pay/burst/attest?claimed_points?claimed_points=${claimedPoints}`);
+    return byopayApi.get(`/pay/burst/attest`);
   };
 
   const getUserBurstPoints = () => {
