@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("auth", () => {
   });
 
   const isBtLiteAccount = computed(() => {
-    return _accountType.value === "bt-lite"
+    return _accountType.value === "btlite"
   });
 
   const isFunded = computed(() => {

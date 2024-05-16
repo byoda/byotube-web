@@ -5,6 +5,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useHelper } from "../use-helper/useHelper";
 import { uuid } from "vue-uuid";
 import { useAxios } from "../use-axios/useAxios";
+import { useDate } from "vuetify/lib/framework.mjs";
 
 export const useVideo = () => {
   const route = useRoute();
@@ -244,7 +245,7 @@ export const useVideo = () => {
     const SIGNED_TOKEN = "dummy";
 
     const attestation = JSON.parse(localStorage.getItem("attestation"));
-    const memberIdType = JSON.parse(localStorage.getItem("member_id_type")) || 'btlite';
+    const memberIdType = localStorage.getItem("account")
 
     let asset = edge.node;
     asset.origin = edge.origin;

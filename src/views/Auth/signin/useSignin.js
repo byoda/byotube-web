@@ -67,8 +67,8 @@ export const useSignin = () => {
 
   const setAuthAccountType = () => {
     if (!signinData.value.domain) {
-      localStorage.setItem("account", "bt-lite");
-      setAccountType.value("bt-lite");
+      localStorage.setItem("account", "btlite");
+      setAccountType.value("btlite");
     }else{
       localStorage.setItem("account", "byotube");
       setAccountType.value("byotube");
