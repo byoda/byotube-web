@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <p class="text-center text-grey-darken-3 mt-4">
-                    This feature requires you to be logged in to your account
+                    This video requires you to be logged in to your account
                 </p>
                 <div class="d-flex justify-center py-5 ga-3">
                     <BaseBtn variant="tonal" color="success" @click="router.push({ name: 'SignIn' })">
