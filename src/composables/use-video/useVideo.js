@@ -243,12 +243,22 @@ export const useVideo = () => {
     const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
     const SIGNED_TOKEN = "dummy";
 
+    const attestation = JSON.parse(localStorage.getItem("attestation"));
+    const memberIdType = JSON.parse(localStorage.getItem("member_id_type")) || 'btlite';
+
     let asset = edge.node;
     asset.origin = edge.origin;
-
+    const body = {
+      service_id: constants.BYOTUBE_SERVICE_ID,
+      asset_id: asset.asset_id,
+      member_id: edge.origin,
+      member_id_type: memberIdType,
+      attestation: attestation,
+    };
     if (asset.ingest_status != "external") {
-      let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`;
-      const { data } = await Api.get(apiUrl);
+      let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token`;
+
+      const { data } = await Api.post(apiUrl, body);
 
       asset = {
         ...asset,
@@ -363,9 +373,7 @@ export const useVideo = () => {
   };
 
   const deleteReactionBtLiteAccount = ({ member_id, relation, annotation }) => {
-    return deleteAssetReaction(
-      { member_id, relation, annotation }
-    );
+    return deleteAssetReaction({ member_id, relation, annotation });
   };
 
   const deleteAllReactions = ({ depth, query_id, filter }) => {
@@ -512,6 +520,6 @@ export const useVideo = () => {
     getVideosFromPod,
     deleteAllReactions,
     getVideoFromFeedAsset,
-    deleteReactionBtLiteAccount
+    deleteReactionBtLiteAccount,
   };
 };
