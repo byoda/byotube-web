@@ -11,7 +11,7 @@ export const useBurstPoints = () => {
 
   const singleCallforByopayToken = async () => {
     try {
-      const appId = "f7d6d367-3d1a-4424-8ba5-139e8f3a51c3";
+      const appId = 'f7d6d367-3d1a-4424-8ba5-139e8f3a51c3';
       const { data } = await requestThirdPartyToken(appId);
       const { data: byopayData } = await requestByopayToken(data?.auth_token);
       setByopayToken(byopayData?.auth_token);

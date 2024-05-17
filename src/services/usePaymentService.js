@@ -1,8 +1,10 @@
 import { useAxios } from "@/composables";
 
 export const usePaymentService = () => {
+  const byopayBaseUrl = import.meta.env.VITE_BYOPAY_API_URL
+
   const { Api } = useAxios();
-  const { Api: byopayApi } = useAxios("https://staging.byopay.me/api/v1", true);
+  const { Api: byopayApi } = useAxios(byopayBaseUrl, true);
 
   const setByopayToken = (token) => {
     const byopayToken = localStorage.getItem("byopay-token");
@@ -18,7 +20,7 @@ export const usePaymentService = () => {
 
   const requestByopayToken = (token) => {
     return Api.get(
-      `https://staging.byopay.me/api/v1/pay/auth/external?token=${token}`,
+      `${byopayBaseUrl}/pay/auth/external?token=${token}`,
       {
         headers: {
           "Content-Type": "application/json",

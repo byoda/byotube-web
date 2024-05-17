@@ -31,13 +31,14 @@ const props = defineProps({
 
 const { loader, showLoader, hideLoader } = useLoader()
 const { getReceipt, setByopayToken, attestBurstPoints } = usePaymentService()
+const key = import.meta.env.VITE_STRIPE_KEY
 
-const stripeKey = ref('pk_test_51Op1bNEDh9W5MMcuHw0GxVCNusal3VC7jtaRUPizccYqKlRLzJqoC3CQTaw9jQyyqTfuG7R5T7wp9O2ugCW12kVr00r3tO3AJG') // test key
+const stripeKey = ref(key) // test key
 const instanceOptions = ref({
-    publishableKey: 'pk_test_51Op1bNEDh9W5MMcuHw0GxVCNusal3VC7jtaRUPizccYqKlRLzJqoC3CQTaw9jQyyqTfuG7R5T7wp9O2ugCW12kVr00r3tO3AJG'
+    publishableKey: key
 })
 const elementsOptions = ref({
-    clientSecret: 'pi_3PDaiyEDh9W5MMcu1qyr6THW_secret_toMtAklNOmVBm2pAaA9kYyGqa'
+    clientSecret: props.secretKey
 })
 const cardOptions = ref({
     // https://stripe.com/docs/stripe.js#element-options
