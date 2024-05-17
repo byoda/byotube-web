@@ -37,6 +37,10 @@ export const useCoreStore = defineStore("core", () => {
     }
   };
 
+  const EmptyDialogs = () => {
+    _OpenedDialogs.value = []
+  }
+
   return {
     isDrawerOpen,
     getOpenedDialogs,
@@ -44,5 +48,6 @@ export const useCoreStore = defineStore("core", () => {
     setDrawer,
     OpenDialog,
     CloseDialog,
+    EmptyDialogs
   };
 });

@@ -16,7 +16,7 @@ export const useWatch = () => {
   const router = useRouter();
 
   const coreStore = useCoreStore();
-  const { isBtLiteAccount, isFunded } = toRefs(useAuthStore());
+  const { isBtLiteAccount, isAuthenticated, isFunded } = toRefs(useAuthStore());
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
   const { showError } = useAlert();
@@ -152,6 +152,11 @@ export const useWatch = () => {
         memberId: memberId.value,
         cursor: cursor.value,
       });
+      const isMonitized = !!data?.node?.monetizations?.find(item => item.monetization_type !== 'free')
+      if(isMonitized && !isAuthenticated.value){
+        asset.value = data?.node
+        return
+      } 
       assetData = await getItem(data);
 
       if (!assetData) {

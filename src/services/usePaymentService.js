@@ -10,7 +10,6 @@ export const usePaymentService = () => {
       token || byopayToken
     }`;
 
-    console.log("Auth token", byopayApi.defaults.headers.Authorization);
   };
 
   const requestThirdPartyToken = (appId) => {;

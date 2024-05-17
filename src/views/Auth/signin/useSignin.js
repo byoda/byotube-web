@@ -2,12 +2,13 @@ import { useAlert, useBurstPoints, useLoader } from "@/composables";
 import { useAuthService } from "@/services";
 import { useAuthStore } from "@/store";
 import { nextTick, ref, toRefs } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 export const useSignin = () => {
   const router = useRouter();
+  const route = useRoute();
 
-  const { attestUserBurstPoints } = useBurstPoints()
+  const { attestUserBurstPoints } = useBurstPoints();
 
   const { setAccountType, setAuth } = toRefs(useAuthStore());
 
@@ -16,8 +17,11 @@ export const useSignin = () => {
   const { signIn: signinReq } = useAuthService();
 
   const signinForm = ref();
-  const accountType = ref('lite')
-  const visible = ref(false)
+  const accountType = ref("lite");
+  const visible = ref(false);
+
+  const assetId = route.query?.asset_id;
+  const memberId = route.query?.member_id;
 
   const signinData = ref({
     email: null,
@@ -34,13 +38,12 @@ export const useSignin = () => {
       const { valid } = await signinForm.value?.validate();
       if (!valid) return;
 
-   
       const url = signinData.value.domain
         ? `https://${signinData.value.domain}/api/v1/pod/authtoken`
         : "/lite/account/auth ";
 
       const { data, status } = await signinReq(url, {
-        [`${signinData.value.domain ? 'username' : 'email'}`]: email,
+        [`${signinData.value.domain ? "username" : "email"}`]: email,
         password,
         service_id,
       });
@@ -50,9 +53,13 @@ export const useSignin = () => {
         localStorage.setItem("domain", signinData.value.domain);
         setAuth.value(true);
         setAuthAccountType();
-        await nextTick()
-        await attestUserBurstPoints()
-        router.push({ name: "Home" });
+        await nextTick();
+        await attestUserBurstPoints();
+        if(assetId && memberId){
+          router.push({name:'Watch', query:{asset_id:assetId, member_id: memberId}})
+        }else{
+          router.push({ name: "Home" });
+        }
       }
     } catch (error) {
       console.log("Erre", error);
@@ -69,7 +76,7 @@ export const useSignin = () => {
     if (!signinData.value.domain) {
       localStorage.setItem("account", "btlite");
       setAccountType.value("btlite");
-    }else{
+    } else {
       localStorage.setItem("account", "byotube");
       setAccountType.value("byotube");
     }

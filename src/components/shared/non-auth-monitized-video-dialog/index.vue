@@ -11,7 +11,7 @@
                    This video requires you to be logged in and have burst points.
                </p>
                <div class="d-flex justify-center py-5 ga-3">
-                   <BaseBtn variant="tonal" color="success" @click="router.push({ name: 'SignIn' })">
+                   <BaseBtn variant="tonal" color="success" @click="moveToSigninPage">
                        SignIn
                    </BaseBtn>
                </div>
@@ -22,11 +22,18 @@
 
 <script setup>
 import { BaseBtn, BaseDialog, BaseCard } from '@/components/base'
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter()
+const route = useRoute()
+const assetId = route.query?.asset_id
+const memberId = route.query?.member_id
 
 const nonAuthMonitizedVideoDialog = 'nonAuthMonitizedVideoDialog'
+
+const moveToSigninPage = () => {
+    router.push({name:'SignIn', query:{asset_id:assetId, member_id: memberId}})
+}
 
 </script>
 

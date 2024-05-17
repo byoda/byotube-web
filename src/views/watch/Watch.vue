@@ -171,7 +171,7 @@ import { useAuthStore, useCoreStore } from "@/store";
 import { onUnmounted } from "vue";
 import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
 import { NonAuthDialog, CopyUrlDialog, NonAuthMonitizedVideoDialog } from "@/components/shared";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
 
@@ -241,7 +241,6 @@ const showBurstIcon = computed(() => {
   const isMonitized = !!asset.value?.monetizations?.find(item => item.monetization_type !== 'free')
   if(isMonitized && !isAuthenticated.value){
     coreStore.OpenDialog('nonAuthMonitizedVideoDialog')
-    console.log("Video", videoJs.value?.player);
     videoJs.value?.player?.autoplay(false)
   }
   return isMonitized
@@ -249,6 +248,7 @@ const showBurstIcon = computed(() => {
 
 
 onMounted(async () => {
+ 
   if (!assetId && !memberId && !cursor) {
     router.push({ name: "Home" });
   }
@@ -263,7 +263,9 @@ onMounted(async () => {
     getFollowing.value = mapFollowIds(res?.data?.edges);
   }
 
+
   await getVideo(); // get Video from the route params
+
   if (isAuthenticated.value) {
     assetReactions.value = isBtLiteAccount.value ? await getAssetReactionsLiteAccount() : await getAssetReactionsById(assetId);
     if (assetReactions.value.length) {
@@ -278,14 +280,18 @@ onMounted(async () => {
     if (!assetReactions.value.length) {
       isBtLiteAccount.value ? await saveOrUpdateReactionLite({ bookmark: '0' }) : await addReactionAndBookmark(asset.value);
     }
+    await checkUserBurstPoints()
   }
 
-  await checkUserBurstPoints()
 
   
 });
 
-onUnmounted(() => [coreStore.setDrawer(true)]);
+onUnmounted(() => {
+  coreStore.setDrawer(true)
+  coreStore.EmptyDialogs()
+});
+
 </script>
 
 <style lang="scss">
