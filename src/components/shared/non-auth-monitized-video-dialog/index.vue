@@ -1,5 +1,5 @@
 <template>
-    <BaseDialog :name="nonAuthMonitizedVideoDialog" width="auto" persistent>
+    <BaseDialog :name="nonAuthMonitizedVideoDialog" width="auto" :close-on-back="true">
        <template #default="{ isActive }">
            <BaseCard class="pa-8 rounded-xl">
             <div class="d-flex align-center justify-center">
@@ -22,6 +22,7 @@
 
 <script setup>
 import { BaseBtn, BaseDialog, BaseCard } from '@/components/base'
+import { useCoreStore } from '@/store';
 import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter()
@@ -30,11 +31,16 @@ const assetId = route.query?.asset_id
 const memberId = route.query?.member_id
 
 const nonAuthMonitizedVideoDialog = 'nonAuthMonitizedVideoDialog'
+const { CloseDialog,  } = useCoreStore()
 
 const moveToSigninPage = () => {
     router.push({name:'SignIn', query:{asset_id:assetId, member_id: memberId}})
 }
 
+window.onpopstate = (event) => {
+    CloseDialog(nonAuthMonitizedVideoDialog)
+    window.onpopstate = () =>{}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -88,8 +88,7 @@ const options = [
 const searchText = ref("")
 
 const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("domain");
+  localStorage.clear()
   window.location.reload();
 }
 
