@@ -11,7 +11,7 @@
           </h1>
         </div>
         <div>
-          <BaseBtn color="black" density="comfortable" @click="$router.push({name: 'Purchase'})">
+          <BaseBtn color="black" density="comfortable" @click="$router.push({name: 'Payment'})">
             Buy more
           </BaseBtn>
         </div>
