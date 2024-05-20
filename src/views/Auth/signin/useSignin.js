@@ -1,4 +1,5 @@
 import { useAlert, useBurstPoints, useLoader } from "@/composables";
+import { constants } from "@/globals/constants";
 import { useAuthService } from "@/services";
 import { useAuthStore } from "@/store";
 import { nextTick, ref, toRefs } from "vue";
@@ -27,7 +28,7 @@ export const useSignin = () => {
     email: null,
     password: null,
     domain: null,
-    service_id: import.meta.env.VITE_BYOTUBE_SERVICE_ID,
+    service_id: constants.BYOTUBE_SERVICE_ID,
   });
 
   const signin = async () => {
