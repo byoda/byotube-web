@@ -25,8 +25,8 @@
               </v-radio-group>
             </BaseCard>
           </v-menu>
-          <div class="mr-5 mt-1 cursor-pointer" @click="$router.push({name:'Burst Points'})">
-            <img height="35" src="@/assets/Burst_icon.svg" alt="" srcset="">
+          <div class="mr-5 ml-2 mt-1 cursor-pointer" @click="$router.push({name:'Transactions'})">
+            <img height="45" src="@/assets/Burst_icon.svg" alt="" srcset="">
           </div>
           <template v-if="mdAndUp">
             <div v-if="!isAuthenticated" class="auth-toggle-btn-class">

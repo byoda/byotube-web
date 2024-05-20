@@ -1,10 +1,17 @@
+import { useBurstPoints, useLoader } from "@/composables";
 import { usePaymentService } from "@/services";
 import { ref } from "vue";
 
 export const useTransactions = () => {
   const { getTransactions } = usePaymentService();
+  const { checkUserBurstPoints} = useBurstPoints()
+
+  const { loader, showLoader, hideLoader } = useLoader()
+  const { loader: tableLoader, showLoader: showTableLoader, hideLoader: hideTableLoader } = useLoader()
+
 
   const transactions = ref([]);
+  const balance = ref('')
 
   const headers = [
     {
@@ -72,16 +79,36 @@ export const useTransactions = () => {
 
   const getAllTransactions = async () => {
     try {
+      showTableLoader()
       const { data } = await getTransactions();
       transactions.value = data?.edges?.map((edge) => edge?.node);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error", error)
+    } finally {
+      hideTableLoader()
+    }
   };
 
+  const getBalance = async () => {
+    try {
+      showLoader()
+      balance.value = await checkUserBurstPoints()
+    } catch (error) {
+      console.error("Error", error)
+    } finally {
+      hideLoader()
+    }
+  }
+
   return {
+    balance,
     sources,
+    loader, 
+    tableLoader,
     transactionTypes,
     headers,
     transactions,
     getAllTransactions,
+    getBalance
   };
 };

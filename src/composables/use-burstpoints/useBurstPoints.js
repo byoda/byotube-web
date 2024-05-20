@@ -25,7 +25,8 @@ export const useBurstPoints = () => {
   const checkUserBurstPoints = async () => {
     try {
       await singleCallforByopayToken();
-      await getUserBurstPoints();
+      const { data } = await getUserBurstPoints(); 
+      return data
     } catch (error) {
       console.error("Error", error);
     }
