@@ -14,6 +14,7 @@ export const useBurstPoints = () => {
       const appId = 'f7d6d367-3d1a-4424-8ba5-139e8f3a51c3';
       const { data } = await requestThirdPartyToken(appId);
       const { data: byopayData } = await requestByopayToken(data?.auth_token);
+      console.log("Byopaay data", byopayData);
       setByopayToken(byopayData?.auth_token);
       localStorage.setItem("byopay-token", byopayData?.auth_token);
     } catch (error) {
@@ -43,5 +44,6 @@ export const useBurstPoints = () => {
   return {
     checkUserBurstPoints,
     attestUserBurstPoints,
+    singleCallforByopayToken
   };
 };

@@ -2,7 +2,7 @@ import { useAuthStore } from "@/store";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
-export const useAxios = (baseURL, otherToken = false) => {
+export const useAxios = (baseURL, tokenKey = "token") => {
   const router = useRouter();
   const authStore = useAuthStore();
 
@@ -12,11 +12,9 @@ export const useAxios = (baseURL, otherToken = false) => {
 
   axiosInstance.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem("token");
-      if (token && !otherToken) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config
+      const token = localStorage.getItem(tokenKey);
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
     },
     (error) => {
       return Promise.reject(error);

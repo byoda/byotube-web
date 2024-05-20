@@ -4,7 +4,7 @@ export const usePaymentService = () => {
   const byopayBaseUrl = import.meta.env.VITE_BYOPAY_API_URL
 
   const { Api } = useAxios();
-  const { Api: byopayApi } = useAxios(byopayBaseUrl, true);
+  const { Api: byopayApi } = useAxios(byopayBaseUrl, 'byopay-token');
 
   const setByopayToken = (token) => {
     const byopayToken = localStorage.getItem("byopay-token");
@@ -48,6 +48,10 @@ export const usePaymentService = () => {
     return byopayApi.get(`/pay/burst/balance`);
   };
 
+  const getTransactions = (query = null) => {
+    return byopayApi.get(`/pay/burst/transactions`);
+  };
+
   return {
     setByopayToken,
     requestThirdPartyToken,
@@ -55,6 +59,7 @@ export const usePaymentService = () => {
     requestSecretKey,
     getReceipt,
     attestBurstPoints,
-    getUserBurstPoints
+    getUserBurstPoints,
+    getTransactions
   };
 };
