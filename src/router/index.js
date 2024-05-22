@@ -118,14 +118,14 @@ router.beforeEach((to, from, next) => {
     "Gaming",
     "Channels",
   ];
-  const authRoutes = ["Host"];
+  const authRoutes = ["Payment", "Transactions"];
   const authPages = ["SignIn", "Signup"];
   const isAuthPages = authPages.includes(to.name);
   const isAuthRoute = authRoutes.includes(to.name);
   const isNonAuthRoute = nonAuthRoutes.includes(to.name);
 
   if (authStore.isAuthenticated && isAuthPages) {
-    next("home");
+    next("Home");
   } else if (!authStore.isAuthenticated && isAuthRoute) {
     next("signin");
   } else {

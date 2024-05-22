@@ -25,7 +25,7 @@
               </v-radio-group>
             </BaseCard>
           </v-menu>
-          <div class="mr-5 ml-2 mt-1 cursor-pointer" @click="$router.push({name:'Transactions'})">
+          <div class="mr-5 ml-2 mt-1 cursor-pointer" @click="isAuthenticated ? $router.push({name:'Transactions'}) : coreStore.OpenDialog(nonAuthSubscriptionDialog)">
             <img height="45" src="@/assets/Burst_icon.svg" alt="" srcset="">
           </div>
           <template v-if="mdAndUp">
@@ -51,8 +51,8 @@
         </div>
       </div>
     </v-app-bar>
-
     <Drawer />
+    <NonAuthDialog />
   </nav>
 </template>
 
@@ -65,6 +65,7 @@ import Drawer from '../drawer/index.vue'
 import { useAuthStore, useCoreStore } from '@/store';
 import { toRefs } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { NonAuthDialog } from '@/components/shared';
 
 const emits = defineEmits(['search'])
 
@@ -76,6 +77,8 @@ const { mdAndUp } = useDisplay()
 const route = useRoute()
 const router = useRouter()
 const emitter = useEmitter()
+
+const nonAuthSubscriptionDialog = 'nonAuthSubscription'
 
 const filter = ref({ name: "All", value: "" })
 

@@ -1,3 +1,4 @@
+import { constants } from "@/globals/constants";
 import { usePaymentService } from "@/services";
 
 export const useBurstPoints = () => {
@@ -12,9 +13,14 @@ export const useBurstPoints = () => {
   const singleCallforByopayToken = async () => {
     try {
       const appId = 'f7d6d367-3d1a-4424-8ba5-139e8f3a51c3';
-      const { data } = await requestThirdPartyToken(appId);
+      const domain = localStorage.getItem('domain')
+      const body = {
+        service_id: constants.BYOTUBE_SERVICE_ID,
+        target_id: appId,
+        target_type: 'apps-'
+      }
+      const { data } = await requestThirdPartyToken(appId, domain, body);
       const { data: byopayData } = await requestByopayToken(data?.auth_token);
-      console.log("Byopaay data", byopayData);
       setByopayToken(byopayData?.auth_token);
       localStorage.setItem("byopay-token", byopayData?.auth_token);
     } catch (error) {

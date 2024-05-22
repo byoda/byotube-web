@@ -1,6 +1,7 @@
 import { useFollowService } from "@/services";
 import { ref } from "vue";
 import { useHelper } from "../use-helper/useHelper";
+import { constants } from "@/globals/constants";
 
 export const useFollow = () => {
   const {
@@ -24,7 +25,7 @@ export const useFollow = () => {
     user: null,
   };
 
-  const service_id = import.meta.env.VITE_BYOTUBE_SERVICE_ID;
+  const service_id = constants.BYOTUBE_SERVICE_ID;
 
   //Follow
   const followAccount = (channelName, origin, createdTimestamp) => {

@@ -48,7 +48,7 @@ export const useVideo = () => {
   const content_token = ref(null);
   const videoOptions = ref({});
 
-  const service_id = import.meta.env.VITE_BYOTUBE_SERVICE_ID;
+  const service_id = constants.BYOTUBE_SERVICE_ID;
   const initialState = {
     auth_token:
       typeof window !== "undefined"
