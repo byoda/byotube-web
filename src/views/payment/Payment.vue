@@ -8,27 +8,36 @@
                             Buy burst points
                         </p>
                         <div class="mt-10 d-flex align-center g-x-2">
-                            <BaseTextfield v-model="amount" color="primary" label="Amount" prefix="$" hide-details :focused="true"
-                                name="amount" rules="numeric" density="comfortable" variant="outlined" />
-                                <p class="text-body-1 pl-2"> = {{ amount * 1000 }} burst points </p>
+                            <v-col cols="6">
+                                <BaseTextfield v-model="amount" color="primary" label="Amount" prefix="$" hide-details :focused="true"
+                                    name="amount" rules="numeric" density="comfortable" variant="outlined" />
+                            </v-col>
+                            <v-col cols="6">
+                                <p class="text-body-1 pl-2"> = {{ addTrailingCommas(amount * 1000) }} burst points </p>
+                            </v-col>
                         </div>
-                        <div class="mt-3">
+                        <div class="mt-3 d-flex">
                             <p class=" font-weight-medium">
                                 $1 equals:
                             </p>
-                            <p class="text-body-1"> 1000 burst points </p>
+                            <p class="text-body-1 pl-2"> 1,000 burst points </p>
+                        </div>
+                        <div>
+                            <p>
+                                Watching one minute of video costs 1 burst point, equivalent to 1/10 of a cent. 
+                            </p>
                         </div>
                         <!-- <div class="mt-5" v-if="amount">
                             <p class=" font-weight-medium">
                                 You'll have
                             </p>
                             <p class="text-body-1"> {{ amount * 1000 }} burst points </p>
-                        </div>
+                        </div> -->
                         <div class="mt-5 text-end">
                             <BaseBtn class="bg-black elevation-0 white-text" @click="requestToken" :loading="loader">
                                 Next
                             </BaseBtn>
-                        </div> -->
+                        </div>
                     </BaseForm>
                     <Transition name="slide-fade">
                         <div v-if="step == 2" class=" rounded-lg bg-white ">
@@ -47,7 +56,7 @@
 <script setup>
 import { BaseBtn, BaseForm, BaseTextfield } from "@/components/base"
 import { PaymentCard } from "@/components/core";
-import { useLoader } from "@/composables";
+import { useHelper, useLoader } from "@/composables";
 import { constants } from "@/globals/constants";
 import { usePaymentService } from "@/services";
 import { ref } from "vue";
@@ -56,6 +65,7 @@ import { useDisplay } from "vuetify/lib/framework.mjs";
 const { requestByopayToken, requestThirdPartyToken, requestSecretKey, setByopayToken } = usePaymentService()
 const { mdAndUp } = useDisplay()
 const { loader, showLoader, hideLoader } = useLoader()
+const { addTrailingCommas } = useHelper()
 
 const secretKey = ref('')
 const paymentId = ref('')
