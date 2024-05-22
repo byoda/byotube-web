@@ -11,10 +11,10 @@ export const useHelper = () => {
 
   const textEllipsis = (text, length, dots = true) => {
     if (text?.length > length) {
-      return `${text?.slice(0, length)}${ dots ? '...' : ''}`;
+      return `${text?.slice(0, length)}${dots ? "..." : ""}`;
     }
 
-    return text
+    return text;
   };
 
   const convertSecondsToMinutesAndSeconds = (seconds) => {
@@ -76,6 +76,25 @@ export const useHelper = () => {
     return maxHeight;
   };
 
+  function addTrailingCommas(number) {
+    let numberString = number.toString();
+    let decimalPart = "";
+    if (numberString.indexOf(".") !== -1) {
+      decimalPart = numberString.slice(numberString.indexOf("."));
+      numberString = numberString.slice(0, numberString.indexOf("."));
+    }
+    let result = "";
+    let counter = 0;
+    for (let i = numberString.length - 1; i >= 0; i--) {
+      result = numberString[i] + result;
+      counter++;
+      if (counter % 3 === 0 && i !== 0) {
+        result = "," + result;
+      }
+    }
+    return result + decimalPart;
+  }
+
   const convertDateToDuration = (date) => {
     const currentDate = new Date();
     const inputDate = new Date(date);
@@ -116,6 +135,7 @@ export const useHelper = () => {
     convertSecondsToMinutesAndSeconds,
     toQueryString,
     findThumbnailWithMaxHeight,
-    findAvatarWithMaxHeight
+    findAvatarWithMaxHeight,
+    addTrailingCommas
   };
 };

@@ -17,6 +17,7 @@ import { ref, onBeforeMount } from 'vue'
 import { BaseBtn } from '@/components/base';
 import { useLoader } from '@/composables';
 import { usePaymentService } from '@/services';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
     secretKey: {
@@ -28,6 +29,8 @@ const props = defineProps({
         default: null
     }
 })
+
+const router = useRouter()
 
 const { loader, showLoader, hideLoader } = useLoader()
 const { getReceipt, setByopayToken, attestBurstPoints } = usePaymentService()
@@ -74,7 +77,7 @@ const pay = async (elements) => {
         setByopayToken()
         await receipt(props.paymentId)
         await checkBurstPoints()
-
+        router.push({name:'Transactions'})
     } catch (error) {
         console.error("Error", error)
     } finally {

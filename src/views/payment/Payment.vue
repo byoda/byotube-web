@@ -7,17 +7,18 @@
                         <p class="font-weight-medium text-h4">
                             Buy burst points
                         </p>
-                        <div class="mt-10">
-                            <BaseTextfield v-model="amount" color="primary" label="Amount" prefix="$" :focused="true"
+                        <div class="mt-10 d-flex align-center g-x-2">
+                            <BaseTextfield v-model="amount" color="primary" label="Amount" prefix="$" hide-details :focused="true"
                                 name="amount" rules="numeric" density="comfortable" variant="outlined" />
+                                <p class="text-body-1 pl-2"> = {{ amount * 1000 }} burst points </p>
                         </div>
-                        <div>
+                        <div class="mt-3">
                             <p class=" font-weight-medium">
                                 $1 equals:
                             </p>
-                            <p class="text-body-1"> 4000 burst points </p>
+                            <p class="text-body-1"> 1000 burst points </p>
                         </div>
-                        <div class="mt-5" v-if="amount">
+                        <!-- <div class="mt-5" v-if="amount">
                             <p class=" font-weight-medium">
                                 You'll have
                             </p>
@@ -27,18 +28,10 @@
                             <BaseBtn class="bg-black elevation-0 white-text" @click="requestToken" :loading="loader">
                                 Next
                             </BaseBtn>
-                        </div>
+                        </div> -->
                     </BaseForm>
                     <Transition name="slide-fade">
                         <div v-if="step == 2" class=" rounded-lg bg-white ">
-                            <!-- <BaseBtn variant="text" @click="step = 1">
-                                <template #prepend>
-                                    <v-icon>
-                                        mdi-chevron-left
-                                    </v-icon>
-                                </template>
-Back
-</BaseBtn> -->
                             <div class="mt-10">
                                 <PaymentCard ref="payment" :secret-key="secretKey" :payment-id="paymentId" />
                             </div>
@@ -85,7 +78,6 @@ const requestToken = async () => {
         setByopayToken(byopayData?.auth_token)
         localStorage.setItem('byopay-token', byopayData?.auth_token)
         await getSecretKey()
-
     } catch (error) {
         console.error("Error", error)
     }

@@ -7,7 +7,7 @@
           </p>
           <BaseSpinner v-if="loader" color="black" class="mt-3" />
           <h1 v-else>
-            {{ balance }}
+            {{ balance && addTrailingCommas(balance) }}
           </h1>
         </div>
         <div>
@@ -58,9 +58,10 @@ import { onMounted } from "vue";
 import { useTransactions } from "./useTransactions"
 import { useDate } from 'vuetify'
 import { BaseBtn, BaseSpinner } from "@/components/base";
+import { useHelper } from "@/composables";
 
 const { headers, balance, loader, tableLoader, transactions, sources, transactionTypes, getAllTransactions, getBalance } = useTransactions()
-
+const { addTrailingCommas } = useHelper()
 
 const date = useDate()
 
