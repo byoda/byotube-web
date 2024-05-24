@@ -10,9 +10,12 @@
             {{ balance && addTrailingCommas(balance) }}
           </h1>
         </div>
-        <div>
+        <div class="d-flex flex-column">
           <BaseBtn color="black" density="comfortable" @click="$router.push({name: 'Payment'})">
             Buy more
+          </BaseBtn>
+          <BaseBtn color="primary" density="comfortable" class="mt-2 white-text" @click="$router.push({name: 'GetPaid'})">
+            Get paid
           </BaseBtn>
         </div>
     </div>
@@ -74,3 +77,4 @@ onMounted(async () => {
 
 
 </script>
+

@@ -5,9 +5,15 @@
     </template>
   </v-btn>
 </template>
- 
+
 <script setup>
 
 </script>
- 
-<style lang="scss" scoped></style>
+
+<style lang="scss" scoped>
+.white-text {
+  .v-btn__content {
+    color: white !important;
+  }
+}
+</style>

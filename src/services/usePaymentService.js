@@ -52,6 +52,10 @@ export const usePaymentService = () => {
     return byopayApi.get(`/pay/burst/transactions`);
   };
 
+  const registerInStripe = (body) => {
+    return byopayApi.post(`/pay/account`, body);
+  };
+
   return {
     setByopayToken,
     requestThirdPartyToken,
@@ -60,6 +64,7 @@ export const usePaymentService = () => {
     getReceipt,
     attestBurstPoints,
     getUserBurstPoints,
-    getTransactions
+    getTransactions,
+    registerInStripe
   };
 };
