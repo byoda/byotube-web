@@ -1,8 +1,13 @@
 import { useBurstPoints, useLoader } from "@/composables";
 import { usePaymentService } from "@/services";
-import { ref } from "vue";
+import { useAuthStore } from "@/store";
+import { storeToRefs } from "pinia";
+import { computed, ref } from "vue";
 
 export const useTransactions = () => {
+
+  const { isAuthenticated, isBtLiteAccount } = storeToRefs(useAuthStore())
+
   const { getTransactions } = usePaymentService();
   const { checkUserBurstPoints} = useBurstPoints()
 
@@ -77,6 +82,10 @@ export const useTransactions = () => {
     receive: "Receive",
   };
 
+  const isRegisterVisible = computed(()=>{
+    return isAuthenticated.value && !isBtLiteAccount.value && +balance.value > 10000
+  })
+
   const getAllTransactions = async () => {
     try {
       showTableLoader()
@@ -101,6 +110,7 @@ export const useTransactions = () => {
   }
 
   return {
+    isRegisterVisible,
     balance,
     sources,
     loader, 

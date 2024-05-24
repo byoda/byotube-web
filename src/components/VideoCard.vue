@@ -32,7 +32,7 @@
           <div v-if="searchCard" class="mt-2">
             <img v-if="video?.ingest_status === EXTERNAL && !smallCard" src="@/assets/YouTube_icon.png" height="36"
               width="36" />
-            <img v-if="video?.ingest_status !== EXTERNAL && showBurstIcon" height="30" src="@/assets/Burst_icon.svg"
+            <img v-if="video?.ingest_status !== EXTERNAL && showBurstIcon" height="30" src="@/assets/Burst_icon.png"
               alt="" srcset="" class="mt-1">
           </div>
           <div :class="{'ml-7': searchCard && (!showBurstIcon && video?.ingest_status !== EXTERNAL)} ">
@@ -58,7 +58,7 @@
               </div>
               <div v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard">
                 <v-col cols="1" class="">
-                  <img height="30" src="@/assets/Burst_icon.svg" alt="" srcset="" class="mb-n2">
+                  <img height="30" src="@/assets/Burst_icon.png" alt="" srcset="" class="mb-n2">
                 </v-col>
               </div>
             </div>
@@ -85,7 +85,7 @@
         <img src="@/assets/YouTube_icon.png" height="36" width="36" />
       </v-col>
       <v-col v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && !searchCard" cols="1" class="pt-2">
-        <img height="30" src="@/assets/Burst_icon.svg" alt="" srcset="" class="ml-n3">
+        <img height="30" src="@/assets/Burst_icon.png" alt="" srcset="" class="ml-n3">
       </v-col>
     </v-row>
   </v-card>

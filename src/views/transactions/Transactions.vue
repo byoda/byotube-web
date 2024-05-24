@@ -14,8 +14,8 @@
           <BaseBtn color="black" density="comfortable" @click="$router.push({name: 'Payment'})">
             Buy more
           </BaseBtn>
-          <BaseBtn color="primary" density="comfortable" class="mt-2 white-text" @click="$router.push({name: 'GetPaid'})">
-            Get paid
+          <BaseBtn v-if="isRegisterVisible" color="primary" density="comfortable" class="mt-2 white-text" @click="$router.push({name: 'GetPaid'})">
+            Register
           </BaseBtn>
         </div>
     </div>
@@ -63,7 +63,7 @@ import { useDate } from 'vuetify'
 import { BaseBtn, BaseSpinner } from "@/components/base";
 import { useHelper } from "@/composables";
 
-const { headers, balance, loader, tableLoader, transactions, sources, transactionTypes, getAllTransactions, getBalance } = useTransactions()
+const { headers, balance, loader, tableLoader, isRegisterVisible, transactions, sources, transactionTypes, getAllTransactions, getBalance } = useTransactions()
 const { addTrailingCommas } = useHelper()
 
 const date = useDate()

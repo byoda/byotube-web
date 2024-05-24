@@ -33,7 +33,7 @@
                         </BaseTextfield>
                     </v-col>
                     <div class="d-flex justify-end w-100 pr-3">
-                        <BaseBtn color="primary" class="mt-2 white-text elevation-0" @click="register">
+                        <BaseBtn color="primary" class="mt-2 white-text elevation-0" :loading="loader" @click="register">
                             Register
                         </BaseBtn>
                     </div>
@@ -47,5 +47,5 @@
 import { BaseBtn, BaseTextfield, BaseForm } from '@/components/base';
 import { useGetPaid } from './useGetPaid';
 
-const { accountDetails, registerForm, register } = useGetPaid()
+const { accountDetails, loader, registerForm, register } = useGetPaid()
 </script>

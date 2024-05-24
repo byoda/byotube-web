@@ -51,7 +51,7 @@
                           <img src="@/assets/YouTube_icon.png" height="50" width="50" />
                         </div>
                         <v-col v-if="asset?.ingest_status !== EXTERNAL && showBurstIcon" cols="1" class="mb-n4">
-                          <img height="35" src="@/assets/Burst_icon.svg" alt="" srcset="" class="ml-n3">
+                          <img height="35" src="@/assets/Burst_icon.png" alt="" srcset="" class="ml-n3">
                         </v-col>
                       </div>
                       <div class="d-flex justify-space-between align-center mt-3">

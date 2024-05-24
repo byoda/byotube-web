@@ -24,15 +24,21 @@ export const useGetPaid = () => {
 
   const register = async () => {
     try {
+      showLoader()
       const { valid }  = await registerForm.value.validate()
       if(!valid) return
-      await registerInStripe(accountDetails.value)
+      const { data } = await registerInStripe(accountDetails.value)
+      window.open(data?.payout_provider_account_url, '_self')
     } catch (error) {
       console.error("Error", error)
+    } finally {
+      hideLoader()
     }
   }
 
   return {
+
+    loader,
     registerForm,
     accountDetails,
     register
