@@ -95,6 +95,17 @@ export const useHelper = () => {
     return result + decimalPart;
   }
 
+  function basisPointsToPercentage(basisPoints) {
+    return (basisPoints / 10000) * 100 ;
+  }
+
+  function centsToDollars(cents) {
+    if (isNaN(cents)) {
+        return 
+    }
+    return cents / 100;
+}
+
   const convertDateToDuration = (date) => {
     const currentDate = new Date();
     const inputDate = new Date(date);
@@ -136,6 +147,8 @@ export const useHelper = () => {
     toQueryString,
     findThumbnailWithMaxHeight,
     findAvatarWithMaxHeight,
-    addTrailingCommas
+    addTrailingCommas,
+    basisPointsToPercentage,
+    centsToDollars 
   };
 };

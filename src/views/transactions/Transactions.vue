@@ -1,30 +1,36 @@
 <template>
   <div class="w-75 pa-5 mx-auto pt-10">
     <div class="bg-white pa-5 border rounded-lg px-8 d-flex justify-space-between">
-        <div>
-          <p class="text-body-2 text-grey-darken-3">
-            Burst points
-          </p>
-          <BaseSpinner v-if="loader" color="black" class="mt-3" />
-          <h1 v-else>
-            {{ balance && addTrailingCommas(balance) }}
-          </h1>
-        </div>
-        <div class="d-flex flex-column">
-          <BaseBtn color="black" density="comfortable" @click="$router.push({name: 'Payment'})">
-            Buy more
-          </BaseBtn>
-          <BaseBtn v-if="isRegisterVisible" color="primary" density="comfortable" class="mt-2 white-text" @click="$router.push({name: 'GetPaid'})">
-            Register
-          </BaseBtn>
-          <BaseBtn density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
-            Payout
-          </BaseBtn>
-        </div>
+      <div>
+        <p class="text-body-2 text-grey-darken-3">
+          Burst points
+        </p>
+        <BaseSpinner v-if="loader" color="black" class="mt-3" />
+        <h1 v-else>
+          {{ balance && addTrailingCommas(balance) }}
+        </h1>
+      </div>
+      <div class="d-flex flex-column">
+        <BaseBtn v-if="balance < 50000" color="black" density="comfortable" @click="$router.push({ name: 'Payment' })">
+          Buy more
+        </BaseBtn>
+        <BaseBtn v-if="isByotubeAccount && isRegisterVisible" color="primary" density="comfortable"
+          class="mt-2 white-text" @click="$router.push({ name: 'GetPaid' })">
+          Register
+        </BaseBtn>
+        <BaseBtn v-if="!isPayoutvisible" color="primary" density="comfortable" class="mt-2 white-text"
+          @click="OpenDialog(reviewDialogName)">
+          Review registration
+        </BaseBtn>
+        <BaseBtn v-else density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
+          Payout
+        </BaseBtn>
+      </div>
     </div>
     <div class="shadow-smooth mt-10">
       <v-card>
-        <v-data-table :headers="headers" :loading="tableLoader" items-per-page="15" :items="transactions" density="comfortable">
+        <v-data-table :headers="headers" :loading="tableLoader" items-per-page="15" :items="transactions"
+          density="comfortable">
           <template #header.liteFunded>
             <div class="text-center">
               <p>
@@ -36,7 +42,7 @@
           </template>
           <template #item.timestamp="{ value }">
             <div>
-              {{ date.format(value, "keyboardDate") }}  {{ value.substring(11,16) }}
+              {{ date.format(value, "keyboardDate") }} {{ value.substring(11, 16) }}
             </div>
           </template>
           <template #item.source_id="{ value }">
@@ -57,33 +63,54 @@
         </v-data-table>
       </v-card>
     </div>
+    <BaseDialog :name="reviewDialogName" width="500">
+      <template #default>
+        <BaseCard class="pa-8 rounded-xl">
+          <p>
+            Please review your Stripe Connect account on the Stripe website. If you have any questions, please reach out
+            to payouts@byo.tube.
+          </p>
+          <div class="text-end mt-4">
+            <BaseBtn color="red" class="mr-2 elevation-0" @click="CloseDialog(reviewDialogName)">
+              Close
+            </BaseBtn>
+          </div>
+        </BaseCard>
+      </template>
+    </BaseDialog>
+
     <PayoutDialog />
+    <ReviewRegistrationDialog :register-data="account" />
   </div>
 </template>
 <script setup>
 import { onMounted } from "vue";
 import { useTransactions } from "./useTransactions"
 import { useDate } from 'vuetify'
-import { BaseBtn, BaseSpinner } from "@/components/base";
+import { BaseBtn, BaseSpinner, BaseDialog, BaseCard } from "@/components/base";
 import { useHelper } from "@/composables";
 import PayoutDialog from "./payout-dialog/PayoutDialog.vue"
-import { useCoreStore } from "@/store";
+import ReviewRegistrationDialog from  "./review-regiatration-dialog/ReviewRegistrationDialog.vue"
+import { useAuthStore, useCoreStore } from "@/store";
+import { storeToRefs } from "pinia";
 
+const { isByotubeAccount } = storeToRefs(useAuthStore())
 const { OpenDialog } = useCoreStore()
-const { headers, balance, loader, tableLoader, isRegisterVisible, transactions, sources, transactionTypes, getAllTransactions, getBalance } = useTransactions()
+const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, getAllTransactions, getBalance, getAccountInfo } = useTransactions()
 const { addTrailingCommas } = useHelper()
 
 const date = useDate()
 
 const payoutDialogName = 'payout-dialog'
+const reviewDialogName = 'review-registration-dialog'
 
 
 onMounted(async () => {
-   getAllTransactions()
-   getBalance()
-  
+  getAllTransactions()
+  getBalance()
+  getAccountInfo()
+
 })
 
 
 </script>
-

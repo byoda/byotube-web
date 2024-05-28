@@ -60,6 +60,10 @@ export const usePaymentService = () => {
     return byopayApi.get(`/pay/payout?${query}`);
   };
 
+  const getAccount = () => {
+    return byopayApi.get(`/pay/account`);
+  };
+
   return {
     setByopayToken,
     requestThirdPartyToken,
@@ -70,6 +74,7 @@ export const usePaymentService = () => {
     getUserBurstPoints,
     getTransactions,
     registerInStripe,
-    payout
+    payout,
+    getAccount
   };
 };

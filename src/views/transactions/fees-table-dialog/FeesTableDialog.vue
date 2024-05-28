@@ -4,11 +4,45 @@
             <BaseCard class="pa-8 rounded-xl">
                 <div>
                     <h2>
-                        Fees
+                        Fees for payout of ${{ centsToDollars(fees?.amount_in_smallest_currency_unit) }} for {{
+        addTrailingCommas(points)
+    }} Burst points
                     </h2>
 
                 </div>
-                <v-data-table :headers="headers" :items-per-page="15" :items="fees" density="comfortable">
+                <v-data-table :headers="headers" :items-per-page="15" :items="fees?.fees" density="comfortable"
+                    hide-default-footer>
+                    <template #bottom>
+                        <div></div>
+                    </template>
+                    <template #item.percentage_basispoints="{ value }">
+                        <p>
+                            {{ basisPointsToPercentage(value) }}%
+                        </p>
+                    </template>
+                    <template #item.amount_in_smallest_currency_unit="{ value }">
+                        <p>
+                            ${{ centsToDollars(value) }}
+                        </p>
+                    </template>
+                    <template #body.append>
+                        <tr>
+                            <td>
+                                <p class="font-weight-medium text-body-2">
+                                    Total esitmated proceeds
+                                </p>
+                            </td>
+
+                            <td colspan="2" width="50">
+
+                            </td>
+                            <td colspan="2" width="50">
+                                <p class="font-weight-medium">
+                                    ${{ centsToDollars(fees?.estimated_payout_in_smallest_currency_unit) }}
+                                </p>
+                            </td>
+                        </tr>
+                    </template>
                 </v-data-table>
                 <div class="text-end mt-8">
                     <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
@@ -24,7 +58,7 @@
 </template>
 
 <script setup>
-import { BaseDialog, BaseCard, BaseTextfield, BaseBtn } from "@/components/base"
+import { BaseDialog, BaseCard, BaseBtn } from "@/components/base"
 import { useCoreStore } from "@/store";
 import { useTransactions } from "../useTransactions"
 import { ref } from "vue";
@@ -45,7 +79,7 @@ const props = defineProps({
 const name = 'fees-dialog'
 const { payout } = usePaymentService();
 const { CloseDialog } = useCoreStore()
-const { toQueryString } = useHelper()
+const { toQueryString, basisPointsToPercentage, centsToDollars, addTrailingCommas } = useHelper()
 
 const headers = [
     {

@@ -26,6 +26,10 @@ export const useAuthStore = defineStore("auth", () => {
     return _accountType.value === "btlite"
   });
 
+  const isByotubeAccount  = computed(() => {
+    return _accountType.value === "byotube"
+  });
+
   const isFunded = computed(() => {
     return _funded.value
   });
@@ -34,6 +38,7 @@ export const useAuthStore = defineStore("auth", () => {
     isAuthenticated,
     isBtLiteAccount,
     isFunded,
+    isByotubeAccount,
     setAuth,
     setAccountType,
     setFunded

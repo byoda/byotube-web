@@ -1,4 +1,4 @@
-import { useBurstPoints, useLoader, useHelper } from "@/composables";
+import { useBurstPoints, useLoader } from "@/composables";
 import { usePaymentService } from "@/services";
 import { useAuthStore } from "@/store";
 import { storeToRefs } from "pinia";
@@ -6,14 +6,15 @@ import { computed, ref } from "vue";
 
 export const useTransactions = () => {
 
-  const { isAuthenticated, isBtLiteAccount } = storeToRefs(useAuthStore())
+  const { isByotubeAccount } = storeToRefs(useAuthStore())
 
-  const { getTransactions } = usePaymentService();
+  const { getTransactions, getAccount } = usePaymentService();
   const { checkUserBurstPoints} = useBurstPoints()
 
   const { loader, showLoader, hideLoader } = useLoader()
   const { loader: tableLoader, showLoader: showTableLoader, hideLoader: hideTableLoader } = useLoader()
-  const { toQueryString } = useHelper()
+
+  const account = ref(null)
 
 
   const transactions = ref([]);
@@ -76,12 +77,10 @@ export const useTransactions = () => {
     receive: "Receive",
   };
 
-  const isRegisterVisible = computed(()=>{
-    return isAuthenticated.value && !isBtLiteAccount.value && +balance.value > 10000
-  })
+  const isRegisterVisible = ref(false)
 
   const isPayoutvisible = computed(()=>{
-    return isAuthenticated.value && !isBtLiteAccount.value && +balance.value > 10000
+    return isByotubeAccount && (account.value?.payout_provider_id == null || account.value?.payout_provider_id?.startsWith('"(') || account.value?.payout_provider_status == null || account.value?.payout_provider_status?.startsWith('"('))
   })
 
   const getAllTransactions = async () => {
@@ -107,9 +106,22 @@ export const useTransactions = () => {
     }
   }
 
+  const getAccountInfo = async () => {
+    try {
+      const { data } = await getAccount()
+      account.value = data
+    } catch (error) {
+      console.error("Error", error)
+      if(error.status === 404){
+        isRegisterVisible.value = true
+      }
+    }
+  }
+
 
 
   return {
+    account,
     isRegisterVisible,
     balance,
     sources,
@@ -118,7 +130,9 @@ export const useTransactions = () => {
     transactionTypes,
     headers,
     transactions,
+    isPayoutvisible,
     getAllTransactions,
     getBalance,
+    getAccountInfo
   };
 };
