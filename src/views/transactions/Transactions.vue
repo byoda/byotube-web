@@ -17,6 +17,9 @@
           <BaseBtn v-if="isRegisterVisible" color="primary" density="comfortable" class="mt-2 white-text" @click="$router.push({name: 'GetPaid'})">
             Register
           </BaseBtn>
+          <BaseBtn density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
+            Payout
+          </BaseBtn>
         </div>
     </div>
     <div class="shadow-smooth mt-10">
@@ -54,6 +57,7 @@
         </v-data-table>
       </v-card>
     </div>
+    <PayoutDialog />
   </div>
 </template>
 <script setup>
@@ -62,11 +66,16 @@ import { useTransactions } from "./useTransactions"
 import { useDate } from 'vuetify'
 import { BaseBtn, BaseSpinner } from "@/components/base";
 import { useHelper } from "@/composables";
+import PayoutDialog from "./payout-dialog/PayoutDialog.vue"
+import { useCoreStore } from "@/store";
 
+const { OpenDialog } = useCoreStore()
 const { headers, balance, loader, tableLoader, isRegisterVisible, transactions, sources, transactionTypes, getAllTransactions, getBalance } = useTransactions()
 const { addTrailingCommas } = useHelper()
 
 const date = useDate()
+
+const payoutDialogName = 'payout-dialog'
 
 
 onMounted(async () => {

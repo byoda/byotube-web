@@ -27,12 +27,6 @@
                                 Watching one minute of video costs 1 burst point, equivalent to 1/10 of a cent. 
                             </p>
                         </div>
-                        <!-- <div class="mt-5" v-if="amount">
-                            <p class=" font-weight-medium">
-                                You'll have
-                            </p>
-                            <p class="text-body-1"> {{ amount * 1000 }} burst points </p>
-                        </div> -->
                         <div class="mt-5 text-end">
                             <BaseBtn class="bg-black elevation-0 white-text" @click="requestToken" :loading="loader">
                                 Next

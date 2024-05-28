@@ -39,6 +39,7 @@
                     </div>
                 </v-row>
             </BaseForm>
+            <StripeRedirectDialog :url="stripeUrl" />
         </div>
     </div>
 </template>
@@ -46,6 +47,7 @@
 <script setup>
 import { BaseBtn, BaseTextfield, BaseForm } from '@/components/base';
 import { useGetPaid } from './useGetPaid';
+import StripeRedirectDialog from "./strip-redirect-dialog/StripeRedirectDialog.vue"
 
-const { accountDetails, loader, registerForm, register } = useGetPaid()
+const { accountDetails, loader, registerForm, stripeUrl, register } = useGetPaid()
 </script>

@@ -2,6 +2,7 @@ import { useRouter, useRoute } from "vue-router";
 import { ref } from "vue";
 import { useLoader } from "@/composables";
 import { usePaymentService } from "@/services";
+import { useCoreStore } from "@/store";
 
 export const useGetPaid = () => {
 
@@ -11,8 +12,10 @@ export const useGetPaid = () => {
   const route = useRoute();
 
   const { loader, showLoader, hideLoader } = useLoader();
+  const { OpenDialog } = useCoreStore()
 
   const registerForm = ref()
+  const stripeUrl = ref('')
 
   const accountDetails = ref({
     email: null,
@@ -28,7 +31,8 @@ export const useGetPaid = () => {
       const { valid }  = await registerForm.value.validate()
       if(!valid) return
       const { data } = await registerInStripe(accountDetails.value)
-      window.open(data?.payout_provider_account_url, '_self')
+      stripeUrl.value = data?.payout_provider_account_url
+      OpenDialog('stripe-redirect-dialog')
     } catch (error) {
       console.error("Error", error)
     } finally {
@@ -37,7 +41,7 @@ export const useGetPaid = () => {
   }
 
   return {
-
+    stripeUrl,
     loader,
     registerForm,
     accountDetails,

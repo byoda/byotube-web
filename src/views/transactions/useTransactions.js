@@ -1,4 +1,4 @@
-import { useBurstPoints, useLoader } from "@/composables";
+import { useBurstPoints, useLoader, useHelper } from "@/composables";
 import { usePaymentService } from "@/services";
 import { useAuthStore } from "@/store";
 import { storeToRefs } from "pinia";
@@ -13,6 +13,7 @@ export const useTransactions = () => {
 
   const { loader, showLoader, hideLoader } = useLoader()
   const { loader: tableLoader, showLoader: showTableLoader, hideLoader: hideTableLoader } = useLoader()
+  const { toQueryString } = useHelper()
 
 
   const transactions = ref([]);
@@ -47,13 +48,6 @@ export const useTransactions = () => {
       key: "destination_id",
       width: "80px",
     },
-    // {
-    //   title: "Link",
-    //   key: "transaction_id",
-    //   align: "start",
-    //   sortable: false,
-    //   width: "120",
-    // },
     {
       title: "Type",
       key: "transaction_type",
@@ -86,6 +80,10 @@ export const useTransactions = () => {
     return isAuthenticated.value && !isBtLiteAccount.value && +balance.value > 10000
   })
 
+  const isPayoutvisible = computed(()=>{
+    return isAuthenticated.value && !isBtLiteAccount.value && +balance.value > 10000
+  })
+
   const getAllTransactions = async () => {
     try {
       showTableLoader()
@@ -109,6 +107,8 @@ export const useTransactions = () => {
     }
   }
 
+
+
   return {
     isRegisterVisible,
     balance,
@@ -119,6 +119,6 @@ export const useTransactions = () => {
     headers,
     transactions,
     getAllTransactions,
-    getBalance
+    getBalance,
   };
 };
