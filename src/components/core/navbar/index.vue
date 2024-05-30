@@ -20,13 +20,24 @@
             </template>
             <BaseCard class="pt-3 pl-4 pr-7 rounded-lg shadow-smooth">
               <v-radio-group v-model="filter" @update:model-value="emitter.emit('filter-changed', filter)">
-                <v-radio v-for="(item, index) in options" :key="index" :value="item" class="mt-0" hide-details :label="item.name">
+                <v-radio v-for="(item, index) in options" :key="index" :value="item" class="mt-0" hide-details
+                  :label="item.name">
                 </v-radio>
               </v-radio-group>
             </BaseCard>
           </v-menu>
-          <div class="mr-5 ml-2 mt-1 cursor-pointer" @click="isAuthenticated ? $router.push({name:'Transactions'}) : coreStore.OpenDialog(nonAuthSubscriptionDialog)">
-            <img height="45" src="@/assets/Burst_icon.png" alt="" srcset="">
+          <div class="mr-5 ml-2 mt-1 cursor-pointer"
+            @click="isAuthenticated ? $router.push({ name: 'Transactions' }) : coreStore.OpenDialog(nonAuthSubscriptionDialog)">
+            <v-tooltip text="Tooltip " location="bottom" content-class="bg-transparent">
+              <template v-slot:activator="{ props }">
+                <img v-bind="props" height="45" src="@/assets/Burst_icon.png" alt="" srcset="">
+              </template>
+              <template #default>
+                <BaseCard v-if="!loader" class="pa-3 rounded-lg elevation-5">
+                  {{ balance ? addTrailingCommas(balance) : 'Buy more!' }}
+                </BaseCard>
+              </template>
+            </v-tooltip>
           </div>
           <template v-if="mdAndUp">
             <div v-if="!isAuthenticated" class="auth-toggle-btn-class">
@@ -44,8 +55,6 @@
               <v-icon left size="26">mdi-account-circle</v-icon> Sign out
             </BaseBtn>
           </template>
-
-
           <BaseBtn class="ma-2 hidden-lg-and-up" variant="outlined" icon="mdi-menu" color="secondary"
             @click="coreStore.setDrawer(!coreStore.isDrawerOpen)" size="small" />
         </div>
@@ -60,23 +69,26 @@
 import { BaseTextfield, BaseBtn, BaseCard } from '@/components/base'
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useEmitter } from "@/composables";
+import { useEmitter, useHelper } from "@/composables";
 import Drawer from '../drawer/index.vue'
 import { useAuthStore, useCoreStore } from '@/store';
 import { toRefs } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { NonAuthDialog } from '@/components/shared';
+import { useTransactions } from '@/views/transactions/useTransactions';
 
 const emits = defineEmits(['search'])
 
 const { isAuthenticated } = toRefs(useAuthStore())
 const coreStore = useCoreStore()
+const { addTrailingCommas } = useHelper()
 
 const { mdAndUp } = useDisplay()
 
 const route = useRoute()
 const router = useRouter()
 const emitter = useEmitter()
+const { balance, loader, getBalance } = useTransactions()
 
 const nonAuthSubscriptionDialog = 'nonAuthSubscription'
 
@@ -107,7 +119,8 @@ const search = async () => {
 }
 
 onMounted(() => {
-  filter.value = JSON.parse(localStorage.getItem('videos-filter')) ||  { name: "All", value: "" }
+  getBalance()
+  filter.value = JSON.parse(localStorage.getItem('videos-filter')) || { name: "All", value: "" }
 })
 
 </script>
