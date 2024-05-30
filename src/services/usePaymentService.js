@@ -63,6 +63,14 @@ export const usePaymentService = () => {
   const getAccount = () => {
     return byopayApi.get(`/pay/account`);
   };
+  
+  const getPayoutDetails = (query) => {
+    return byopayApi.get(`/pay/payout_history?payout_id=${query}`);
+  };
+
+  const getPurchaseDetails = (query) => {
+    return byopayApi.get(`/pay/purchase?payment_id=${query}`);
+  };
 
   return {
     setByopayToken,
@@ -75,6 +83,9 @@ export const usePaymentService = () => {
     getTransactions,
     registerInStripe,
     payout,
-    getAccount
+    getAccount,
+    getPayoutDetails,
+    getPurchaseDetails
+
   };
 };

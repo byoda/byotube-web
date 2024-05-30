@@ -5,20 +5,23 @@ import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
 export const useTransactions = () => {
+  const { isByotubeAccount } = storeToRefs(useAuthStore());
 
-  const { isByotubeAccount } = storeToRefs(useAuthStore())
+  const { getTransactions, getAccount, getPayoutDetails, getPurchaseDetails } =
+    usePaymentService();
+  const { checkUserBurstPoints } = useBurstPoints();
 
-  const { getTransactions, getAccount } = usePaymentService();
-  const { checkUserBurstPoints} = useBurstPoints()
+  const { loader, showLoader, hideLoader } = useLoader();
+  const {
+    loader: tableLoader,
+    showLoader: showTableLoader,
+    hideLoader: hideTableLoader,
+  } = useLoader();
 
-  const { loader, showLoader, hideLoader } = useLoader()
-  const { loader: tableLoader, showLoader: showTableLoader, hideLoader: hideTableLoader } = useLoader()
-
-  const account = ref(null)
-
+  const account = ref(null);
 
   const transactions = ref([]);
-  const balance = ref('')
+  const balance = ref("");
 
   const headers = [
     {
@@ -54,14 +57,14 @@ export const useTransactions = () => {
       key: "transaction_type",
       align: "start",
       sortable: false,
-      width: "120",
+      width: "80",
     },
     {
       title: "Description",
       key: "description",
       align: "start",
       sortable: false,
-      width: "120",
+      width: "140",
     },
   ];
 
@@ -73,59 +76,84 @@ export const useTransactions = () => {
   const transactionTypes = {
     purchase: "Purchase",
     streaming: "Streaming",
-    "pay-out": "Pay-Out",
+    payout: "Pay-Out",
     receive: "Receive",
   };
 
-  const isRegisterVisible = ref(false)
+  const isRegisterVisible = ref(false);
 
-  const isPayoutvisible = computed(()=>{
-    return !(account.value?.payout_provider_id == null || account.value?.payout_provider_id?.startsWith('"(') || account.value?.payout_provider_status == null || account.value?.payout_provider_status?.startsWith('"('))
-  })
+  const isPayoutvisible = computed(() => {
+    return !(
+      account.value?.payout_provider_id == null ||
+      account.value?.payout_provider_id?.startsWith('"(') ||
+      account.value?.payout_provider_status == null ||
+      account.value?.payout_provider_status?.startsWith('"(')
+    );
+  });
 
   const getAllTransactions = async () => {
     try {
-      showTableLoader()
+      showTableLoader();
       const { data } = await getTransactions();
       transactions.value = data?.edges?.map((edge) => edge?.node);
     } catch (error) {
-      console.error("Error", error)
+      console.error("Error", error);
     } finally {
-      hideTableLoader()
+      hideTableLoader();
     }
   };
 
   const getBalance = async () => {
     try {
-      showLoader()
-      balance.value = await checkUserBurstPoints()
+      showLoader();
+      balance.value = await checkUserBurstPoints();
     } catch (error) {
-      console.error("Error", error)
+      console.error("Error", error);
     } finally {
-      hideLoader()
+      hideLoader();
     }
-  }
+  };
 
   const getAccountInfo = async () => {
     try {
-      const { data } = await getAccount()
-      account.value = data
+      const { data } = await getAccount();
+      account.value = data;
     } catch (error) {
-      console.error("Error", error)
-      if(error.status === 404){
-        isRegisterVisible.value = true
+      console.error("Error", error);
+      if (error.status === 404) {
+        isRegisterVisible.value = true;
       }
     }
-  }
+  };
 
+  const getPayoutInfo = async (payoutId) => {
+    try {
+      const { data } = await getPayoutDetails(payoutId);
+    } catch (error) {
+      console.error("Error", error);
+      if (error.status === 404) {
+        isRegisterVisible.value = true;
+      }
+    }
+  };
 
+  const getPurchaseInfo = async (purchaseId) => {
+    try {
+      const { data } = await getPurchaseDetails(purchaseId);
+    } catch (error) {
+      console.error("Error", error);
+      if (error.status === 404) {
+        isRegisterVisible.value = true;
+      }
+    }
+  };
 
   return {
     account,
     isRegisterVisible,
     balance,
     sources,
-    loader, 
+    loader,
     tableLoader,
     transactionTypes,
     headers,
@@ -133,6 +161,8 @@ export const useTransactions = () => {
     isPayoutvisible,
     getAllTransactions,
     getBalance,
-    getAccountInfo
+    getAccountInfo,
+    getPayoutInfo,
+    getPurchaseInfo
   };
 };

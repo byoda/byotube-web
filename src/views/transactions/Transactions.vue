@@ -55,8 +55,8 @@
               {{ sources[value] || 'You' }}
             </div>
           </template>
-          <template #item.transaction_type="{ value }">
-            <div>
+          <template #item.transaction_type="{ value, item }">
+            <div class="text-decoration-underline cursor-pointer" @click="value == 'payout' ? getPayoutInfo(item?.transaction_id) : getPurchaseInfo(item?.transaction_id)">
               {{ transactionTypes[value] }}
             </div>
           </template>
@@ -96,7 +96,7 @@ import { storeToRefs } from "pinia";
 
 const { isByotubeAccount } = storeToRefs(useAuthStore())
 const { OpenDialog } = useCoreStore()
-const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, getAllTransactions, getBalance, getAccountInfo } = useTransactions()
+const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, getAllTransactions, getBalance, getAccountInfo, getPayoutInfo, getPurchaseInfo } = useTransactions()
 const { addTrailingCommas } = useHelper()
 
 const date = useDate()
@@ -108,7 +108,9 @@ const reviewDialogName = 'review-registration-dialog'
 onMounted(async () => {
   getAllTransactions()
   getBalance()
-  getAccountInfo()
+  if(isByotubeAccount.value){
+    getAccountInfo()
+  }
 
 })
 
