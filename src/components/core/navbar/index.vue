@@ -34,7 +34,7 @@
               </template>
               <template #default>
                 <BaseCard v-if="!loader" class="pa-3 rounded-lg elevation-5">
-                  {{ balance ? addTrailingCommas(balance) : 'Buy more!' }}
+                  Burst: {{ balance ? addTrailingCommas(balance) + ' points' : 'Buy more!' }}
                 </BaseCard>
               </template>
             </v-tooltip>
