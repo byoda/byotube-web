@@ -11,18 +11,18 @@
         </h1>
       </div>
       <div class="d-flex flex-column">
-        <BaseBtn v-if="balance < 50000" color="black" density="comfortable" @click="$router.push({ name: 'Payment' })">
+        <BaseBtn v-if="balance <= 20000" color="black" density="comfortable" @click="$router.push({ name: 'Payment' })">
           Buy more
         </BaseBtn>
         <BaseBtn v-if="isByotubeAccount && isRegisterVisible" color="primary" density="comfortable"
           class="mt-2 white-text" @click="$router.push({ name: 'GetPaid' })">
           Register
         </BaseBtn>
-        <BaseBtn v-if="!isPayoutvisible" color="primary" density="comfortable" class="mt-2 white-text"
+        <BaseBtn v-if="!isPayoutvisible && isByotubeAccount" color="primary" density="comfortable" class="mt-2 white-text"
           @click="OpenDialog(reviewDialogName)">
           Review registration
         </BaseBtn>
-        <BaseBtn v-else density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
+        <BaseBtn v-else-if="isPayoutvisible && isByotubeAccount" density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
           Payout
         </BaseBtn>
       </div>

@@ -80,7 +80,7 @@ export const useTransactions = () => {
   const isRegisterVisible = ref(false)
 
   const isPayoutvisible = computed(()=>{
-    return isByotubeAccount && (account.value?.payout_provider_id == null || account.value?.payout_provider_id?.startsWith('"(') || account.value?.payout_provider_status == null || account.value?.payout_provider_status?.startsWith('"('))
+    return !(account.value?.payout_provider_id == null || account.value?.payout_provider_id?.startsWith('"(') || account.value?.payout_provider_status == null || account.value?.payout_provider_status?.startsWith('"('))
   })
 
   const getAllTransactions = async () => {
