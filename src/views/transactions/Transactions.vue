@@ -22,7 +22,7 @@
           @click="OpenDialog(reviewDialogName)">
           Review registration
         </BaseBtn>
-        <BaseBtn v-else-if="isPayoutvisible && isByotubeAccount" density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
+        <BaseBtn v-else-if="isPayoutvisible && isByotubeAccount && balance >= 10000" density="comfortable" class="mt-2 white-text bg-primary" @click="OpenDialog(payoutDialogName)">
           Payout
         </BaseBtn>
       </div>
