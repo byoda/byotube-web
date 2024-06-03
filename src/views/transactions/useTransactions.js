@@ -18,14 +18,14 @@ export const useTransactions = () => {
     hideLoader: hideTableLoader,
   } = useLoader();
 
-  const { OpenDialog } = useCoreStore()
+  const { OpenDialog } = useCoreStore();
 
   const account = ref(null);
 
   const transactions = ref([]);
   const balance = ref("");
-  const payoutInfo = ref(null)
-  const paymentInfo = ref(null)
+  const payoutInfo = ref(null);
+  const paymentInfo = ref(null);
 
   const headers = [
     {
@@ -132,27 +132,32 @@ export const useTransactions = () => {
 
   const getPayoutInfo = async (payoutId) => {
     try {
+      payoutInfo.value = null;
       const { data } = await getPayoutDetails(payoutId);
-      payoutInfo.value = data
-      OpenDialog('payout-info-dialog')
+      payoutInfo.value = data;
     } catch (error) {
       console.error("Error", error);
       if (error.status === 404) {
         isRegisterVisible.value = true;
       }
+    } finally{
+      OpenDialog("payout-info-dialog");
     }
   };
 
   const getPurchaseInfo = async (purchaseId) => {
     try {
+      paymentInfo.value = null;
       const { data } = await getPurchaseDetails(purchaseId);
-      paymentInfo.value = data
-      OpenDialog('payment-info-dialog')
+      paymentInfo.value = data;
+      OpenDialog("payment-info-dialog");
     } catch (error) {
       console.error("Error", error);
       if (error.status === 404) {
         isRegisterVisible.value = true;
       }
+    } finally {
+      OpenDialog("payment-info-dialog");
     }
   };
 
@@ -173,6 +178,6 @@ export const useTransactions = () => {
     getBalance,
     getAccountInfo,
     getPayoutInfo,
-    getPurchaseInfo
+    getPurchaseInfo,
   };
 };

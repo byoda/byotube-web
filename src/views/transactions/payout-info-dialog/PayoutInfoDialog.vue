@@ -1,32 +1,50 @@
 <template>
-    <BaseDialog :name="name" width="900">
+    <BaseDialog :name="name" :width="payoutInfo ? 900 : 500">
         <template #default>
             <BaseCard class="pa-8 rounded-xl">
-                <div>
-                    <h2>
-                        {{payoutInfo.currency}} {{ addTrailingCommas(payoutInfo?.amount_in_smallest_currency_unit) }} on {{
-        format(payoutInfo.timestamp, 'MM-DD-YYYY').slice(0,8)
-    }} has status {{ payoutInfo.status}}
-                    </h2>
+                <template v-if="payoutInfo">
+                    <div>
+                        <h2>
+                            {{ payoutInfo.currency }} {{ addTrailingCommas(payoutInfo?.amount_in_smallest_currency_unit)
+                            }} on {{
+        format(payoutInfo.timestamp, 'MM-DD-YYYY').slice(0, 8)
+    }} has status {{ payoutInfo.status }}
+                        </h2>
 
-                </div>
-                <v-data-table :headers="headers" :items-per-page="15" :items="payoutInfo?.history" density="comfortable"
-                    hide-default-footer>
-                    <template #bottom>
-                        <div></div>
-                    </template>
-                    <template #item.timestamp="{ value }">
-                        <p>
-                            {{ value?.slice(0,10) }}
-                        </p>
-                    </template>
-                
-                </v-data-table>
-                <div class="text-end mt-8">
-                    <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
-                        Close
-                    </BaseBtn>
-                </div>
+                    </div>
+                    <v-data-table :headers="headers" :items-per-page="15" :items="payoutInfo?.history"
+                        density="comfortable" hide-default-footer>
+                        <template #bottom>
+                            <div></div>
+                        </template>
+                        <template #item.timestamp="{ value }">
+                            <p>
+                                {{ value?.slice(0, 10) }}
+                            </p>
+                        </template>
+
+                    </v-data-table>
+                    <div class="text-end mt-8">
+                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                            Close
+                        </BaseBtn>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="d-flex align-center justify-center">
+                        <div class="pa-3 bg-red-lighten-4 rounded-circle">
+                            <v-icon color="red-lighten-1" icon="mdi-shield-alert-outline" size="60"></v-icon>
+                        </div>
+                    </div>
+                    <p class="font-weight-medium text-center text-h6 mt-4">
+                        Pay-out not found. Please contact payouts@byo.tube
+                    </p>
+                    <div class="text-end mt-2">
+                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                            Close
+                        </BaseBtn>
+                    </div>
+                </template>
             </BaseCard>
         </template>
     </BaseDialog>

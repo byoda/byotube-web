@@ -1,24 +1,42 @@
 <template>
-    <BaseDialog :name="name" width="900">
+    <BaseDialog :name="name" :width="purchaseInfo ? 900 : 500">
         <template #default>
             <BaseCard class="pa-8 rounded-xl">
-                <v-data-table :headers="headers" :items-per-page="15" :items="[purchaseInfo]" density="comfortable"
-                    hide-default-footer>
-                    <template #bottom>
-                        <div></div>
-                    </template>
-                    <template #item.timestamp="{ value }">
-                        <p>
-                            {{ value?.slice(0,10) }}
-                        </p>
-                    </template>
-                
-                </v-data-table>
-                <div class="text-end mt-8">
-                    <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
-                        Close
-                    </BaseBtn>
-                </div>
+                <template v-if="purchaseInfo">
+                    <v-data-table :headers="headers" :items-per-page="15" :items="[purchaseInfo]" density="comfortable"
+                        hide-default-footer>
+                        <template #bottom>
+                            <div></div>
+                        </template>
+                        <template #item.timestamp="{ value }">
+                            <p>
+                                {{ value?.slice(0, 10) }}
+                            </p>
+                        </template>
+
+                    </v-data-table>
+                    <div class="text-end mt-8">
+                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                            Close
+                        </BaseBtn>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="d-flex align-center justify-center">
+                        <div class="pa-3 bg-red-lighten-4 rounded-circle">
+                            <v-icon color="red-lighten-1" icon="mdi-shield-alert-outline" size="60"></v-icon>
+                        </div>
+                    </div>
+                    <p class="font-weight-medium text-center text-h6 mt-4">
+                        Purchase not found. Please contact payouts@byo.tube
+                    </p>
+                    <div class="text-end mt-2">
+                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                            Close
+                        </BaseBtn>
+                    </div>
+
+                </template>
             </BaseCard>
         </template>
     </BaseDialog>
@@ -42,7 +60,7 @@ const { toQueryString, basisPointsToPercentage, centsToDollars, addTrailingComma
 
 
 const headers = [
- 
+
     {
         title: "Status",
         key: "status",
