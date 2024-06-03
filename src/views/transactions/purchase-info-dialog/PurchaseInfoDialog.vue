@@ -3,6 +3,9 @@
         <template #default>
             <BaseCard class="pa-8 rounded-xl">
                 <template v-if="purchaseInfo">
+                    <h2>
+                        Payment details
+                    </h2>
                     <v-data-table :headers="headers" :items-per-page="15" :items="[purchaseInfo]" density="comfortable"
                         hide-default-footer>
                         <template #bottom>

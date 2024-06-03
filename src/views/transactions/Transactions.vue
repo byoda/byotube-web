@@ -40,6 +40,11 @@
               </p>
             </div>
           </template>
+          <template #item.delta="{ value }">
+            <div>
+              {{ addTrailingCommas(value) }}
+            </div>
+          </template>
           <template #item.timestamp="{ value }">
             <div>
               {{ date.format(value, "keyboardDate") }} {{ value.substring(11, 16) }}

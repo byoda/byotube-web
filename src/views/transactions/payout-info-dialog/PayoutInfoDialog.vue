@@ -7,7 +7,7 @@
                         <h2>
                             {{ payoutInfo.currency }} {{ addTrailingCommas(payoutInfo?.amount_in_smallest_currency_unit)
                             }} on {{
-        format(payoutInfo.timestamp, 'MM-DD-YYYY').slice(0, 8)
+       payoutInfo.timestamp && format(payoutInfo.timestamp, 'MM-DD-YYYY').slice(0, 8)
     }} has status {{ payoutInfo.status }}
                         </h2>
 
