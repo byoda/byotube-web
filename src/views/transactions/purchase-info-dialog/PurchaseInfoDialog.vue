@@ -2,15 +2,7 @@
     <BaseDialog :name="name" width="900">
         <template #default>
             <BaseCard class="pa-8 rounded-xl">
-                <div>
-                    <h2>
-                        {{payoutInfo.currency}} {{ addTrailingCommas(payoutInfo?.amount_in_smallest_currency_unit) }} on {{
-        format(payoutInfo.timestamp, 'MM-DD-YYYY').slice(0,8)
-    }} has status {{ payoutInfo.status}}
-                    </h2>
-
-                </div>
-                <v-data-table :headers="headers" :items-per-page="15" :items="payoutInfo?.history" density="comfortable"
+                <v-data-table :headers="headers" :items-per-page="15" :items="[purchaseInfo]" density="comfortable"
                     hide-default-footer>
                     <template #bottom>
                         <div></div>
@@ -36,49 +28,48 @@
 import { BaseDialog, BaseCard, BaseBtn } from "@/components/base"
 import { useCoreStore } from "@/store";
 import { useHelper } from "@/composables";
-import { useDate } from "vuetify/lib/framework.mjs";
 
 const props = defineProps({
-    payoutInfo: {
+    purchaseInfo: {
         type: Object,
         default: null
     }
 })
 
-const name = 'payout-info-dialog'
+const name = 'payment-info-dialog'
 const { CloseDialog } = useCoreStore()
 const { toQueryString, basisPointsToPercentage, centsToDollars, addTrailingCommas } = useHelper()
 
-const { format, fullDate } = useDate()
 
 const headers = [
+ 
     {
-        title: "Date",
-        key: "timestamp",
-        align: "center",
-        sortable: false,
-        width: "100",
-    },
-    {
-        title: "Payout Status",
-        key: "payout_status",
+        title: "Status",
+        key: "status",
         align: "start",
         sortable: false,
         width: "100px",
     },
     {
-        title: "Payout Provider Status",
+        title: "Payment Provider Status",
         align: "start",
         sortable: false,
-        key: "payout_provider_status",
+        key: "provider_payment_status",
         width: "150px",
     },
     {
-        title: "Payout Id",
-        key: "payout_id",
+        title: "Payment Provider",
         align: "start",
         sortable: false,
-        width: "200px",
+        key: "payment_provider",
+        width: "150px",
+    },
+    {
+        title: "Payment Id",
+        key: "payment_id",
+        align: "start",
+        sortable: false,
+        width: "220px",
     },
 ];
 

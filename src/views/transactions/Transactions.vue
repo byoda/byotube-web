@@ -81,6 +81,8 @@
 
     <PayoutDialog />
     <ReviewRegistrationDialog :register-data="account" />
+    <PayoutInfoDialog :payout-info="payoutInfo" />
+    <PurchaseInfoDialog :purchase-info="paymentInfo" />
   </div>
 </template>
 <script setup>
@@ -93,10 +95,13 @@ import PayoutDialog from "./payout-dialog/PayoutDialog.vue"
 import ReviewRegistrationDialog from  "./review-regiatration-dialog/ReviewRegistrationDialog.vue"
 import { useAuthStore, useCoreStore } from "@/store";
 import { storeToRefs } from "pinia";
+import PayoutInfoDialog from "./payout-info-dialog/PayoutInfoDialog.vue";
+import PurchaseInfoDialog from "./purchase-info-dialog/PurchaseInfoDialog.vue";
+
 
 const { isByotubeAccount } = storeToRefs(useAuthStore())
 const { OpenDialog } = useCoreStore()
-const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, getAllTransactions, getBalance, getAccountInfo, getPayoutInfo, getPurchaseInfo } = useTransactions()
+const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, payoutInfo, paymentInfo, getAllTransactions, getBalance, getAccountInfo, getPayoutInfo, getPurchaseInfo } = useTransactions()
 const { addTrailingCommas } = useHelper()
 
 const date = useDate()

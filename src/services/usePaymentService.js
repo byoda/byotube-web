@@ -15,7 +15,7 @@ export const usePaymentService = () => {
   };
 
   const requestThirdPartyToken = (appId, domain, body) => {;
-    return  domain != 'null' ? Api.post(`https://${domain}/api/v1/pod/authtoken/remote`, body) : Api.post(`lite/account/app_token?app_id=${appId}`);
+    return  domain != 'null' && domain != null ? Api.post(`https://${domain}/api/v1/pod/authtoken/remote`, body) : Api.post(`lite/account/app_token?app_id=${appId}`);
   };
 
   const requestByopayToken = (token) => {

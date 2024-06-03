@@ -119,7 +119,9 @@ const search = async () => {
 }
 
 onMounted(() => {
-  getBalance()
+  if(isAuthenticated.value){
+    getBalance()
+  }
   filter.value = JSON.parse(localStorage.getItem('videos-filter')) || { name: "All", value: "" }
 })
 

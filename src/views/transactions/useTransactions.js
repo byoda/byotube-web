@@ -1,6 +1,6 @@
 import { useBurstPoints, useLoader } from "@/composables";
 import { usePaymentService } from "@/services";
-import { useAuthStore } from "@/store";
+import { useAuthStore, useCoreStore } from "@/store";
 import { storeToRefs } from "pinia";
 import { computed, ref } from "vue";
 
@@ -18,10 +18,14 @@ export const useTransactions = () => {
     hideLoader: hideTableLoader,
   } = useLoader();
 
+  const { OpenDialog } = useCoreStore()
+
   const account = ref(null);
 
   const transactions = ref([]);
   const balance = ref("");
+  const payoutInfo = ref(null)
+  const paymentInfo = ref(null)
 
   const headers = [
     {
@@ -129,6 +133,8 @@ export const useTransactions = () => {
   const getPayoutInfo = async (payoutId) => {
     try {
       const { data } = await getPayoutDetails(payoutId);
+      payoutInfo.value = data
+      OpenDialog('payout-info-dialog')
     } catch (error) {
       console.error("Error", error);
       if (error.status === 404) {
@@ -140,6 +146,8 @@ export const useTransactions = () => {
   const getPurchaseInfo = async (purchaseId) => {
     try {
       const { data } = await getPurchaseDetails(purchaseId);
+      paymentInfo.value = data
+      OpenDialog('payment-info-dialog')
     } catch (error) {
       console.error("Error", error);
       if (error.status === 404) {
@@ -149,6 +157,8 @@ export const useTransactions = () => {
   };
 
   return {
+    payoutInfo,
+    paymentInfo,
     account,
     isRegisterVisible,
     balance,
