@@ -1,4 +1,4 @@
-import { constants } from "@/globals/constants";
+import { AccountType, constants } from "@/globals/constants";
 import { useVideoService } from "@/services";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -267,7 +267,7 @@ export const useVideo = () => {
       service_id: constants.BYOTUBE_SERVICE_ID,
       asset_id: asset.asset_id,
       member_id: edge.origin,
-      member_id_type: memberIdType,
+      member_id_type: memberIdType == AccountType.LITE ? 'btlite': (memberIdType == AccountType.BYOTUBE ? 'members-' : '') ,
       attestation: attestation,
     };
     if (asset.ingest_status != "external") {
