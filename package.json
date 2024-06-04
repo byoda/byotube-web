@@ -1,11 +1,12 @@
 {
-  "name": "vuetube",
+  "name": "byo.tube",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 3000",
-    "build": "vite build",
+    "stage": "vite build --mode staging",
+    "build": "vite build --mode production",
     "serve": "vite preview"
   },
   "dependencies": {
