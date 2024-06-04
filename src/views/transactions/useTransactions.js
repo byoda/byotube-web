@@ -124,7 +124,7 @@ export const useTransactions = () => {
       account.value = data;
     } catch (error) {
       console.error("Error", error);
-      if (error.status === 404) {
+      if (error?.response?.status === 404) {
         isRegisterVisible.value = true;
       }
     }

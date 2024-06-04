@@ -61,14 +61,14 @@
       </div>
     </v-app-bar>
     <Drawer />
-    <NonAuthDialog />
+    <NonAuthDialog content-type="feature" />
   </nav>
 </template>
 
 <script setup>
 import { BaseTextfield, BaseBtn, BaseCard } from '@/components/base'
 import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
 import { useEmitter, useHelper } from "@/composables";
 import Drawer from '../drawer/index.vue'
 import { useAuthStore, useCoreStore } from '@/store';
@@ -123,6 +123,13 @@ onMounted(() => {
     getBalance()
   }
   filter.value = JSON.parse(localStorage.getItem('videos-filter')) || { name: "All", value: "" }
+})
+
+
+onBeforeRouteUpdate((to, from)=>{
+  if(from.name === 'Search'){
+    searchText.value = null
+  }
 })
 
 </script>

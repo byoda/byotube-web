@@ -16,7 +16,7 @@
                 <form @submit.prevent="signin">
                   <BaseRadioGroup v-model="accountType" class="ml-n4" hide-details label="Account Type" inline
                     @update:modelValue="signinData.domain = null">
-                    <BaseRadio label="BYO.Tube Lite" value="lite" />
+                    <BaseRadio label="BYO.Tube Lite" value="btlite" />
                     <BaseRadio label="BYO.Tube Creator" value="byotube" />
                   </BaseRadioGroup>
                   <BaseTextfield v-model="signinData.email" class="mt-6" color="primary" name="Username"

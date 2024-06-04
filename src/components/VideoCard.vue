@@ -27,33 +27,34 @@
           </v-avatar>
         </div>
       </v-col>
-      <v-col :cols="smallCard ? 11 : (searchCard ? 9 : 10)" :class="{ 'pl-3': !smallCard }">
-        <div :class="{'d-flex': searchCard}">
+      <v-col :cols="smallCard ? 11 : (searchCard ? 9 : 9)" :class="{ 'pl-3': !smallCard }">
+        <div :class="{ 'd-flex': searchCard }">
           <div v-if="searchCard" class="mt-2">
             <img v-if="video?.ingest_status === EXTERNAL && !smallCard" src="@/assets/YouTube_icon.png" height="36"
               width="36" />
             <img v-if="video?.ingest_status !== EXTERNAL && showBurstIcon" height="30" src="@/assets/Burst_icon.png"
               alt="" srcset="" class="mt-1">
           </div>
-          <div :class="{'ml-7': searchCard && (!showBurstIcon && video?.ingest_status !== EXTERNAL)} ">
+          <div :class="{ 'ml-7': searchCard && (!showBurstIcon && video?.ingest_status !== EXTERNAL) }">
             <v-card-title class="pl-2 pb-0 font-weight-bold whitespace-wrap cursor-pointer"
               :class="{ 'text-sm overflow-visible': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'py-0': smallCard, 'pb-1': searchCard }"
               style="line-height: 1.2rem" :style="{ 'font-size': searchCard ? '18px !important' : '16px' }">
               {{ smallCard ? `${video?.title?.length > 20 ? `${video?.title?.slice(0, 18)}...` : video?.title}` :
-      video?.title }}
+    video?.title }}
             </v-card-title>
-  
+
             <div
               :class="{ 'd-flex align-center justify-space-between mt-n2': video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard }">
               <div>
                 <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0 cursor-pointer" :class="{ 'text-xs': smallCard }"
                   @click.stop="movetoChannel">
                   {{ `${video?.creator?.length > 10 && video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard ?
-      `${video?.creator?.slice(0, 10)}...` : video?.creator}` }}
+    `${video?.creator?.slice(0, 10)}...` : video?.creator}` }}
                 </v-card-subtitle>
-  
-                <v-card-subtitle class="pl-2 pb-0 pt-0 mt-n1">
-                  {{ convertDateToDuration(video?.published_timestamp) }}
+
+                <v-card-subtitle class="pl-2 pb-0 pt-0 d-flex ga-1">
+                  <span v-if="video?.publisher_views" class="d-flex align-center">{{ addTrailingCommas(video?.publisher_views) }} views <div class="dot ml-1"></div></span> {{
+    convertDateToDuration(video?.published_timestamp) }}
                 </v-card-subtitle>
               </div>
               <div v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard">
@@ -81,7 +82,7 @@
           </div>
         </div>
       </v-col>
-      <v-col v-if="video?.ingest_status === EXTERNAL && !smallCard && !searchCard" cols="1" class="pt-2">
+      <v-col v-if="video?.ingest_status === EXTERNAL && !smallCard && !searchCard" cols="2" class="pt-2 text-end">
         <img src="@/assets/YouTube_icon.png" height="36" width="36" />
       </v-col>
       <v-col v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && !searchCard" cols="1" class="pt-2">
@@ -133,7 +134,7 @@ const props = defineProps({
   card: Object,
 })
 
-const { convertDateToDuration } = useHelper()
+const { convertDateToDuration, addTrailingCommas } = useHelper()
 const { isAuthenticated } = useAuthStore()
 const router = useRouter()
 
@@ -199,5 +200,11 @@ const showBurstIcon = computed(() => {
   text-overflow: ellipsis !important;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.dot {
+  height: 3px;
+  width: 3px;
+  background-color: #777777;
 }
 </style>

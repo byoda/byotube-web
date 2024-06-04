@@ -5,10 +5,8 @@
                 <template v-if="payoutInfo">
                     <div>
                         <h2>
-                            {{ payoutInfo.currency }} {{ addTrailingCommas(payoutInfo?.amount_in_smallest_currency_unit)
-                            }} on {{
-                                payoutInfo.timestamp && payoutInfo.timestamp.slice(0, 10)
-                            }} has status {{ payoutInfo.status }}
+                           Status for the payout of ${{ centsToDollars(payoutInfo?.amount_in_smallest_currency_unit)
+                            }}  {{ payoutInfo.status }}
                         </h2>
 
                     </div>
@@ -25,7 +23,7 @@
 
                     </v-data-table>
                     <div class="text-end mt-8">
-                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                        <BaseBtn variant="text" color="primary" class="mr-2" @click="CloseDialog(name)">
                             Close
                         </BaseBtn>
                     </div>
@@ -40,7 +38,7 @@
                         Pay-out not found. Please contact payouts@byo.tube
                     </p>
                     <div class="text-end mt-2">
-                        <BaseBtn variant="text" color="red" class="mr-2" @click="CloseDialog(name)">
+                        <BaseBtn variant="text" color="primary" class="mr-2" @click="CloseDialog(name)">
                             Close
                         </BaseBtn>
                     </div>

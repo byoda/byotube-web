@@ -95,6 +95,9 @@
     ">
                               <v-icon v-if="isVideosLikedByCurrentUser" size="24">mdi-thumb-up</v-icon>
                               <v-icon v-else size="24">mdi-thumb-up-outline</v-icon>
+                              <p class="text-subtitle-2 mr-n3 ml-1" v-if="asset?.publisher_likes">
+                                {{ addTrailingCommas(asset?.publisher_likes) }}
+                              </p>
                             </v-btn>
                             <v-btn icon @click="
     !isAuthenticated
@@ -105,6 +108,7 @@
     ">
                               <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
                               <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
+                              
                             </v-btn>
                           </v-btn-toggle>
                           <BaseBtn color="#dcdcdc" rounded variant="outlined" class="ml-2 grey-background"
@@ -183,7 +187,7 @@ const route = useRoute();
 
 const path = window.location.href;
 
-const { textEllipsis } = useHelper();
+const { textEllipsis, addTrailingCommas } = useHelper();
 const { getFollowedChannels } = useFollow();
 const { checkUserBurstPoints } = useBurstPoints()
 
@@ -322,7 +326,8 @@ button.v-btn.remove-hover-bg {
 .toggle-btn-class {
   .v-btn {
     background-color: #f2f2f2 !important;
-    padding-inline: 30px;
+    padding-inline: 18px;
+    width: fit-content;
   }
 
   .v-btn__overlay {

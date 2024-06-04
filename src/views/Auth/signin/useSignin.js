@@ -18,7 +18,7 @@ export const useSignin = () => {
   const { signIn: signinReq } = useAuthService();
 
   const signinForm = ref();
-  const accountType = ref("lite");
+  const accountType = ref("btlite");
   const visible = ref(false);
 
   const assetId = route.query?.asset_id;
