@@ -20,7 +20,7 @@
           <v-row>
             <v-col cols="12">
               <v-skeleton-loader :loading="videoLoading" type="card-avatar, article, actions" tile large>
-                <div style="width: 100%">
+                <div style="width: 100%" class="light-grey-background">
                   <v-responsive>
                     <div style="
                         border-radius: 10px !important;
@@ -40,7 +40,7 @@
                         :origin="asset?.origin" :member-id="memberId"
                         :member-type="!isAuthenticated ? 'ANONYMOUS' : (isBtLiteAccount ? 'btlite' : 'member')" />
                     </div>
-                    <v-card flat tile class="card" v-if="!videoNotfound">
+                    <v-card flat tile class="card mb-2" v-if="!videoNotfound">
                       <div class="d-flex justify-space-between mt-2">
                         <div class="d-flex align-center mt-3">
                           <v-card-title class="pl-0 pb-0 pt-0 font-weight-medium">
@@ -123,7 +123,7 @@
                         </div>
                       </div>
                     </v-card>
-                    <div v-if="asset?.contents" class="pa-3 mt-2 grey-background"
+                    <div v-if="asset?.contents" class="pa-3 mt-4 grey-background"
                       style="background-color: #e5e5e5; border-radius: 5px">
                       <!-- <p class="black--text" v-html="asset?.contents">
                       </p> -->
@@ -353,6 +353,9 @@ button.v-btn.remove-hover-bg {
 
 .grey-background {
   background-color: #f2f2f2 !important;
+}
+.light-grey-background {
+  background-color: #fafafa !important;
 }
 
 .recommended-videos {

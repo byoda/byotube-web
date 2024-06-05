@@ -52,6 +52,8 @@ export const useSignin = () => {
       if (data && status == 200) {
         localStorage.setItem("token", data?.auth_token);
         localStorage.setItem("domain", signinData.value.domain);
+        localStorage.setItem("member_id", data.member_id);
+        localStorage.setItem("id_type", data.id_type);
         setAuth.value(true);
         setAuthAccountType();
         await nextTick();

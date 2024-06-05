@@ -104,7 +104,11 @@ const searchText = ref("")
 
 const logout = () => {
   localStorage.clear()
-  window.location.reload();
+  if(route.name !== 'Home'){
+    router.push({name:'Home'})
+  } else {
+    window.location.reload()
+  }
 }
 
 

@@ -259,17 +259,22 @@ export const useVideo = () => {
     }
 
     const attestation = JSON.parse(localStorage.getItem("attestation"));
-    const memberIdType = localStorage.getItem("account")
+    const memberIdType = localStorage.getItem("id_type")
+    const memberId = localStorage.getItem("member_id")
 
     let asset = edge.node;
     asset.origin = edge.origin;
     const body = {
       service_id: constants.BYOTUBE_SERVICE_ID,
       asset_id: asset.asset_id,
-      member_id: edge.origin,
-      member_id_type: memberIdType == AccountType.LITE ? 'btlite': (memberIdType == AccountType.BYOTUBE ? 'members-' : '') ,
+      member_id: memberId,
+      member_id_type: memberIdType,
       attestation: attestation,
     };
+    if(!memberIdType){
+      delete body.member_id
+      delete body.member_id_type
+    }
     if (asset.ingest_status != "external") {
       let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token`;
 
