@@ -79,7 +79,7 @@ import { useTransactions } from '@/views/transactions/useTransactions';
 
 const emits = defineEmits(['search'])
 
-const { isAuthenticated } = toRefs(useAuthStore())
+const { isAuthenticated, setAuth } = toRefs(useAuthStore())
 const coreStore = useCoreStore()
 const { addTrailingCommas } = useHelper()
 
@@ -106,6 +106,7 @@ const logout = () => {
   localStorage.clear()
   if(route.name !== 'Home'){
     router.push({name:'Home'})
+    setAuth.value()
   } else {
     window.location.reload()
   }
