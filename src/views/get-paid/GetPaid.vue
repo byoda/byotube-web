@@ -47,8 +47,12 @@
                                 stores
                                 this data in compliance with applicable regulations. We do not have access to that data; we only
                                 know an identifier of your Stripe account so we can tell Stripe to pay money to your account.
+                            </p>
+                            <p class="text-caption">
                                 We have found that registering with Stripe works best with the Chrome browser with any browser
                                 extensions you may have installed for blocking scripts disabled.
+                            </p>
+                            <p class="text-caption">
                                 If you have any questions or encounter issues during registration, please contact us at
                                 payouts@byo.tube.
                             </p>
