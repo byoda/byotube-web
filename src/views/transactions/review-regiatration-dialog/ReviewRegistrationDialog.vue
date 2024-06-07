@@ -20,7 +20,6 @@
                     <BaseBtn variant="tonal" color="red" class="mr-2" @click="CloseDialog(name)">
                         Close
                     </BaseBtn>
-
                 </div>
             </BaseCard>
         </template>

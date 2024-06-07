@@ -131,7 +131,7 @@ router.beforeEach((to, from, next) => {
   const isNonAuthRoute = nonAuthRoutes.includes(to.name);
 
   if (authStore.isAuthenticated && isAuthPages) {
-    next("Home");
+    next("/");
   } else if (!authStore.isAuthenticated && isAuthRoute) {
     next("signin");
   } else {

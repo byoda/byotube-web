@@ -20,7 +20,7 @@
                     <BaseRadio label="BYO.Tube Creator" value="byotube" />
                   </BaseRadioGroup>
                   <BaseTextfield v-model="signinData.email" class="mt-6" color="primary" name="Username"
-                    rules="required" label="Username" variant="outlined">
+                    rules="required" label="Email" variant="outlined">
                   </BaseTextfield>
 
                   <p class="ma-0 text-right">

@@ -16,7 +16,7 @@
         </BaseBtn>
         <BaseBtn v-if="isByotubeAccount && isRegisterVisible" color="primary" density="comfortable"
           class="mt-2 white-text" @click="$router.push({ name: 'GetPaid' })">
-          Register as a creator
+          Register for pay-outs
         </BaseBtn>
         <BaseBtn v-if="!isPayoutvisible && isByotubeAccount && !isRegisterVisible" color="primary" density="comfortable" class="mt-2 white-text"
           @click="OpenDialog(reviewDialogName)">
