@@ -31,8 +31,7 @@ export const useGetPaid = () => {
       const { valid }  = await registerForm.value.validate()
       if(!valid) return
       const { data } = await registerInStripe(accountDetails.value)
-      stripeUrl.value = data?.payout_provider_account_url
-      OpenDialog('stripe-redirect-dialog')
+      window.open(data?.payout_provider_account_url, '_self')
     } catch (error) {
       console.error("Error", error)
     } finally {

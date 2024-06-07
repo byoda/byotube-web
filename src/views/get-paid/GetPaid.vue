@@ -32,9 +32,36 @@
                             name="business name" label="Business Name" variant="outlined" hide-details>
                         </BaseTextfield>
                     </v-col>
-                    <div class="d-flex justify-end w-100 pr-3">
-                        <BaseBtn color="primary" class="mt-2 white-text elevation-0" :loading="loader" @click="register">
-                            Register
+                    <div class="px-3 my-2">
+                        <div class="primary-border pa-3">
+                            <p class="text-caption">
+                                BYO.Tube uses the Stripe Connect product to pay creators. Stripe is one of the major payment
+                                processors in the USA and their Stripe Connect product is used by companies like Doordash,
+                                Instacard
+                                and Github. 
+                            </p>
+                            <p class="text-caption">
+                                To enable pay outs, you will need to click on the 'Continue on Stripe' button below
+                                to
+                                register on the Stripe.com website and provide them with your bank and tax details. Stripe
+                                stores
+                                this data in compliance with applicable regulations. We do not have access to that data; we only
+                                know an identifier of your Stripe account so we can tell Stripe to pay money to your account.
+                                We have found that registering with Stripe works best with the Chrome browser with any browser
+                                extensions you may have installed for blocking scripts disabled.
+                                If you have any questions or encounter issues during registration, please contact us at
+                                payouts@byo.tube.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-end w-100 pr-3 mt-2">
+                        <BaseBtn color="red" variant="outlined"  class="mt-2 mr-2 elevation-0"
+                            @click="$router.push({name: 'Transactions'})">
+                            Cancel
+                        </BaseBtn>
+                        <BaseBtn color="primary" class="mt-2 white-text elevation-0" :loading="loader"
+                            @click="register">
+                            Continue to stripe
                         </BaseBtn>
                     </div>
                 </v-row>
@@ -51,3 +78,10 @@ import StripeRedirectDialog from "./strip-redirect-dialog/StripeRedirectDialog.v
 
 const { accountDetails, loader, registerForm, stripeUrl, register } = useGetPaid()
 </script>
+
+<style lang="scss">
+.primary-border{
+    border: 1px solid #f29616b6;
+    border-radius: 4px;
+}
+</style>
