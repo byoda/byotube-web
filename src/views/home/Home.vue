@@ -1,6 +1,7 @@
 <template>
   <div id="home" class="pa-4">
     <v-container fluid>
+      {{windowWidth}}
       <main>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <div v-if="section.videos.length">
@@ -42,6 +43,9 @@ import { useHome } from "./useHome";
 import { useFollow, useEmitter } from "@/composables"
 import { onMounted } from "vue";
 import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
+import { watchEffect } from "vue";
+import { useDisplay } from "vuetify/lib/framework.mjs";
+import { watch } from "vue";
 
 const props = defineProps({
   sectionNames: {
@@ -52,8 +56,10 @@ const props = defineProps({
 
 const emitter = useEmitter()
 
-const { sections, ingestStatus, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch } = useHome(props)
+const { sections, ingestStatus, videosAccordingToSize, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch } = useHome(props)
 const { followedAccounts } = useFollow()
+
+const { width: windowWidth } = useDisplay();
 
 onMounted(() => {
   ingestStatus.value = JSON.parse(localStorage.getItem('videos-filter'))
@@ -68,9 +74,25 @@ onMounted(() => {
     typeof window !== "undefined"
       ? JSON.parse(window.localStorage.getItem("followedAccounts"))
       : null;
-
-  getAllSegmentedVideos()
 })
+
+
+watch(()=> windowWidth.value, () => {
+    console.log("sdfdfsdf", windowWidth.value);
+  if (windowWidth.value >= 1800 && windowWidth.value < 2100) {
+    videosAccordingToSize.value = 15;
+    emptySectionVideos()
+    getAllSegmentedVideos()
+  } else if (windowWidth.value > 1600) {
+    videosAccordingToSize.value = 12;
+    emptySectionVideos()
+    getAllSegmentedVideos()
+  } else {
+    videosAccordingToSize.value = 9;
+    emptySectionVideos()
+    getAllSegmentedVideos()
+  }
+}, {immediate: true});
 
 
 </script>

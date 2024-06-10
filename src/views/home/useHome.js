@@ -1,13 +1,12 @@
 import { useVideo } from "@/composables";
 import { useAuthStore } from "@/store";
 import moment from "moment";
-import { computed, ref, toRefs } from "vue";
+import { computed, ref, toRefs, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 export const useHome = (props) => {
   const router = useRouter();
-  const { width: windowWidth } = useDisplay();
 
   const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore());
 
@@ -19,6 +18,7 @@ export const useHome = (props) => {
   ];
 
   const ingestStatus = ref([]);
+  const videosAccordingToSize = ref(0);
 
   const RECENT_UPLOADS = "recent_uploads";
 
@@ -69,13 +69,6 @@ export const useHome = (props) => {
         ]
   );
 
-  const videosAccordingToSize = computed(() => {
-    return windowWidth.value >= 1800 && windowWidth.value < 2100
-      ? 10
-      : windowWidth.value > 2100
-      ? 12
-      : 9;
-  });
 
   const loadAllVideos = ref(false);
 
@@ -95,7 +88,9 @@ export const useHome = (props) => {
     try {
       section.loading = true;
       const videosData =
-        isAuthenticated.value && !isBtLiteAccount.value && section.key === RECENT_UPLOADS
+        isAuthenticated.value &&
+        !isBtLiteAccount.value &&
+        section.key === RECENT_UPLOADS
           ? await getMemberAllVideos(
               section?.after,
               first ? first : videosAccordingToSize.value,
@@ -164,6 +159,7 @@ export const useHome = (props) => {
     sections,
     loadAllVideos,
     ingestStatus,
+    videosAccordingToSize,
     dateFormatter,
     getAllSegmentedVideos,
     emptySectionVideos,
