@@ -1,7 +1,7 @@
 <template>
   <nav id="navbar">
     <v-app-bar class="white" flat app clipped-left :height="mdAndUp ? 64 : 110">
-      <div class="d-flex justify-space-between toolbar-container px-4">
+      <div class="d-flex justify-space-between toolbar-container px-4 pt-1">
 
         <div class="d-flex align-center cursor-pointer">
           <img src="@/assets/byotube-logo.png" :width="170" :height="39" contain
@@ -137,7 +137,7 @@ onMounted(() => {
 
 
 onBeforeRouteUpdate((to, from) => {
-  if (from.name === 'Search') {
+  if (from.name === 'Search' && to.name !== 'Search') {
     searchText.value = null
   }
 })
