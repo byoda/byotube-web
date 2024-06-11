@@ -1,6 +1,6 @@
 <template>
   <nav id="navbar">
-    <v-app-bar class="white" flat app clipped-left>
+    <v-app-bar class="white" flat app clipped-left :height="mdAndUp ? 64 : 110">
       <div class="d-flex justify-space-between toolbar-container px-4">
 
         <div class="d-flex align-center cursor-pointer">
@@ -59,6 +59,11 @@
             @click="coreStore.setDrawer(!coreStore.isDrawerOpen)" size="small" />
         </div>
       </div>
+      <div v-if="smAndDown" class="search-field d-flex align-center">
+        <BaseTextfield v-model="searchText" color="primary" variant="outlined" rounded hide-details
+          append-inner-icon="mdi-magnify" placeholder="Search" label="Search" outlined density="compact"
+          @click:appendInner="search" @keyup.enter="search" />
+      </div>
     </v-app-bar>
     <Drawer />
     <NonAuthDialog content-type="feature" />
@@ -83,7 +88,7 @@ const { isAuthenticated, setAuth } = toRefs(useAuthStore())
 const coreStore = useCoreStore()
 const { addTrailingCommas } = useHelper()
 
-const { mdAndUp } = useDisplay()
+const { mdAndUp, smAndDown } = useDisplay()
 
 const route = useRoute()
 const router = useRouter()
@@ -104,8 +109,8 @@ const searchText = ref("")
 
 const logout = () => {
   localStorage.clear()
-  if(route.name !== 'Home'){
-    router.push({name:'Home'})
+  if (route.name !== 'Home') {
+    router.push({ name: 'Home' })
     setAuth.value()
   } else {
     window.location.reload()
@@ -124,15 +129,15 @@ const search = async () => {
 }
 
 onMounted(() => {
-  if(isAuthenticated.value){
+  if (isAuthenticated.value) {
     getBalance()
   }
   filter.value = JSON.parse(localStorage.getItem('videos-filter')) || { name: "All", value: "" }
 })
 
 
-onBeforeRouteUpdate((to, from)=>{
-  if(from.name === 'Search'){
+onBeforeRouteUpdate((to, from) => {
+  if (from.name === 'Search') {
     searchText.value = null
   }
 })
@@ -214,8 +219,25 @@ onBeforeRouteUpdate((to, from)=>{
     min-width: 600px;
   }
 
+
+
   .toolbar-container {
     width: 100%;
+  }
+
+  .v-toolbar__content {
+    display: block;
+  }
+}
+
+@media (max-width: 440px) {
+
+  .search-field {
+    // background-color: red;
+    margin-top: 5px;
+    padding-inline: 10px;;
+    min-width: 200px !important;
+    display: inline-block;
   }
 }
 </style>

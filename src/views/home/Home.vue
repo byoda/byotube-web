@@ -1,7 +1,6 @@
 <template>
   <div id="home" class="pa-4">
     <v-container fluid>
-      {{windowWidth}}
       <main>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <div v-if="section.videos.length">
