@@ -1,92 +1,233 @@
 <template>
-  <v-card class="content-bg card rounded-lg" flat tile router :class="{ 'd-flex': smallCard || searchCard }">
-    <v-img :src="`${thumbnailForVideo(props.video)?.url}`" :height="thumbnailHeight" :width="setThumbnailWidth"
-      :max-width="setThumbnailMaxWidth" :max-height="searchCard ? 202 : 281" cover class="thumbnail cursor-pointer"
-      :class="{ 'search-thumbnail': searchCard }"></v-img>
+  <v-card
+    class="content-bg card rounded-lg"
+    flat
+    tile
+    router
+    :class="{ 'd-flex': smallCard || searchCard }"
+  >
+    <v-img
+      :src="`${thumbnailForVideo(props.video)?.url}`"
+      :height="thumbnailHeight"
+      :width="setThumbnailWidth"
+      :max-width="setThumbnailMaxWidth"
+      :max-height="searchCard ? 202 : 281"
+      cover
+      class="thumbnail cursor-pointer"
+      :class="{ 'search-thumbnail': searchCard }"
+    ></v-img>
     <v-row no-gutters>
-      <v-col class="cursor-pointer" cols="1" v-if="card.type != 'noAvatar' && !smallCard && !searchCard"
-        @click.stop="movetoChannel">
-        <div class="pl-0 pt-3" router
-          :to="`/channels?member_id=${video?.node?.member_id}&channel=${video?.node?.annotations[0]}`">
-          <v-menu v-if="isAuthenticated" v-model="showMenu" offset-y origin="center center" :min-width="150" rounded
-            transition="scale-transition" style="max-width: 600px;" :nudge-bottom="10" :close-on-content-click="false"
-            :elevated="false">
+      <v-col
+        class="cursor-pointer"
+        cols="1"
+        v-if="card.type != 'noAvatar' && !smallCard && !searchCard"
+        @click.stop="movetoChannel"
+      >
+        <div
+          class="pl-0 pt-3"
+          router
+          :to="`/channels?member_id=${video?.node?.member_id}&channel=${video?.node?.annotations[0]}`"
+        >
+          <v-menu
+            v-if="isAuthenticated"
+            v-model="showMenu"
+            offset-y
+            origin="center center"
+            :min-width="150"
+            rounded
+            transition="scale-transition"
+            style="max-width: 600px"
+            :nudge-bottom="10"
+            :close-on-content-click="false"
+            :elevated="false"
+          >
             <template v-slot:activator="{ attrs }">
               <v-avatar v-bind="attrs" class="cursor-pointer" color="red">
-                <v-img height="40" max-width="40" v-if="video.creator_thumbnail" class="elevation-6"
-                  :src="video.creator_thumbnail"></v-img>
-                <span v-else class="white--text headline ">
-                  {{ video?.creator?.split("")[0].toUpperCase() }}</span>
+                <v-img
+                  height="40"
+                  max-width="40"
+                  v-if="video.creator_thumbnail"
+                  class="elevation-6"
+                  :src="video.creator_thumbnail"
+                ></v-img>
+                <span v-else class="white--text headline">
+                  {{ video?.creator?.split("")[0].toUpperCase() }}</span
+                >
               </v-avatar>
             </template>
           </v-menu>
           <v-avatar v-else :size="36">
-            <v-img v-if="video.creator_thumbnail" class="elevation-6" :src="video.creator_thumbnail"></v-img>
-            <span v-else class="white--text headline ">
-              {{ video?.creator?.split("")[0].toUpperCase() }}</span>
+            <v-img
+              v-if="video.creator_thumbnail"
+              class="elevation-6"
+              :src="video.creator_thumbnail"
+            ></v-img>
+            <span v-else class="white--text headline">
+              {{ video?.creator?.split("")[0].toUpperCase() }}</span
+            >
           </v-avatar>
         </div>
       </v-col>
-      <v-col :cols="smallCard ? 11 : (searchCard ? 9 : 9)" :class="{ 'pl-3': !smallCard }">
+      <v-col
+        :cols="smallCard ? 11 : 9"
+        :class="{ 'pl-3': !smallCard }"
+      >
         <div :class="{ 'd-flex': searchCard }">
           <div v-if="searchCard" class="mt-2">
-            <img v-if="video?.ingest_status === EXTERNAL && !smallCard" src="@/assets/YouTube_icon.png" height="36"
-              width="36" />
-            <img v-if="video?.ingest_status !== EXTERNAL && showBurstIcon" height="30" src="@/assets/Burst_icon.png"
-              alt="" srcset="" class="mt-1">
+            <img
+              v-if="video?.ingest_status === EXTERNAL && !smallCard"
+              src="@/assets/YouTube_icon.png"
+              height="36"
+              width="36"
+            />
+            <img
+              v-if="video?.ingest_status !== EXTERNAL && showBurstIcon"
+              height="30"
+              src="@/assets/Burst_icon.png"
+              alt=""
+              srcset=""
+              class="mt-1"
+            />
           </div>
-          <div :class="{ 'ml-7': searchCard && (!showBurstIcon && video?.ingest_status !== EXTERNAL) }">
-            <v-card-title class="pl-2 pb-0 font-weight-bold whitespace-wrap cursor-pointer"
-              :class="{ 'text-sm overflow-visible': smallCard, 'subtitle-1': !smallCard, 'pt-3': !smallCard, 'py-0': smallCard, 'pb-1': searchCard }"
-              style="line-height: 1.2rem" :style="{ 'font-size': searchCard ? '18px !important' : '16px' }">
-              {{ smallCard ? `${video?.title?.length > 20 ? `${video?.title?.slice(0, 18)}...` : video?.title}` :
-    video?.title }}
+          <div
+            :class="{
+              'ml-7':
+                searchCard &&
+                !showBurstIcon &&
+                video?.ingest_status !== EXTERNAL,
+            }"
+          >
+            <v-card-title
+              class="pl-2 pb-0 font-weight-bold whitespace-wrap cursor-pointer"
+              :class="{
+                'text-sm overflow-visible': smallCard,
+                'subtitle-1': !smallCard,
+                'pt-3': !smallCard,
+                'py-0': smallCard,
+                'pb-1': searchCard,
+              }"
+              style="line-height: 1.2rem"
+              :style="{ 'font-size': searchCard ? '18px !important' : '16px' }"
+            >
+              {{
+                smallCard
+                  ? `${
+                      video?.title?.length > 20
+                        ? `${video?.title?.slice(0, 18)}...`
+                        : video?.title
+                    }`
+                  : video?.title
+              }}
             </v-card-title>
 
             <div
-              :class="{ 'd-flex align-center justify-space-between mt-n2': video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard }">
+              :class="{
+                'd-flex align-center justify-space-between mt-n2':
+                  video?.ingest_status !== EXTERNAL &&
+                  showBurstIcon &&
+                  smallCard,
+              }"
+            >
               <div>
-                <v-card-subtitle v-if="!searchCard" class="pl-2 pb-0 cursor-pointer" :class="{ 'text-xs': smallCard }"
-                  @click.stop="movetoChannel">
-                  {{ `${video?.creator?.length > 10 && video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard ?
-    `${video?.creator?.slice(0, 10)}...` : video?.creator}` }}
+                <v-card-subtitle
+                  v-if="!searchCard"
+                  class="pl-2 pb-0 cursor-pointer"
+                  :class="{ 'text-xs': smallCard }"
+                  @click.stop="movetoChannel"
+                >
+                  {{
+                    `${
+                      video?.creator?.length > 10 &&
+                      video?.ingest_status !== EXTERNAL &&
+                      showBurstIcon &&
+                      smallCard
+                        ? `${video?.creator?.slice(0, 10)}...`
+                        : video?.creator
+                    }`
+                  }}
                 </v-card-subtitle>
 
                 <v-card-subtitle class="pl-2 pb-0 pt-0 d-flex ga-1">
-                  <span v-if="video?.publisher_views" class="d-flex align-center">{{ addTrailingCommas(video?.publisher_views) }} views <div class="dot ml-1"></div></span> {{
-    convertDateToDuration(video?.published_timestamp) }}
+                  <span
+                    v-if="video?.publisher_views"
+                    class="d-flex align-center"
+                    >{{ addTrailingCommas(video?.publisher_views) }} views
+                    <div class="dot ml-1"></div
+                  ></span>
+                  {{ convertDateToDuration(video?.published_timestamp) }}
                 </v-card-subtitle>
               </div>
-              <div v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && smallCard">
+              <div
+                v-if="
+                  video?.ingest_status !== EXTERNAL &&
+                  showBurstIcon &&
+                  smallCard
+                "
+              >
                 <v-col cols="1" class="">
-                  <img height="30" src="@/assets/Burst_icon.png" alt="" srcset="" class="mb-n2">
+                  <img
+                    height="30"
+                    src="@/assets/Burst_icon.png"
+                    alt=""
+                    srcset=""
+                    class="mb-n2"
+                  />
                 </v-col>
               </div>
             </div>
-            <div v-if="searchCard" class="d-flex items-center py-3 pl-2" @click.stop="movetoChannel">
+            <div
+              v-if="searchCard"
+              class="d-flex items-center py-3 pl-2"
+              @click.stop="movetoChannel"
+            >
               <v-avatar class="cursor-pointer">
-                <img height="40" max-width="40" v-if="video?.creator_thumbnail" class="elevation-6"
-                  :src="video?.creator_thumbnail" />
-                <span v-else class="white--text headline ">
-                  {{ video?.creator?.split("")[0].toUpperCase() }}</span>
+                <img
+                  height="40"
+                  max-width="40"
+                  v-if="video?.creator_thumbnail"
+                  class="elevation-6"
+                  :src="video?.creator_thumbnail"
+                />
+                <span v-else class="white--text headline">
+                  {{ video?.creator?.split("")[0].toUpperCase() }}</span
+                >
               </v-avatar>
-              <v-card-subtitle class="pl-2 pb-0 pt-0 d-flex align-center cursor-pointer"
-                :class="{ 'text-xs': smallCard }">
+              <v-card-subtitle
+                class="pl-2 pb-0 pt-0 d-flex align-center cursor-pointer"
+                :class="{ 'text-xs': smallCard }"
+              >
                 {{ video?.creator }}
               </v-card-subtitle>
             </div>
-            <v-card-subtitle v-if="searchCard" class="pl-2 pb-0 pt-0 mt-n1 description-ellipses"
-              @click.stop="movetoChannel">
+            <v-card-subtitle
+              v-if="searchCard"
+              class="pl-2 pb-0 pt-0 mt-n1 description-ellipses"
+              @click.stop="movetoChannel"
+            >
               {{ video?.contents }}
             </v-card-subtitle>
           </div>
         </div>
       </v-col>
-      <v-col v-if="video?.ingest_status === EXTERNAL && !smallCard && !searchCard" cols="2" class="pt-2 text-end">
+      <v-col
+        v-if="video?.ingest_status === EXTERNAL && !smallCard && !searchCard"
+        cols="2"
+        class="pt-2 text-end"
+      >
         <img src="@/assets/YouTube_icon.png" height="36" width="36" />
       </v-col>
-      <v-col v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && !searchCard" cols="1" class="pt-2">
-        <img height="30" src="@/assets/Burst_icon.png" alt="" srcset="" class="ml-n3">
+      <v-col
+        v-if="video?.ingest_status !== EXTERNAL && showBurstIcon && !searchCard"
+        cols="1"
+        class="pt-2"
+      >
+        <img
+          height="30"
+          src="@/assets/Burst_icon.png"
+          alt=""
+          srcset=""
+          class="ml-n3"
+        />
       </v-col>
     </v-row>
   </v-card>
@@ -113,39 +254,39 @@ const props = defineProps({
   },
   smallCard: {
     type: Boolean,
-    default: false
+    default: false,
   },
   searchCard: {
     type: Boolean,
-    default: false
+    default: false,
   },
   thumbnailHeight: {
     type: [Number, String],
-    default: 203
+    default: 203,
   },
   thumbnailWidth: {
     type: [Number, String],
-    default: null
+    default: null,
   },
   thumbnailMaxWidth: {
     type: [Number, String],
-    default: null
+    default: null,
   },
   card: Object,
-})
+});
 
-const { convertDateToDuration, addTrailingCommas } = useHelper()
-const { isAuthenticated } = useAuthStore()
-const router = useRouter()
+const { convertDateToDuration, addTrailingCommas } = useHelper();
+const { isAuthenticated } = useAuthStore();
+const router = useRouter();
 
-const EXTERNAL = "external"
-const showMenu = ref(false)
+const EXTERNAL = "external";
+const showMenu = ref(false);
 
 const movetoChannel = () => {
-  router.push(`/channels?member_id=${props.channel}&channel=${props.video?.creator}`)
-
-
-}
+  router.push(
+    `/channels?member_id=${props.channel}&channel=${props.video?.creator}`
+  );
+};
 
 const thumbnailForVideo = (video) => {
   const smallerThumbnailVideo = video?.video_thumbnails?.find(
@@ -156,19 +297,26 @@ const thumbnailForVideo = (video) => {
 };
 
 const setThumbnailWidth = computed(() => {
-  return props.thumbnailWidth ? props.thumbnailWidth : (props.searchCard ? 360 : '100%')
-})
-
+  return props.thumbnailWidth
+    ? props.thumbnailWidth
+    : props.searchCard
+    ? 360
+    : "100%";
+});
 
 const setThumbnailMaxWidth = computed(() => {
-  return props.thumbnailMaxWidth ? props.thumbnailMaxWidth : props.searchCard ? 360 : 'auto'
-})
+  return props.thumbnailMaxWidth
+    ? props.thumbnailMaxWidth
+    : props.searchCard
+    ? 360
+    : "auto";
+});
 
 const showBurstIcon = computed(() => {
-  return !!props.video?.monetizations?.find(item => item.monetization_type !== 'free')
-})
-
-
+  return !!props.video?.monetizations?.find(
+    (item) => item.monetization_type !== "free"
+  );
+});
 </script>
 
 <style>

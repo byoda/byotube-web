@@ -7,8 +7,8 @@
             <h2 class="section-title text-secondary font-weight-medium">
               {{ section.title }}
             </h2>
-            <div class="grid-layout">
-              <div v-for="(video, i) in section.videos" :key="i" class="py-6" @click="moveToWatch(video)"
+            <div class="grid-layout mt-3">
+              <div v-for="(video, i) in section.videos" :key="i" class="md:py-6" @click="moveToWatch(video)"
                 :followed-accounts="followedAccounts" style="position: relative;">
                 <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
                   @follow="followChannel(video.node, video.origin)"

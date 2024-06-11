@@ -54,19 +54,21 @@
                           <img height="35" src="@/assets/Burst_icon.png" alt="" srcset="" class="ml-n3">
                         </v-col>
                       </div>
-                      <div class="d-flex justify-space-between align-center mt-3">
-                        <div class="d-flex align-center">
-                          <v-avatar class="cursor-pointer" color="red" @click="movetoChannel">
-                            <v-img v-if="asset?.creator_thumbnail" class="elevation-6"
-                              :src="asset?.creator_thumbnail"></v-img>
-                            <span v-else class="white--text headline">
-                              {{ asset?.creator?.split("")[0].toUpperCase() }}
-                            </span>
-                          </v-avatar>
-
-                          <p class="ml-3 pb-0 pt-0 channel-name mr-4 cursor-pointer" @click="movetoChannel">
-                            {{ asset?.creator }}
-                          </p>
+                      <div class="d-md-flex justify-space-between align-center mt-3">
+                        <div class="d-flex align-center justify-space-between mb-md-0 mb-4">
+                          <div class="d-flex align-center ">
+                            <v-avatar class="cursor-pointer" color="red" @click="movetoChannel">
+                              <v-img v-if="asset?.creator_thumbnail" class="elevation-6"
+                                :src="asset?.creator_thumbnail"></v-img>
+                              <span v-else class="white--text headline">
+                                {{ asset?.creator?.split("")[0].toUpperCase() }}
+                              </span>
+                            </v-avatar>
+  
+                            <p class="ml-3 pb-0 pt-0 channel-name mr-4 cursor-pointer" @click="movetoChannel">
+                              {{ asset?.creator }}
+                            </p>
+                          </div>
 
                           <BaseBtn height="36" width="95" color="black"
                             class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
@@ -83,7 +85,7 @@
                             <p class="mb-0 text-subtitle-2" v-else>Follow</p>
                           </BaseBtn>
                         </div>
-                        <div class="d-flex align-center">
+                        <div class="d-flex align-center justify-space-between">
                           <v-btn-toggle density="compact" class="toggle-btn-class" dense rounded="xl" :border="true"
                             divided>
                             <v-btn icon @click="
@@ -108,7 +110,7 @@
     ">
                               <v-icon v-if="isVideoDislikedByCurrentUser" size="24">mdi-thumb-down</v-icon>
                               <v-icon v-else size="24">mdi-thumb-down-outline</v-icon>
-                              
+
                             </v-btn>
                           </v-btn-toggle>
                           <BaseBtn color="#dcdcdc" rounded variant="outlined" class="ml-2 grey-background"
@@ -143,14 +145,15 @@
         <v-col cols="12" md="3" class="pt-3" tag="div">
           <BaseInfiniteScroller :items="rightPanelVideos.videos"
             @load="mapSegmentedVideos(rightPanelVideos, 25, $event)">
-            <div v-for="(video, i) in loading ? 12 : rightPanelVideos.videos" :key="i" class="recommended-videos mb-2"
-              :followed-accounts="followedAccounts" style="height: 90px; cursor: pointer" @click="
+            <div v-for="(video, i) in loading ? 12 : rightPanelVideos.videos" :key="i" class="mb-2 recommended-videos"
+              :followed-accounts="followedAccounts" :style="{ 'height': mdAndUp ? '90px' : '100%' }"
+              style="cursor: pointer" @click="
     replaceVideo(video);
   videoOptions.autoplay = 'play';
   ">
-              <v-skeleton-loader style="" max-height="90" type="list-item-avatar-three-line" :loading="loading">
-                <video-card :card="{ maxWidth: 370 }" :video="video.node" :channel="video.origin"
-                  @follow="followChannel(video.node, video.origin)" style="width: 100%" small-card />
+              <v-skeleton-loader style="" type="list-item-avatar-three-line" :loading="loading">
+                <video-card :card="{ maxWidth: mdAndUp ? 370 : '100%' }" :video="video.node" :channel="video.origin"
+                  @follow="followChannel(video.node, video.origin)" style="width: 100%" :small-card="mdAndUp" />
               </v-skeleton-loader>
             </div>
           </BaseInfiniteScroller>
@@ -178,12 +181,14 @@ import { NonAuthDialog, CopyUrlDialog, NonAuthMonitizedVideoDialog } from "@/com
 import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
+import { useDisplay } from "vuetify/lib/framework.mjs";
 
 
 const coreStore = useCoreStore();
 const { isAuthenticated } = toRefs(useAuthStore());
 const router = useRouter();
 const route = useRoute();
+const { mdAndUp } = useDisplay()
 
 const path = window.location.href;
 
@@ -243,7 +248,7 @@ const movetoChannel = () => {
 
 const showBurstIcon = computed(() => {
   const isMonitized = !!asset.value?.monetizations?.find(item => item.monetization_type !== 'free')
-  if(isMonitized && !isAuthenticated.value){
+  if (isMonitized && !isAuthenticated.value) {
     coreStore.OpenDialog('nonAuthMonitizedVideoDialog')
     videoJs.value?.player?.autoplay(false)
   }
@@ -252,7 +257,7 @@ const showBurstIcon = computed(() => {
 
 
 onMounted(async () => {
- 
+
   if (!assetId && !memberId && !cursor) {
     router.push({ name: "Home" });
   }
@@ -277,8 +282,8 @@ onMounted(async () => {
         videoJs.value.player.currentTime(
           +assetReactions.value[0]?.node?.bookmark
         );
-          await videoJs.value.player?.play()
-          videoJs.value.player?.autoplay('play')
+        await videoJs.value.player?.play()
+        videoJs.value.player?.autoplay('play')
       });
     }
     if (!assetReactions.value.length) {
@@ -288,7 +293,7 @@ onMounted(async () => {
   }
 
 
-  
+
 });
 
 onUnmounted(() => {
@@ -354,6 +359,7 @@ button.v-btn.remove-hover-bg {
 .grey-background {
   background-color: #f2f2f2 !important;
 }
+
 .light-grey-background {
   background-color: #fafafa !important;
 }
@@ -364,6 +370,23 @@ button.v-btn.remove-hover-bg {
     min-height: 90px !important;
     max-width: 168px;
     object-fit: cover;
+  }
+}
+
+@media (max-width: 440px) {
+  .recommended-videos {
+    .thumbnail {
+      min-width: 100% !important;
+      min-height: 203px !important;
+      max-height: 203px !important;
+    }
+  }
+  .channel-name{
+    max-width: 300px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-wrap: nowrap;
+    overflow: hidden;
   }
 }
 
