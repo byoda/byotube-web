@@ -1,15 +1,15 @@
 <template>
     <div>
         <v-row align="center">
-            <v-col col='3'>
+            <v-col md='3' cols="12">
                 <div class="d-flex flex-column align-center">
                     <v-img class="rounded-circle" width="136" height="136" cover
                         :src="findThumbnailWithMaxHeight(channel.channel_thumbnails,176)?.url" />
                 </div>
             </v-col>
-            <v-col cols="8">
+            <v-col md="8" cols="12">
                 <div>
-                    <div>
+                    <div class="text-center text-md-start">
                         <p class="font-weight-medium channel-title">
                             {{ channel?.creator }}
                         </p>

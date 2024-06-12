@@ -2,7 +2,7 @@
     <div class="pa-5 ">
         <div class="d-flex flex-column align-center">
             <Transition name="slide-fade">
-                <div class="border rounded-lg pa-10 bg-white " :class="{ 'w-50': mdAndUp }">
+                <div class="border rounded-lg pa-md-10 pa-5 bg-white " :class="{ 'w-50': mdAndUp }">
                     <BaseForm ref="form">
                         <p class="font-weight-medium text-h4">
                             Buy burst points

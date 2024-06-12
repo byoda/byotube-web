@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" xs="12" sm="6" md="5" lg="4" class="ma-auto shadow-smooth">
         <v-card outlined :loading="loading" class="rounded-lg">
-          <div class="px-8 pt-6 pb-12">
+          <div class="px-md-8 px-4 pt-6 pb-12">
             <div class="text-center">
               <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
             </div>

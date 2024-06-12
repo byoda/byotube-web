@@ -2,11 +2,11 @@
   <v-container fluid class="fill-height">
     <v-row>
       <v-col cols="12" xs="12" sm="8" md="5" lg="4" class="ma-auto shadow-smooth">
-        <v-card class="rounded-lg pa-5" outlined :loading="loading">
+        <v-card class="rounded-lg pa-md-5 pa-2" outlined :loading="loading">
           <div class="text-center pt-7">
             <img src="@/assets/byotube-logo.png" :width="300" alt="" srcset="">
           </div>
-          <v-row class="justify-space-between px-4 pt-6 pb-5">
+          <v-row class="justify-space-between px-md-4 pt-6 pb-5">
             <v-col cols="12">
               <v-card-subtitle class="mb-5">Create your BYO.Tube account</v-card-subtitle>
               <v-card-text>

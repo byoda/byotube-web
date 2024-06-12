@@ -4,7 +4,7 @@
     flat
     tile
     router
-    :class="{ 'd-flex': smallCard || searchCard }"
+    :class="{ 'd-md-flex': smallCard || searchCard }"
   >
     <v-img
       :src="`${thumbnailForVideo(props.video)?.url}`"
@@ -70,7 +70,7 @@
       </v-col>
       <v-col
         :cols="smallCard ? 11 : 9"
-        :class="{ 'pl-3': !smallCard }"
+        :class="{ 'pl-3': !smallCard, 'pl-md-3': searchCard }"
       >
         <div :class="{ 'd-flex': searchCard }">
           <div v-if="searchCard" class="mt-2">
@@ -110,13 +110,13 @@
               :style="{ 'font-size': searchCard ? '18px !important' : '16px' }"
             >
               {{
-                smallCard
+                smallCard || (searchCard && smAndDown)
                   ? `${
                       video?.title?.length > 20
-                        ? `${video?.title?.slice(0, 18)}...`
+                        ? `${video?.title?.slice(0, searchCard && smAndDown ? 30 : 18)}...`
                         : video?.title
                     }`
-                  : video?.title
+                  :  video.title?.length > 75 ? video?.title?.slice(0,80) + '...' : video.title
               }}
             </v-card-title>
 
@@ -238,6 +238,7 @@ import { useHelper } from "@/composables";
 import { useAuthStore } from "@/store";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify/lib/framework.mjs";
 
 const props = defineProps({
   video: {
@@ -278,6 +279,7 @@ const props = defineProps({
 const { convertDateToDuration, addTrailingCommas } = useHelper();
 const { isAuthenticated } = useAuthStore();
 const router = useRouter();
+const { smAndDown } = useDisplay()
 
 const EXTERNAL = "external";
 const showMenu = ref(false);
@@ -299,9 +301,7 @@ const thumbnailForVideo = (video) => {
 const setThumbnailWidth = computed(() => {
   return props.thumbnailWidth
     ? props.thumbnailWidth
-    : props.searchCard
-    ? 360
-    : "100%";
+    : '100%'
 });
 
 const setThumbnailMaxWidth = computed(() => {
@@ -344,10 +344,16 @@ const showBurstIcon = computed(() => {
 }
 
 .description-ellipses {
-  max-width: 798px;
+  max-width: 730px;
   text-overflow: ellipsis !important;
   white-space: nowrap;
   overflow: hidden;
+}
+
+@media (max-width: 440px) {
+  .description-ellipses {
+    max-width: 300px;
+  }
 }
 
 .dot {

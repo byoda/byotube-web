@@ -5,7 +5,7 @@
         <v-img height="230" cover style="border-radius: 15px;" :src="channelCover?.url"></v-img>
       </v-skeleton-loader>
     </div>
-    <v-container class="py-0 px-0" id="my-cont">
+    <v-container class="py-0 px-md-0" id="my-cont">
       <div class="nav-bgcolor">
         <div id="channel-header">
           <v-row class="justify-space-between">

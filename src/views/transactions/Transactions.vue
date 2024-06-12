@@ -1,5 +1,5 @@
 <template>
-  <div class="w-75 pa-5 mx-auto pt-10">
+  <div class="pa-5 mx-auto pt-10" :class="{'w-75': mdAndUp}">
     <div class="bg-white pa-5 border rounded-lg px-8 d-flex justify-space-between">
       <div>
         <p class="text-body-2 text-grey-darken-3">
@@ -93,7 +93,7 @@
 <script setup>
 import { onMounted } from "vue";
 import { useTransactions } from "./useTransactions"
-import { useDate } from 'vuetify'
+import { useDate, useDisplay } from 'vuetify'
 import { BaseBtn, BaseSpinner, BaseDialog, BaseCard } from "@/components/base";
 import { useHelper } from "@/composables";
 import PayoutDialog from "./payout-dialog/PayoutDialog.vue"
@@ -108,6 +108,7 @@ const { isByotubeAccount } = storeToRefs(useAuthStore())
 const { OpenDialog } = useCoreStore()
 const { headers, balance, loader, tableLoader, isRegisterVisible, isPayoutvisible, account, transactions, sources, transactionTypes, payoutInfo, paymentInfo, getAllTransactions, getBalance, getAccountInfo, getPayoutInfo, getPurchaseInfo } = useTransactions()
 const { addTrailingCommas } = useHelper()
+const { mdAndUp } = useDisplay()
 
 const date = useDate()
 

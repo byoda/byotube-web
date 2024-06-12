@@ -1,18 +1,18 @@
 <template>
-    <div class="w-75 pa-5 mx-auto pt-10">
+    <div class="pa-5 mx-auto pt-10" :class="{'w-75' : !smAndDown}">
         <div class="bg-white pa-5 border rounded-lg px-8 pb-9">
             <BaseForm ref="registerForm">
                 <h1>
                     Register
                 </h1>
-                <v-row>
-                    <v-col cols="12" md="6">
-                        <BaseTextfield v-model="accountDetails.email" class="mt-6" color="primary" density="comfortable"
+                <v-row class="mt-6">
+                    <v-col cols="12" md="6" class="pt-0">
+                        <BaseTextfield v-model="accountDetails.email" color="primary" density="comfortable"
                             name="email" rules="required|email" label="Email" variant="outlined">
                         </BaseTextfield>
                     </v-col>
-                    <v-col cols="12" md="6">
-                        <BaseTextfield v-model="accountDetails.first_name" class="mt-6" color="primary"
+                    <v-col cols="12" md="6" class="pt-0">
+                        <BaseTextfield v-model="accountDetails.first_name" color="primary"
                             density="comfortable" name="first name" rules="required" label="First name"
                             variant="outlined">
                         </BaseTextfield>
@@ -58,12 +58,12 @@
                             </p>
                         </div>
                     </div>
-                    <div class="d-flex justify-end w-100 pr-3 mt-2">
-                        <BaseBtn color="red" variant="outlined"  class="mt-2 mr-2 elevation-0"
+                    <div class="d-md-flex justify-end w-100 pr-3 mt-2">
+                        <BaseBtn color="red" variant="outlined" :block="smAndDown" class="mt-2 mr-2 elevation-0"
                             @click="$router.push({name: 'Transactions'})">
                             Cancel
                         </BaseBtn>
-                        <BaseBtn color="primary" class="mt-2 white-text elevation-0" :loading="loader"
+                        <BaseBtn color="primary" :block="smAndDown" class="mt-2 white-text elevation-0" :loading="loader"
                             @click="register">
                             Continue to stripe
                         </BaseBtn>
@@ -79,8 +79,10 @@
 import { BaseBtn, BaseTextfield, BaseForm } from '@/components/base';
 import { useGetPaid } from './useGetPaid';
 import StripeRedirectDialog from "./strip-redirect-dialog/StripeRedirectDialog.vue"
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 
 const { accountDetails, loader, registerForm, stripeUrl, register } = useGetPaid()
+const { smAndDown } = useDisplay()
 </script>
 
 <style lang="scss">
