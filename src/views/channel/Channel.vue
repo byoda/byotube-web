@@ -41,6 +41,9 @@
                       <p class="channel-subtitle py-2 mb-0">
                         {{ textEllipsis(channel?.description, 340) }}
                       </p>
+                      <div v-if="channelShortcut" class="d-flex align-center">
+                       <p class="text-body-2"> BYO.Tube: </p> <a class="text-body-2 ml-2" :href="`https://www.byo.tube/${channelShortcut}`" target="_blank"> https://www.byo.tube/{{ channelShortcut }}</a>
+                      </div>
                       <div v-for="(externalUrl, index) in externalUrls" :key="index" class="d-flex align-center">
                        <p class="text-body-2"> {{ externalUrl.name }}: </p> <a class="text-body-2 ml-2" :href="externalUrl?.url" target="_blank"> {{ externalUrl.url }}</a>
                       </div>
@@ -144,12 +147,14 @@ const {
   channelCover,
   isFollowed,
   externalUrls,
+  channelShortcut,
   refreshData,
   getChannel,
   getChannelVideos,
   followChannel,
   openAuthDialog,
   mapFollowIds,
+  shortcutByValue,
   followChannelWithBtLiteAccount
 } = useChannel()
 
@@ -158,6 +163,7 @@ const { getFollowedChannels } = useFollow()
 
 onMounted(async () => {
   await getChannel()
+  await shortcutByValue(remoteId.value, channelName.value)
   if (isAuthenticated.value) {
     getFollowing.value =
       typeof window !== "undefined"

@@ -11,8 +11,13 @@ export const useChannelService = () => {
     return Api.get(`/service/channel/shortcut?shortcut=${shortcut}`);
   };
 
+  const getShortcutByValue = (memberId, creator) => {
+    return Api.get(`/service/channel/shortcut_by_value?member_id=${memberId}&creator=${creator}`);
+  };
+
   return {
     getChannelDataFromCentralAPI,
-    getShortcutData
+    getShortcutData,
+    getShortcutByValue
   };
 };

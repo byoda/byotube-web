@@ -24,7 +24,8 @@ export const useChannel = () => {
     hideLoader: hideFollowLoading,
   } = useLoader();
 
-  const { getChannelDataFromCentralAPI } = useChannelService();
+  const { getChannelDataFromCentralAPI, getShortcutByValue } =
+    useChannelService();
 
   const { getSegmentedVideos } = useVideo();
   const {
@@ -32,7 +33,7 @@ export const useChannel = () => {
     followAccount,
     setFollowed,
     informPodAboutAccountFollow,
-    followWithBtLiteAccount
+    followWithBtLiteAccount,
   } = useFollow();
 
   const { toQueryString, findThumbnailWithMaxHeight, findAvatarWithMaxHeight } =
@@ -40,6 +41,7 @@ export const useChannel = () => {
 
   const remoteId = ref(route.query.member_id);
   const channelName = ref(route.query.channel);
+  const channelShortcut = ref(null);
   const tab = ref(null);
   const loading = ref(false);
   const errored = ref(false);
@@ -102,9 +104,11 @@ export const useChannel = () => {
     },
   });
 
-  const externalUrls = computed(()=>{
-    return channel.value?.external_urls?.sort((a,b) => a.priority - b.priority).filter(url => url?.name !== 'YouTube')
-  })
+  const externalUrls = computed(() => {
+    return channel.value?.external_urls
+      ?.sort((a, b) => a.priority - b.priority)
+      .filter((url) => url?.name !== "YouTube");
+  });
 
   const getChannel = async (memberId, creator) => {
     loading.value = true;
@@ -120,7 +124,7 @@ export const useChannel = () => {
 
     loading.value = false;
 
-    return data
+    return data;
   };
 
   const getChannelVideos = async (load) => {
@@ -192,7 +196,7 @@ export const useChannel = () => {
   };
 
   const followChannelWithBtLiteAccount = async () => {
-    try{
+    try {
       if (!isFunded.value) {
         coreStore.OpenDialog(nonFundedDialog);
         return;
@@ -220,14 +224,25 @@ export const useChannel = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges.map((edge) => {
-      return edge?.node?.annotations?.map(channel => {
-        return {
-          member_id: edge?.node?.member_id,
-          creator: channel,
-        };
+    return edges
+      .map((edge) => {
+        return edge?.node?.annotations?.map((channel) => {
+          return {
+            member_id: edge?.node?.member_id,
+            creator: channel,
+          };
+        });
       })
-    })?.flat();
+      ?.flat();
+  };
+
+  const shortcutByValue = async (memberId, creator) => {
+    try {
+      const { data } = await getShortcutByValue(memberId, creator);
+      channelShortcut.value = data.shortcut
+    } catch (error) {
+      console.error("Error", error);
+    }
   };
 
   return {
@@ -252,12 +267,14 @@ export const useChannel = () => {
     channelCover,
     isFollowed,
     externalUrls,
+    channelShortcut,
     getChannel,
     getChannelVideos,
     refreshData,
     followChannel,
     openAuthDialog,
     mapFollowIds,
-    followChannelWithBtLiteAccount
+    shortcutByValue,
+    followChannelWithBtLiteAccount,
   };
 };
