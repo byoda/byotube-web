@@ -102,6 +102,10 @@ export const useChannel = () => {
     },
   });
 
+  const externalUrls = computed(()=>{
+    return channel.value?.external_urls?.sort((a,b) => a.priority - b.priority).filter(url => url?.name !== 'YouTube')
+  })
+
   const getChannel = async (memberId, creator) => {
     loading.value = true;
 
@@ -247,6 +251,7 @@ export const useChannel = () => {
     followLoading,
     channelCover,
     isFollowed,
+    externalUrls,
     getChannel,
     getChannelVideos,
     refreshData,

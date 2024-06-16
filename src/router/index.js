@@ -23,8 +23,8 @@ const routes = [
     component: NonAuth,
     children: [
       {
-        path: "/",
-        alias: "/index.html",
+        path: "/:shortcut?",
+        alias: ['/index.html','/'],
         name: "Home",
         component: Home,
       },

@@ -76,6 +76,7 @@ export const useWatch = () => {
   const videoJs = ref();
   const videoNotfound = ref(false);
   const nonFundedDialog = "nonFundedDialog";
+  const comment = ref('')
   const rightPanelVideos = ref({
     title: "",
     key: "",
@@ -555,6 +556,7 @@ export const useWatch = () => {
     rightPanelVideos,
     videoNotfound,
     isFollowed,
+    comment,
     getVideo,
     followChannel,
     likeOrDislike,

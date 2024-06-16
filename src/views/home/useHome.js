@@ -1,16 +1,19 @@
 import { useVideo } from "@/composables";
+import { useChannelService } from "@/services";
 import { useAuthStore } from "@/store";
 import moment from "moment";
-import { computed, ref, toRefs, watchEffect } from "vue";
-import { useRouter } from "vue-router";
+import { computed, getTransitionRawChildren, ref, toRefs, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 export const useHome = (props) => {
   const router = useRouter();
+  const route = useRoute()
 
   const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore());
 
   const { getSegmentedVideos, getMemberAllVideos } = useVideo();
+  const { getShortcutData } = useChannelService()
 
   const options = [
     { name: "YouTube Hosted", value: "external" },
@@ -154,6 +157,17 @@ export const useHome = (props) => {
     router.push({ name: "Watch", query });
   };
 
+  const getShortcut = async () => {
+    try {
+      const { data, status }  = await getShortcutData(route.params?.shortcut)
+      if(status === 200){
+        router.push(`/channels?member_id=${data?.member_id}&channel=${data?.creator}`)
+      }
+    } catch (error) {
+      const { response } = error
+    }
+  }
+
   return {
     options,
     sections,
@@ -165,5 +179,6 @@ export const useHome = (props) => {
     emptySectionVideos,
     mapSegmentedVideos,
     moveToWatch,
+    getShortcut
   };
 };

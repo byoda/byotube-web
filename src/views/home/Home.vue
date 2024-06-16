@@ -45,6 +45,7 @@ import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
 import { watchEffect } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { watch } from "vue";
+import { useRoute } from "vue-router";
 
 const props = defineProps({
   sectionNames: {
@@ -54,14 +55,18 @@ const props = defineProps({
 })
 
 const emitter = useEmitter()
+const route  = useRoute()
 
-const { sections, ingestStatus, videosAccordingToSize, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch } = useHome(props)
+const { sections, ingestStatus, videosAccordingToSize, getAllSegmentedVideos, mapSegmentedVideos, emptySectionVideos, moveToWatch, getShortcut } = useHome(props)
 const { followedAccounts } = useFollow()
 
 const { width: windowWidth } = useDisplay();
 
-onMounted(() => {
+onMounted(async () => {
   ingestStatus.value = JSON.parse(localStorage.getItem('videos-filter'))
+  if(route.params?.shortcut){
+    getShortcut()
+  }
   emitter.on("filter-changed", ($event) => {
     ingestStatus.value = $event
     localStorage.setItem('videos-filter', JSON.stringify($event))
@@ -77,7 +82,6 @@ onMounted(() => {
 
 
 watch(()=> windowWidth.value, () => {
-    console.log("sdfdfsdf", windowWidth.value);
   if (windowWidth.value >= 1800 && windowWidth.value < 2100) {
     videosAccordingToSize.value = 15;
     emptySectionVideos()

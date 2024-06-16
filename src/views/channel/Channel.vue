@@ -41,8 +41,9 @@
                       <p class="channel-subtitle py-2 mb-0">
                         {{ textEllipsis(channel?.description, 340) }}
                       </p>
-
-                      <p v-html="dar" />
+                      <div v-for="(externalUrl, index) in externalUrls" :key="index" class="d-flex align-center">
+                       <p class="text-body-2"> {{ externalUrl.name }}: </p> <a class="text-body-2 ml-2" :href="externalUrl?.url" target="_blank"> {{ externalUrl.url }}</a>
+                      </div>
                     </v-col>
                   </v-row>
                 </template>
@@ -142,6 +143,7 @@ const {
   followLoading,
   channelCover,
   isFollowed,
+  externalUrls,
   refreshData,
   getChannel,
   getChannelVideos,
