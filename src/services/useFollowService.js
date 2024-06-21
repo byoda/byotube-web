@@ -29,11 +29,12 @@ export const useFollowService = () => {
     );
   };
 
+
   return {
     follow,
     getFollowedAccounts,
     informPodAboutFollow,
     followBtLite,
-    unfollowBtLite
+    unfollowBtLite,
   };
 };

@@ -258,52 +258,7 @@
                       <p v-else v-html="asset.contents" />
                     </div>
                     <div class="mt-3">
-                      <div>
-                        <h3>
-                          0 Comments
-                        </h3>
-                        <div class="d-flex align-items-center mt-4 pb-5">
-                          <div>
-                            <img class="rounded-circle" src="https://images.pexels.com/photos/23120035/pexels-photo-23120035/free-photo-of-young-man-in-a-casual-outfit-and-sunglasses-sitting-outside-in-city.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load" height="40" width="40" alt="" srcset="">
-                          </div>
-                          <div class="w-100 pl-4 mt-n2">
-                            <div>
-                              <BaseTextfield v-model="comment" variant="underlined" density="compact" hide-details class="pt-0 comment-placeholder" placeholder="Add comment" persistent-placeholder @focus="showActions = true" />
-                            </div>
-                            <div class="mt-3 text-end" v-if="showActions">
-                              <BaseBtn color="black" variant="text" class="rounded-pill text-none px-3 mr-2" @click="showActions = false">
-                                Cancel
-                              </BaseBtn>
-                              <BaseBtn  :color="comment ? 'blue-lighten-1' : 'transparent'" class="rounded-pill text-black text-none px-3 elevation-0" :disabled="!comment" >
-                                Comment
-                              </BaseBtn>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="d-flex align-items-center mt-4 pb-5">
-                          <div>
-                            <img class="rounded-circle" src="https://images.pexels.com/photos/23120035/pexels-photo-23120035/free-photo-of-young-man-in-a-casual-outfit-and-sunglasses-sitting-outside-in-city.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load" height="40" width="40" alt="" srcset="">
-                          </div>
-                          <div class="w-100 pl-4 mt-n2">
-                            <div>
-                              <div class="d-flex align-center">
-                                <h5>
-                                  @junaid
-                                </h5>
-                                <p class="text-caption ml-2">
-                                  1 year ago
-                                </p>
-                              </div>
-                              <p class="text-body-2 mt-1">If you do not use Tailwind in the project that consumes the component library, you probably want to disable preflight (style resetting). Otherwise it may break your main applications layout. Also, to avoid clashing class names when you do use Tailwind in your main application, use some prefix for tailwind in the component library (like tw-).</p>
-                            </div>
-                          </div>
-                          <div>
-                            <v-icon>
-                              mdi-dots-vertical
-                            </v-icon>
-                          </div>
-                        </div>
-                      </div>
+                      <VideoComment :asset="asset" />
                     </div>
                   </v-responsive>
                 </div>
@@ -346,6 +301,7 @@
           </BaseInfiniteScroller>
         </v-col>
       </v-row>
+     
     </v-container>
     <NonAuthDialog />
     <CopyUrlDialog :url="path" />
@@ -363,7 +319,7 @@ import { onMounted } from "vue";
 import { useFollow, useHelper, useVideo, useBurstPoints } from "@/composables";
 import { useAuthStore, useCoreStore } from "@/store";
 import { onUnmounted } from "vue";
-import { BaseBtn, BaseInfiniteScroller, BaseTextfield } from "@/components/base";
+import { BaseBtn, BaseInfiniteScroller } from "@/components/base";
 import {
   NonAuthDialog,
   CopyUrlDialog,
@@ -373,7 +329,7 @@ import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import { ref } from "vue";
+import VideoComment from "./comment/Comment.vue"
 
 const coreStore = useCoreStore();
 const { isAuthenticated } = toRefs(useAuthStore());
@@ -386,7 +342,7 @@ const path = window.location.href;
 const { textEllipsis, addTrailingCommas } = useHelper();
 const { getFollowedChannels } = useFollow();
 const { checkUserBurstPoints } = useBurstPoints();
-const showActions = ref(false)
+
 
 const {
   asset,
@@ -408,7 +364,6 @@ const {
   rightPanelVideos,
   videoNotfound,
   isFollowed,
-  comment,
   getVideo,
   getAssetReactionsById,
   followChannel,
