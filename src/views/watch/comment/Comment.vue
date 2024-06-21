@@ -4,7 +4,7 @@
             {{ comments?.length }} Comments
         </h3>
         <AddCommentInput v-model="comment" :comment-loader="commentLoader"
-            @add-comment="addComment(comment, asset, asset.origin)" />
+            @add-comment="isAuthenticated ? addComment(comment, asset, asset.origin) : coreStore.OpenDialog(nonAuthSubscriptionDialog)" />
         <div v-if="loader" class="text-center">
             <BaseSpinner color="black" />
         </div>
@@ -74,6 +74,7 @@
             </div>
         </template>
     </div>
+    <NonAuthDialog />
 </template>
 
 <script setup>
@@ -83,6 +84,9 @@ import { onMounted } from "vue";
 import { useHelper, useLoader } from "@/composables";
 import AddCommentInput from './add-comment-input/AddCommentInput.vue'
 import { ref } from "vue";
+import { NonAuthDialog } from '@/components/shared'
+import { useAuthStore, useCoreStore } from "@/store";
+import { toRefs } from "vue";
 
 const props = defineProps({
     asset: {
@@ -94,10 +98,14 @@ const props = defineProps({
 const { comment, comments, commentLoader, showActions, replyLoader, addComment, getComments } = useComment()
 const { convertDateToDuration } = useHelper();
 const { loader, showLoader, hideLoader } = useLoader()
+const { isAuthenticated } = toRefs(useAuthStore())
+const coreStore = useCoreStore()
+const nonAuthSubscriptionDialog = 'nonAuthSubscription'
 
 const reply = ref(false)
 
 onMounted(async () => {
+    console.log("Mounted");
     showLoader()
     await getComments(props.asset)
     hideLoader()

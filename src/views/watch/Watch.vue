@@ -1,5 +1,5 @@
 <template>
-  <div id="watch" ref="watch" :key="pageKey">
+  <div id="watch" ref="watch">
     <v-container fluid>
       <v-row>
         <v-alert prominent class="mx-auto" type="error" v-if="errored">

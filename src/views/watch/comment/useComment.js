@@ -3,13 +3,18 @@ import { useAssetReactionService } from "@/services";
 import { uuid } from "vue-uuid";
 import { constants } from "@/globals/constants";
 import { useLoader } from "@/composables";
+import { useRoute } from "vue-router";
 
 export const useComment = () => {
+
+  const route = useRoute()
+
   const { appendMessage, getMessages } = useAssetReactionService();
   const { loader: commentLoader, showLoader: showCommentLoader, hideLoader: hideCommentLoader } = useLoader()
   const { loader: replyLoader, showLoader: showReplyLoader, hideLoader: hideReplyLoader } = useLoader()
 
   const comment = ref("");
+  const asesetMemberId = route?.query.member_id
   const showActions = ref(false);
   const memberId = localStorage.getItem("member_id");
   const domain = localStorage.getItem("domain");
@@ -22,7 +27,7 @@ export const useComment = () => {
       const body = {
         query_depth: 1,
         query_id: uuid.v4(),
-        remote_member_id: origin,
+        remote_member_id: asesetMemberId,
         data_filter:{
           message_asset_class: 'public_assets',
           message_asset_id: asset_id
