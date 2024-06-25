@@ -59,7 +59,7 @@ export const useSignin = () => {
 
         if (signinData.value.domain) {
           const { data: userData } = await getPodUserData(signinData.value.domain);
-          console.log("User data", userData);
+          localStorage.setItem('user', JSON.stringify(userData?.edges[0].node))
         }
         await nextTick();
         await attestUserBurstPoints();

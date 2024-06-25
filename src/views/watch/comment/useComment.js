@@ -20,6 +20,8 @@ export const useComment = () => {
   const domain = localStorage.getItem("domain");
   const service_id = constants.BYOTUBE_SERVICE_ID;
   const comments = ref([])
+  const user = JSON.parse(localStorage.getItem('user'))
+
 
   const getComments = async ( asset ) => {
     try {
@@ -59,7 +61,7 @@ export const useComment = () => {
         created_timestamp: new Date(),
         message_id: asset?.message_id || uuid.v4(),
         sender_id: memberId,
-        creator: asset?.creator,
+        creator: user.nick,
         creator_thumbnail: asset?.creator_thumbnail,
         thread_id: asset?.thread_id || uuid.v4(),
         in_response_to_id: asset?.message_id || null,
