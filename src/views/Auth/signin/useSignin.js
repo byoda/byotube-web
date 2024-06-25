@@ -15,7 +15,7 @@ export const useSignin = () => {
 
   const { showError } = useAlert();
   const { loader, showLoader, hideLoader } = useLoader();
-  const { signIn: signinReq } = useAuthService();
+  const { signIn: signinReq, getPodUserData } = useAuthService();
 
   const signinForm = ref();
   const accountType = ref("btlite");
@@ -56,11 +56,19 @@ export const useSignin = () => {
         localStorage.setItem("id_type", data.id_type);
         setAuth.value(true);
         setAuthAccountType();
+
+        if (signinData.value.domain) {
+          const { data: userData } = await getPodUserData(signinData.value.domain);
+          console.log("User data", userData);
+        }
         await nextTick();
         await attestUserBurstPoints();
-        if(assetId && memberId){
-          router.push({name:'Watch', query:{asset_id:assetId, member_id: memberId}})
-        }else{
+        if (assetId && memberId) {
+          router.push({
+            name: "Watch",
+            query: { asset_id: assetId, member_id: memberId },
+          });
+        } else {
           router.push({ name: "Home" });
         }
       }

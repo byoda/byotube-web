@@ -257,12 +257,12 @@
                       </p>
                       <p v-else v-html="asset.contents" />
                     </div>
-                    <div class="mt-3">
-                      <VideoComment :asset="asset" />
-                    </div>
                   </v-responsive>
                 </div>
               </v-skeleton-loader>
+              <div class="mt-3">
+                <VideoComment :asset="asset" />
+              </div>
             </v-col>
           </v-row>
         </v-col>
@@ -301,7 +301,6 @@
           </BaseInfiniteScroller>
         </v-col>
       </v-row>
-     
     </v-container>
     <NonAuthDialog />
     <CopyUrlDialog :url="path" />
@@ -329,7 +328,7 @@ import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import { toRefs } from "vue";
 import { computed } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import VideoComment from "./comment/Comment.vue"
+import VideoComment from "./comment/Comment.vue";
 
 const coreStore = useCoreStore();
 const { isAuthenticated } = toRefs(useAuthStore());
@@ -342,7 +341,6 @@ const path = window.location.href;
 const { textEllipsis, addTrailingCommas } = useHelper();
 const { getFollowedChannels } = useFollow();
 const { checkUserBurstPoints } = useBurstPoints();
-
 
 const {
   asset,
@@ -527,6 +525,7 @@ button.v-btn.remove-hover-bg {
       max-height: 203px !important;
     }
   }
+
   .channel-name {
     max-width: 300px !important;
     text-overflow: ellipsis;
@@ -548,8 +547,8 @@ button.v-btn.remove-hover-bg {
   font-size: 13px;
 }
 
-.comment-placeholder{
-  ::placeholder{
+.comment-placeholder {
+  ::placeholder {
     font-size: 14px;
   }
 }

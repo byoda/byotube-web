@@ -74,7 +74,6 @@
             </div>
         </template>
     </div>
-    <NonAuthDialog />
 </template>
 
 <script setup>
@@ -84,7 +83,6 @@ import { onMounted } from "vue";
 import { useHelper, useLoader } from "@/composables";
 import AddCommentInput from './add-comment-input/AddCommentInput.vue'
 import { ref } from "vue";
-import { NonAuthDialog } from '@/components/shared'
 import { useAuthStore, useCoreStore } from "@/store";
 import { toRefs } from "vue";
 

@@ -15,6 +15,7 @@ import VerifyEmail from "@/views/verify-email/VerifyEmail.vue";
 import Payment from "@/views/payment/Payment.vue";
 import Transactions from "@/views/transactions/Transactions.vue";
 import GetPaid from "@/views/get-paid/GetPaid.vue";
+import Settings from "@/views/settings/Settings.vue";
 
 const routes = [
   {
@@ -77,6 +78,11 @@ const routes = [
         path: "get-paid",
         name: "GetPaid",
         component: GetPaid,
+      },
+      {
+        path: "settings",
+        name: "Settings",
+        component: Settings,
       },
     ],
   },

@@ -50,10 +50,29 @@
                 </v-btn>
               </v-btn-toggle>
             </div>
-            <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
+            <v-menu v-else-if="isAuthenticated" offset-y transition="slide-x-transition"
+              :close-on-content-click="false">
+              <template v-slot:activator="{ props }">
+                <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-account" color="secondary"
+                  size="small" />
+              </template>
+              <BaseCard class="py-3 px-2 rounded-lg shadow-smooth">
+                <v-list density="compact">
+                  <v-list-item v-for="(item, index) in accountMenuItems" :key="index" :value="index" color="primary" @click="item.method">
+                    <template #prepend>
+                      <v-icon>
+                        {{ item.icon }}
+                      </v-icon>
+                    </template>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </BaseCard>
+            </v-menu>
+            <!-- <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
               v-else-if="isAuthenticated" @click="logout">
               <v-icon left size="26">mdi-account-circle</v-icon> Sign out
-            </BaseBtn>
+            </BaseBtn> -->
           </template>
           <BaseBtn class="ma-2 hidden-lg-and-up" variant="outlined" icon="mdi-menu" color="secondary"
             @click="coreStore.setDrawer(!coreStore.isDrawerOpen)" size="small" />
@@ -116,6 +135,23 @@ const logout = () => {
     window.location.reload()
   }
 }
+
+const accountMenuItems = [
+  {
+    title: 'Logout',
+    icon: 'mdi-logout',
+    method: logout
+  },
+  {
+    title: 'Settings',
+    icon: 'mdi-cog-outline',
+    method: ()=> {
+      router.push({name:'Settings'})
+    }
+  },
+]
+
+
 
 
 const search = async () => {
@@ -235,7 +271,8 @@ onBeforeRouteUpdate((to, from) => {
   .search-field {
     // background-color: red;
     margin-top: 5px;
-    padding-inline: 10px;;
+    padding-inline: 10px;
+    ;
     min-width: 200px !important;
     display: inline-block;
   }
