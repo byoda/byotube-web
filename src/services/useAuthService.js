@@ -49,7 +49,7 @@ export const useAuthService = () => {
   }
 
   const saveImage = async (domain, serviceId, assetId, visibility, files) => {
-    return Api.post(`https://${domain}/pod/member/upload/service_id/${serviceId}/asset_id/${assetId}/visibility/${visibility}`, files, {headers:{'Content-Type':'multipart/form-data'}} )
+    return Api.post(`https://${domain}/api/v1/pod/member/upload/service_id/${serviceId}/asset_id/${assetId}/visibility/${visibility}`, files, {headers:{'Content-Type':'multipart/form-data'}} )
   }
 
   return {
