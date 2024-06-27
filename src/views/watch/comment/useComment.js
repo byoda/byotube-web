@@ -27,7 +27,7 @@ export const useComment = () => {
     try {
       const { origin, asset_id } = asset
       const body = {
-        query_depth: 1,
+        depth: 1,
         query_id: uuid.v4(),
         remote_member_id: asesetMemberId,
         data_filter:{
