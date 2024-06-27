@@ -93,7 +93,7 @@ const props = defineProps({
     }
 })
 
-const { comment, comments, commentLoader, showActions, replyLoader, addComment, getComments } = useComment()
+const { comment, comments, commentLoader, showActions, user, replyLoader, addComment, getComments } = useComment()
 const { convertDateToDuration } = useHelper();
 const { loader, showLoader, hideLoader } = useLoader()
 const { isAuthenticated } = toRefs(useAuthStore())

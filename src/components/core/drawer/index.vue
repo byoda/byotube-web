@@ -114,6 +114,7 @@ const items = [
         pages: [
             { title: "Home", link: "/", icon: "mdi-home", method: () => { } },
             { title: "About", link: null, target: "_blank", href: 'https://about.byo.tube/', icon: "mdi-information-variant-circle-outline", method: () => { } },
+            { title: "For Creators", link: null, target: "_self", href: 'https://about.byo.tube/creators', icon: "mdi-account-outline", method: () => { } },
             { title: "FAQ", link: null, target: "_blank", href: 'https://about.byo.tube/faq', icon: "mdi-frequently-asked-questions", method: () => { } },
             {
                 title: "Following",

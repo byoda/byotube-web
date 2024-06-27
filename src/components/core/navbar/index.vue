@@ -51,7 +51,7 @@
               </v-btn-toggle>
             </div>
             <v-menu v-else-if="isAuthenticated" offset-y transition="slide-x-transition"
-              :close-on-content-click="false">
+              :close-on-content-click="true">
               <template v-slot:activator="{ props }">
                 <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-account" color="secondary"
                   size="small" />

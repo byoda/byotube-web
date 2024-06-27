@@ -96,15 +96,26 @@ export const useHelper = () => {
   }
 
   function basisPointsToPercentage(basisPoints) {
-    return (basisPoints / 10000) * 100 ;
+    return (basisPoints / 10000) * 100;
   }
 
   function centsToDollars(cents) {
     if (isNaN(cents)) {
-        return 
+      return;
     }
     return cents / 100;
-}
+  }
+
+  const viewsFormatter = (views) => {
+    views = +views
+    if (views >= 1000000) {
+      return (views / 1000000).toFixed(1) + "M";
+    } else if (views >= 1000) {
+      return (views / 1000).toFixed(1) + "K";
+    } else {
+      return views.toString();
+    }
+  }
 
   const convertDateToDuration = (date) => {
     const currentDate = new Date();
@@ -149,6 +160,7 @@ export const useHelper = () => {
     findAvatarWithMaxHeight,
     addTrailingCommas,
     basisPointsToPercentage,
-    centsToDollars 
+    centsToDollars,
+    viewsFormatter
   };
 };

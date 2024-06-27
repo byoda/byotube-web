@@ -18,7 +18,7 @@ export const useAssetReactionService = () => {
   const appendMessage = async (domain, serviceId, body) => {
     return Api.post(
       `https://${domain}/api/v1/data/${serviceId}/messages/append`,
-      { data: body }
+      body 
     );
   };
   const getMessages = async (domain, serviceId, body) => {

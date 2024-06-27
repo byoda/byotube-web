@@ -58,17 +58,19 @@ export const useComment = () => {
     try {
       asset?.message_id ? showReplyLoader() : showCommentLoader()
       const body = {
-        created_timestamp: new Date(),
-        message_id: asset?.message_id || uuid.v4(),
-        sender_id: memberId,
-        creator: user.nick,
-        creator_thumbnail: asset?.creator_thumbnail,
-        thread_id: asset?.thread_id || uuid.v4(),
-        in_response_to_id: asset?.message_id || null,
-        subject: null,
-        contents: desc,
-        message_asset_id: asset?.asset_id,
-        message_asset_class: 'public_assets',
+        data: {
+          created_timestamp: new Date(),
+          message_id: asset?.message_id || uuid.v4(),
+          sender_id: memberId,
+          creator: user.nick,
+          creator_thumbnail: asset?.creator_thumbnail,
+          thread_id: asset?.thread_id || uuid.v4(),
+          in_response_to_id: asset?.message_id || null,
+          subject: null,
+          contents: desc,
+          message_asset_id: asset?.asset_id,
+          message_asset_class: 'public_assets',
+        },
         depth: 1,
         query_id: uuid.v4(),
         remote_member_id: origin
@@ -85,6 +87,7 @@ export const useComment = () => {
   };
 
   return {
+    user,
     comment,
     comments,
     commentLoader,

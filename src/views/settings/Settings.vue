@@ -7,7 +7,7 @@
                 </h1>
                 <v-row class="mt-6">
                     <v-col cols="12" md="6" class="pt-0">
-                        <BaseTextfield v-model="userInfo.nick" color="primary" density="comfortable"
+                        <BaseTextfield v-model="userInfo.nickname" color="primary" density="comfortable"
                             name="email" rules="required" label="Nickname" variant="outlined">
                         </BaseTextfield>
                     </v-col>

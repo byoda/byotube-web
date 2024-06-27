@@ -28,6 +28,8 @@
                             <span v-if="channel.creator">
                               @{{ channel.creator }}
                             </span>
+
+                            <span class="ml-3"> {{ viewsFormatter(channel?.thirdparty_platform_followers)  }} followers</span>
                           </p>
                         </div>
                         <BaseBtn height="36" width="95" color="black" :loading="followLoading"
@@ -131,7 +133,7 @@ const route = useRoute()
 
 const { isAuthenticated } = toRefs(useAuthStore());
 const { isBtLiteAccount } = toRefs(useAuthStore());
-const { textEllipsis } = useHelper()
+const { textEllipsis, viewsFormatter } = useHelper()
 
 const { moveToWatch } = useVideo()
 
