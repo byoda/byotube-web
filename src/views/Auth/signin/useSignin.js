@@ -56,7 +56,6 @@ export const useSignin = () => {
         localStorage.setItem("id_type", data.id_type);
         setAuth.value(true);
         setAuthAccountType();
-
         if (signinData.value.domain) {
           const { data: userData } = await getPodUserData(signinData.value.domain);
           localStorage.setItem('user', JSON.stringify(userData?.edges[0].node))

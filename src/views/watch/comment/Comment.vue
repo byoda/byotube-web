@@ -1,10 +1,10 @@
 <template>
     <div>
         <h3>
-            {{ comments?.length }} Comments
+            {{ comments?.length }} Comments {{ user }}
         </h3>
         <AddCommentInput v-model="comment" :comment-loader="commentLoader"
-            @add-comment="isAuthenticated ? addComment(comment, asset, asset.origin) : coreStore.OpenDialog(nonAuthSubscriptionDialog)" />
+            @add-comment="isAuthenticated ? (isBtLiteAccount ? addBtLiteComment(comment, asset, asset.origin) : addComment(comment, asset, asset.origin)) : coreStore.OpenDialog(nonAuthSubscriptionDialog)" />
         <div v-if="loader" class="text-center">
             <BaseSpinner color="black" />
         </div>
@@ -31,7 +31,7 @@
                         </BaseBtn>
                         <div v-if="edge?.node?.reply" class="ml-3">
                             <AddCommentInput v-model="edge.node.comment"
-                                @add-comment="addComment(edge?.node?.comment, edge?.node, edge?.origin)" :comment-loader="replyLoader" button-text="Reply"  />
+                                @add-comment=" isBtLiteAccount ? addBtLiteComment(edge?.node?.comment, edge?.node, edge?.origin) : addComment(edge?.node?.comment, edge?.node, edge?.origin)" :comment-loader="replyLoader" button-text="Reply"  />
                         </div>
                     </div>
                     <BaseBtn v-if="edge?.node?.replyThread?.length" color="blue-darken-2" variant="text" density="comfortable" class="rounded-pill px-3 font-weight-medium text-body-2 mr-2" @click="edge.node.openReply = !edge.node.openReply">
@@ -93,19 +93,18 @@ const props = defineProps({
     }
 })
 
-const { comment, comments, commentLoader, showActions, user, replyLoader, addComment, getComments } = useComment()
+const { comment, comments, commentLoader, showActions, user, replyLoader, addComment, addBtLiteComment, getComments, getBtLiteComments } = useComment()
 const { convertDateToDuration } = useHelper();
 const { loader, showLoader, hideLoader } = useLoader()
-const { isAuthenticated } = toRefs(useAuthStore())
+const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore())
 const coreStore = useCoreStore()
 const nonAuthSubscriptionDialog = 'nonAuthSubscription'
 
 const reply = ref(false)
 
 onMounted(async () => {
-    console.log("Mounted");
     showLoader()
-    await getComments(props.asset)
+    isBtLiteAccount.value ? await getBtLiteComments(props.asset) : await getComments(props.asset)
     hideLoader()
 })
 </script>

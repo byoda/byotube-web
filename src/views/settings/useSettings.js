@@ -38,12 +38,14 @@ export const useSettings = () => {
       const body = {
         query_id: uuid.v4(),
         data: {
-          nick: userInfo.value?.nickname,
+          nick: userInfo.value?.nick,
         },
       };
       const { data } = await mutatePodUserData(domain, body);
     } catch (error) {}
   };
+
+  const updateLiteUserData = async () => {}
 
   return {
     userInfo,

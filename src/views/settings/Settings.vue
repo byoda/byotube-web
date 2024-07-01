@@ -7,7 +7,7 @@
                 </h1>
                 <v-row class="mt-6">
                     <v-col cols="12" md="6" class="pt-0">
-                        <BaseTextfield v-model="userInfo.nickname" color="primary" density="comfortable"
+                        <BaseTextfield v-model="userInfo.nick" color="primary" density="comfortable"
                             name="email" rules="required" label="Nickname" variant="outlined">
                         </BaseTextfield>
                     </v-col>
@@ -16,7 +16,7 @@
                     </v-col>
                     <div class="d-md-flex justify-end w-100 pr-3 mt-2">
                         <BaseBtn color="primary" :block="smAndDown" class="mt-2 white-text elevation-0"
-                            @click="updateUserData">
+                            @click="uploaImage">
                             Save
                         </BaseBtn>
                     </div>

@@ -23,7 +23,7 @@
                     <v-list-item
                         v-for="(item, index) in parentItem.header == 'Following' ? parentItem?.pages?.filter((_, ind) => ind < channelLength) : parentItem.pages"
                         :key="index" rounded="xl" class="mb-0" :to="item.link && (item.link)
-        " exact :href="item.href" :target="item.target" :value="item.link" color="primary" @click="item.method">
+        "  :href="item.href" :target="item.target" :value="item.link" color="primary" @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
                             <v-avatar v-else size="30" :image="item?.icon">
@@ -98,13 +98,14 @@ const emits = defineEmits(['search'])
 const emitter = useEmitter()
 
 const coreStore = useCoreStore()
-const { isAuthenticated } = toRefs(useAuthStore())
+const { isAuthenticated, isByotubeAccount } = toRefs(useAuthStore())
 
 const { getFollowedChannels } = useFollow()
 const { getChannel } = useChannel()
-const { service_id } = useVideo()
+const { service_id, getChannelData } = useVideo()
 const { uniqueArrayOfObjects } = useHelper()
 const { smAndDown } = useDisplay()
+const memberId = localStorage.getItem('member_id')
 
 
 const nonAuthSubscriptionDialog = 'nonAuthSubscription'
@@ -114,11 +115,16 @@ const items = [
         pages: [
             { title: "Home", link: "/", icon: "mdi-home", method: () => { } },
             { title: "About", link: null, target: "_blank", href: 'https://about.byo.tube/', icon: "mdi-information-variant-circle-outline", method: () => { } },
-            { title: "For Creators", link: null, target: "_self", href: 'https://about.byo.tube/creators', icon: "mdi-account-outline", method: () => { } },
+            { title: isByotubeAccount.value ? 'My Channel' : "For Creators", link: isByotubeAccount.value ? '/channels' : null, target: isByotubeAccount.value ? null : "_self", href: isByotubeAccount.value ? null : 'https://about.byo.tube/creators', icon: "mdi-account-outline", method: async() => { 
+                const { data } = await getChannelData()
+                const channelName = data?.edges[0]?.node?.creator
+                isByotubeAccount.value && router.push(`/channels?member_id=${memberId}&channel=${channelName}`) 
+            } 
+            },
             { title: "FAQ", link: null, target: "_blank", href: 'https://about.byo.tube/faq', icon: "mdi-frequently-asked-questions", method: () => { } },
             {
                 title: "Following",
-                link: null,
+                link: isAuthenticated.value ? '/following' : null,
                 icon: "mdi-youtube-subscription",
                 method: () => {
                     if (!isAuthenticated.value) {
@@ -135,7 +141,7 @@ const items = [
         pages: [
             {
                 title: "History",
-                link: null,
+                link: isAuthenticated.value ? '/history' : null,
                 icon: "mdi-history",
                 method: () => {
                     if (!isAuthenticated.value) {

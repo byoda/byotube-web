@@ -21,9 +21,23 @@ export const useAssetReactionService = () => {
       body 
     );
   };
+
+  const appendBtLiteMessage = async ( body) => {
+    return Api.post(
+      `/lite/proxy/append`,
+        body 
+    );
+  };
   const getMessages = async (domain, serviceId, body) => {
     return Api.post(
       `https://${domain}/api/v1/data/${serviceId}/messages/query`,
+      body 
+    );
+  };
+
+  const getBtLiteMessages = async (body) => {
+    return Api.post(
+      `lite/proxy/query`,
       body 
     );
   };
@@ -33,6 +47,8 @@ export const useAssetReactionService = () => {
     getAssetReactionsLite,
     getAllAssetReactionsLite,
     appendMessage,
-    getMessages
+    getMessages,
+    appendBtLiteMessage,
+    getBtLiteMessages
   };
 };

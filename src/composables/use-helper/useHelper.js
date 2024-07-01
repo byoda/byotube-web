@@ -109,9 +109,9 @@ export const useHelper = () => {
   const viewsFormatter = (views) => {
     views = +views
     if (views >= 1000000) {
-      return (views / 1000000).toFixed(1) + "M";
+      return (views / 1000000) + "M";
     } else if (views >= 1000) {
-      return (views / 1000).toFixed(1) + "K";
+      return (views / 1000) + "K";
     } else {
       return views.toString();
     }
