@@ -27,7 +27,7 @@ configure({
       alpha_num: "Only alphabetic and numeric values allowed",
       alpha_spaces: "Only alphabetic values allowed",
       confirmed: "The entered passwords don't match. Try again!",
-      email: "This {field} must be a valid email",
+      email: "This field must be a valid email address",
       integer: "This {field} must be an integer",
       max: "This {field} not be greater than 0:{max} values",
       min: "This {field} must be at least 0:{min} values",

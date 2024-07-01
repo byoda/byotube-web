@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <p class="text-center text-grey-darken-3 mt-4">
-                    This feature requires you to be logged in to your account
+                    This {{ contentType }} requires you to be logged in to your account
                 </p>
                 <div class="d-flex justify-center py-5 ga-3">
                     <BaseBtn variant="tonal" color="success" @click="router.push({ name: 'SignIn' })">
@@ -27,6 +27,13 @@
 import { BaseBtn, BaseDialog, BaseCard } from '@/components/base'
 import { useAuthStore, useCoreStore } from '@/store';
 import { useRouter } from "vue-router";
+
+defineProps({
+    contentType:{
+        type: String,
+        default: 'video'
+    }
+})
 
 const coreStore = useCoreStore()
 const router = useRouter()

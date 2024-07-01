@@ -1,11 +1,12 @@
 {
-  "name": "vuetube",
+  "name": "byo.tube",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 3000",
-    "build": "vite build",
+    "stage": "vite build --mode staging",
+    "build": "vite build --mode production",
     "serve": "vite preview"
   },
   "dependencies": {
@@ -29,8 +30,10 @@
     "vuetify": "^3.4.16"
   },
   "devDependencies": {
+    "@stripe/stripe-js": "^3.3.0",
     "sass": "^1.70.0",
-    "video.js": "^8.10.0"
+    "video.js": "^8.10.0",
+    "vue-stripe-js": "^1.0.2"
   },
   "browserslist": [
     "> 1%",

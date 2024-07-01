@@ -32,6 +32,14 @@ const props = defineProps({
   keyId: {
     type: Number,
     default: null
+  },
+  memberId: {
+    type: [Number,String],
+    default: null
+  },
+  memberType: {
+    type: Number,
+    default: null
   }
 })
 
@@ -52,13 +60,11 @@ onBeforeMount(() => {
     if (props.contentToken) {
       options.headers["Authorization"] = `Bearer ${props.contentToken}`
       options.headers["X-AuthorizationKeyId"] = props.keyId
-
+      options.headers["X-Member-Id"] = props.memberId
+      options.headers["X-Member-IdType"] = props.memberType
     }
-
     return options;
   };
-
-
 })
 
 
@@ -107,4 +113,5 @@ defineExpose({
     border-radius: 20px;
   }
 }
+
 </style>

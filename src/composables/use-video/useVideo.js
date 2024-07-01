@@ -1,10 +1,12 @@
-import { constants } from "@/globals/constants";
+import { AccountType, constants } from "@/globals/constants";
 import { useVideoService } from "@/services";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useHelper } from "../use-helper/useHelper";
 import { uuid } from "vue-uuid";
 import { useAxios } from "../use-axios/useAxios";
+import { useDate } from "vuetify/lib/framework.mjs";
+import { useBurstPoints } from "../use-burstpoints/useBurstPoints";
 
 export const useVideo = () => {
   const route = useRoute();
@@ -26,6 +28,10 @@ export const useVideo = () => {
     getAssetFromCentralData,
   } = useVideoService();
 
+  const { attestUserBurstPoints } = useBurstPoints()
+
+
+
   const { compareArrays } = useHelper();
 
   const loading = ref(false);
@@ -42,7 +48,7 @@ export const useVideo = () => {
   const content_token = ref(null);
   const videoOptions = ref({});
 
-  const service_id = import.meta.env.VITE_BYOTUBE_SERVICE_ID;
+  const service_id = constants.BYOTUBE_SERVICE_ID;
   const initialState = {
     auth_token:
       typeof window !== "undefined"
@@ -66,7 +72,7 @@ export const useVideo = () => {
     listName = null,
     after = null,
     first = 8,
-    ingestStatus = [], //optional ingest status array for filtering on base external and pod content
+    ingestStatus = {}, //optional ingest status array for filtering on base external and pod content
     options = null //options to compare with ingest status array and it is required with ingest staus array
   ) => {
     const filter = {
@@ -78,8 +84,8 @@ export const useVideo = () => {
       filter["after"] = after;
     }
 
-    if (ingestStatus?.length && !compareArrays(ingestStatus, options)) {
-      filter["ingest_status"] = ingestStatus[0].value;
+    if (ingestStatus?.value && !compareArrays(ingestStatus, options)) {
+      filter["ingest_status"] = ingestStatus?.value;
     }
 
     const videos = await getAll(filter)
@@ -239,16 +245,40 @@ export const useVideo = () => {
     }
   };
 
+  const isAttestationSixtyMinutesOld = () => {
+    const attestation = JSON.parse(localStorage.getItem("attestation"));
+    return ((new Date() - new Date(attestation?.created_timestamp))/60000) > 60
+  }
+
   const getItem = async (edge) => {
     const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
     const SIGNED_TOKEN = "dummy";
 
+    if(isAttestationSixtyMinutesOld()){
+      await attestUserBurstPoints()
+    }
+
+    const attestation = JSON.parse(localStorage.getItem("attestation"));
+    const memberIdType = localStorage.getItem("id_type")
+    const memberId = localStorage.getItem("member_id")
+
     let asset = edge.node;
     asset.origin = edge.origin;
-
+    const body = {
+      service_id: constants.BYOTUBE_SERVICE_ID,
+      asset_id: asset.asset_id,
+      member_id: memberId,
+      member_id_type: memberIdType,
+      attestation: attestation,
+    };
+    if(!memberIdType){
+      delete body.member_id
+      delete body.member_id_type
+    }
     if (asset.ingest_status != "external") {
-      let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token?asset_id=${asset.asset_id}&service_id=${constants.BYOTUBE_SERVICE_ID}&signedby=${SIGNEDBY}&token=${SIGNED_TOKEN}&ingest_status=${asset.ingest_status}`;
-      const { data } = await Api.get(apiUrl);
+      let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token`;
+
+      const { data } = await Api.post(apiUrl, body);
 
       asset = {
         ...asset,
@@ -363,9 +393,7 @@ export const useVideo = () => {
   };
 
   const deleteReactionBtLiteAccount = ({ member_id, relation, annotation }) => {
-    return deleteAssetReaction(
-      { member_id, relation, annotation }
-    );
+    return deleteAssetReaction({ member_id, relation, annotation });
   };
 
   const deleteAllReactions = ({ depth, query_id, filter }) => {
@@ -512,6 +540,6 @@ export const useVideo = () => {
     getVideosFromPod,
     deleteAllReactions,
     getVideoFromFeedAsset,
-    deleteReactionBtLiteAccount
+    deleteReactionBtLiteAccount,
   };
 };

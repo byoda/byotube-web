@@ -36,6 +36,22 @@ export const useAuthService = () => {
     return Api.get(`lite/account/verify?${params}`);;
   };
 
+  const getStatus = async () => {
+    return Api.get(`status`);;
+  };
+
+  const getPodUserData = async (domain) => {
+    return Api.post(`https://${domain}/api/v1/data/16384/settings/query`)
+  }
+  
+  const mutatePodUserData = async (domain, body) => {
+    return Api.post(`https://${domain}/api/v1/data/16384/settings/mutate`, body)
+  }
+
+  const saveImage = async (domain, serviceId, assetId, visibility, files) => {
+    return Api.post(`https://${domain}/api/v1/pod/member/upload/service_id/${serviceId}/asset_id/${assetId}/visibility/${visibility}`, files, {headers:{'Content-Type':'multipart/form-data'}})
+  }
+
   return {
     signIn,
     signUp,
@@ -45,5 +61,9 @@ export const useAuthService = () => {
     me,
     createAccountLite,
     verifyEmail,
+    getStatus,
+    getPodUserData,
+    saveImage,
+    mutatePodUserData
   };
 };

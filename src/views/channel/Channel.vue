@@ -2,10 +2,10 @@
   <div id="channel-home" :style="{ 'padding-inline': mdAndUp ? '65px' : '10px' }">
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loading" class="mr-1 mt-3 bg-transparent">
-        <v-parallax height="230" style="border-radius: 15px;" :src="channelCover?.url"></v-parallax>
+        <v-img height="230" cover style="border-radius: 15px;" :src="channelCover?.url"></v-img>
       </v-skeleton-loader>
     </div>
-    <v-container class="py-0 px-0" id="my-cont">
+    <v-container class="py-0 px-md-0" id="my-cont">
       <div class="nav-bgcolor">
         <div id="channel-header">
           <v-row class="justify-space-between">
@@ -28,24 +28,27 @@
                             <span v-if="channel.creator">
                               @{{ channel.creator }}
                             </span>
+
+                            <span class="ml-3"> {{ viewsFormatter(channel?.thirdparty_platform_followers)  }} followers</span>
                           </p>
                         </div>
                         <BaseBtn height="36" width="95" color="black" :loading="followLoading"
                           class="text-capitalize px-2 font-weight-medium elevation-0 text-caption" dark rounded
                           @click="isAuthenticated ? (isBtLiteAccount ? followChannelWithBtLiteAccount() : followChannel()) : openAuthDialog()">
                           <p class="subscribe-btn mb-0 px-2">
-                            {{ getFollowing?.includes(remoteId) ? 'Following' : 'Follow' }}
+                            {{ isFollowed ? 'Following' : 'Follow' }}
                           </p>
                         </BaseBtn>
                       </div>
                       <p class="channel-subtitle py-2 mb-0">
                         {{ textEllipsis(channel?.description, 340) }}
                       </p>
-
-                      <p v-html="dar">
-
-                      </p>
-
+                      <div v-if="channelShortcut" class="d-flex align-center">
+                       <p class="text-body-2"> BYO.Tube: </p> <a class="text-body-2 ml-2" :href="`https://www.byo.tube/${channelShortcut}`" target="_blank"> https://www.byo.tube/{{ channelShortcut }}</a>
+                      </div>
+                      <div v-for="(externalUrl, index) in externalUrls" :key="index" class="d-flex align-center">
+                       <p class="text-body-2"> {{ externalUrl.name }}: </p> <a class="text-body-2 ml-2" :href="externalUrl?.url" target="_blank"> {{ externalUrl.url }}</a>
+                      </div>
                     </v-col>
                   </v-row>
                 </template>
@@ -125,12 +128,12 @@ import { NonAuthDialog } from '@/components/shared';
 
 
 const { mdAndUp } = useDisplay()
-const dar = " <html><body>Check out all of Jackery's products here!  <a href='https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873'>https://www.jackery.com/pages/unveil-jackery-solar-generator-1000-pro-on-ifa-germany-2022?aff=873</a><p><p><p>summer feels like its over now... feeling happy and sad 😦</body></html>"
+const dar = " <html><body></body></html>"
 const route = useRoute()
 
 const { isAuthenticated } = toRefs(useAuthStore());
 const { isBtLiteAccount } = toRefs(useAuthStore());
-const { textEllipsis } = useHelper()
+const { textEllipsis, viewsFormatter } = useHelper()
 
 const { moveToWatch } = useVideo()
 
@@ -144,12 +147,16 @@ const {
   remoteId,
   followLoading,
   channelCover,
+  isFollowed,
+  externalUrls,
+  channelShortcut,
   refreshData,
   getChannel,
   getChannelVideos,
   followChannel,
   openAuthDialog,
   mapFollowIds,
+  shortcutByValue,
   followChannelWithBtLiteAccount
 } = useChannel()
 
@@ -158,6 +165,7 @@ const { getFollowedChannels } = useFollow()
 
 onMounted(async () => {
   await getChannel()
+  await shortcutByValue(remoteId.value, channelName.value)
   if (isAuthenticated.value) {
     getFollowing.value =
       typeof window !== "undefined"
@@ -166,11 +174,10 @@ onMounted(async () => {
 
     const { data } = await getFollowedChannels()
     getFollowing.value = mapFollowIds(data.edges)
-
   }
 })
 
-watch(() => (route.query.member_id || route.query.channel), async () => {
+watch(() => (route.query.member_id , route.query.channel), async () => {
   refreshData(route.query.member_id, route.query.channel)
 }, { immediate: false })
 

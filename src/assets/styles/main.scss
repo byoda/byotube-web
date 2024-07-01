@@ -79,15 +79,20 @@
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: minmax(350px, 2fr);
     column-gap: 15px;
-    row-gap: 15px;
     max-width: 3072px;
   
     .thumbnail {
       max-height: 220px !important;
     }
   }
+
+  @media (min-width: 1440px) {
+    .grid-layout{
+      row-gap: 15px;
+    }
+  }
   
-  @media (max-width: 425px) {
+  @media (max-width: 440px) {
     .grid-layout {
       grid-template-columns: repeat(1, 1fr);
   
@@ -96,10 +101,19 @@
       }
     }
   }
-  
   @media (min-width: 1440px) {
     .grid-layout {
       grid-template-columns: repeat(3, 1fr);
+  
+      .thumbnail {
+        max-height: 220px !important;
+      }
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .grid-layout {
+      grid-template-columns: repeat(4, 1fr);
   
       .thumbnail {
         max-height: 220px !important;

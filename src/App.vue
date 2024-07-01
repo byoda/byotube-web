@@ -2,6 +2,7 @@
   <v-app>
     <v-main class="bg-grey-lighten-5" >
       <router-view></router-view>
+      <NonFundedDialog />
     </v-main>
   </v-app>
 </template>
@@ -10,12 +11,14 @@
 import { useApp } from "@/composables"
 import { onUnmounted } from "vue";
 import { onMounted } from "vue";
+import { NonFundedDialog } from "@/components/shared";
 
-const { setSessionIdLocalStorage, removeSessionIdLocalStorage, setAuthAccountType } = useApp()
+const { setSessionIdLocalStorage, removeSessionIdLocalStorage, setAuthAccountType, setAccountStatus } = useApp()
 
 onMounted(()=>{
   setSessionIdLocalStorage()
   setAuthAccountType()
+  setAccountStatus()
 })
 
 onUnmounted(()=>{
