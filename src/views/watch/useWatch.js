@@ -1,4 +1,5 @@
 import {
+  useAlert,
   useAssetReaction,
   useFollow,
   useHelper,
@@ -15,9 +16,11 @@ export const useWatch = () => {
   const router = useRouter();
 
   const coreStore = useCoreStore();
-  const { isBtLiteAccount } = toRefs(useAuthStore());
+  const { isBtLiteAccount, isAuthenticated, isFunded } = toRefs(useAuthStore());
 
   const { convertSecondsToMinutesAndSeconds } = useHelper();
+  const { showError } = useAlert();
+  const { getFollowedChannels } = useFollow();
   const {
     loader: videoLoading,
     showLoader: showVideoLoader,
@@ -43,6 +46,7 @@ export const useWatch = () => {
     setFollowed,
     informPodAboutAccountFollow,
     followWithBtLiteAccount,
+    unfollowWithBtLiteAccount,
   } = useFollow();
 
   const { addOrUpdateReactionLite, fetchAssetReactionsLite } =
@@ -71,6 +75,8 @@ export const useWatch = () => {
   const showFull = ref(false);
   const videoJs = ref();
   const videoNotfound = ref(false);
+  const nonFundedDialog = "nonFundedDialog";
+
   const rightPanelVideos = ref({
     title: "",
     key: "",
@@ -110,6 +116,22 @@ export const useWatch = () => {
     },
   });
 
+  const isFollowed = computed({
+    get() {
+      return (
+        getFollowing.value &&
+        getFollowing.value?.find(
+          (item) =>
+            item?.member_id === asset.value?.origin &&
+            item?.creator === asset.value?.creator
+        )
+      );
+    },
+    set(val) {
+      getFollowing.value = null;
+    },
+  });
+
   const getVideoOptions = computed(() => videoOptions.value);
 
   const openAuthDialog = () => {
@@ -120,17 +142,22 @@ export const useWatch = () => {
     coreStore.OpenDialog(copyUrlDialog);
   };
 
-  const getVideo = async () => {
+  const getVideo = async (astId = null, memId = null, cur = null, autoplay = true) => {
     try {
       showVideoLoader();
       videoNotfound.value = false;
 
       let assetData = null;
       const { data } = await getVideoFromCentralApi({
-        assetId: assetId.value,
-        memberId: memberId.value,
-        cursor: cursor.value,
+        assetId: astId || assetId.value,
+        memberId: memId || memberId.value,
+        cursor: cur || cursor.value,
       });
+      const isMonitized = !!data?.node?.monetizations?.find(item => item.monetization_type !== 'free')
+      if(isMonitized && !isAuthenticated.value){
+        asset.value = data?.node
+        return
+      } 
       assetData = await getItem(data);
 
       if (!assetData) {
@@ -162,7 +189,6 @@ export const useWatch = () => {
             const { minutes, seconds } = convertSecondsToMinutesAndSeconds(
               videoJs.value?.currentTime()?.toString()
             );
-            console.log("Calling");
             isBtLiteAccount.value
               ? await saveOrUpdateReactionLite({
                   bookmark: videoJs.value?.currentTime()?.toString(),
@@ -173,7 +199,7 @@ export const useWatch = () => {
                 );
           },
         },
-        autoplay:true,
+        autoplay: autoplay,
         controls: true,
         responsive: true,
         poster: asset.value.video_thumbnail.url,
@@ -193,6 +219,7 @@ export const useWatch = () => {
       }
 
       playerKey.value++;
+      return videoOptions.value
     } catch (error) {
       console.log("Error", error);
       videoNotfound.value = true;
@@ -221,11 +248,36 @@ export const useWatch = () => {
   };
 
   const followChannelWithBtLiteAccount = async () => {
-    await followWithBtLiteAccount(
-      asset.value.creator,
-      asset.value.origin,
-      asset.value.created_timestamp
-    );
+    try {
+      if (isFollowed.value) {
+        await unfollowWithBtLiteAccount(
+          asset.value.creator,
+          asset.value.origin
+        );
+        isFollowed.value = null;
+        const res = await getFollowedChannels();
+        getFollowing.value = mapFollowIds(res?.data?.edges);
+        return;
+      }
+      await followWithBtLiteAccount(
+        asset.value.creator,
+        asset.value.origin,
+        asset.value.created_timestamp
+      );
+      setFollowed({
+        member_id: asset.value.origin,
+        creator: asset?.value?.creator,
+      });
+      followedAccounts.value = JSON.parse(
+        window.localStorage.getItem("followedAccounts")
+      );
+    } catch (error) {
+      console.log("Error", error);
+      const {
+        response: { data },
+      } = error;
+      showError(data?.detail);
+    }
   };
 
   const likeOrDislike = async (relation) => {
@@ -447,8 +499,8 @@ export const useWatch = () => {
 
   const saveOrUpdateReactionLite = async ({ relation, bookmark }) => {
     try {
-      if(assetReactions.value?.[0]?.node?.relation == relation){
-        relation = ""
+      if (assetReactions.value?.[0]?.node?.relation == relation) {
+        relation = "";
       }
       await addOrUpdateReactionLite({ asset: asset.value, bookmark, relation });
       assetReactions.value = await getAssetReactionsLiteAccount();
@@ -458,7 +510,16 @@ export const useWatch = () => {
   };
 
   const mapFollowIds = (edges) => {
-    return edges?.map((edge) => edge?.node?.member_id);
+    return edges
+      .map((edge) => {
+        return edge?.node?.annotations?.map((channel) => {
+          return {
+            member_id: edge?.node?.member_id,
+            creator: channel,
+          };
+        });
+      })
+      ?.flat();
   };
 
   return {
@@ -494,6 +555,7 @@ export const useWatch = () => {
     getFollowing,
     rightPanelVideos,
     videoNotfound,
+    isFollowed,
     getVideo,
     followChannel,
     likeOrDislike,

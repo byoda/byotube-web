@@ -25,8 +25,32 @@ export const useAlert = () => {
       timerProgressBar: true,
     });
 
+  const showSuccess = (props) => {
+    return showAlert({
+      ...props,
+      icon: "success",
+      title: "Success",
+      customClass: {
+        confirmButton: "confirm-button",
+      },
+    });
+  };
+
+  const showErrorPopup = (props) => {
+    return showAlert({
+      ...props,
+      icon: "error",
+      title: "Error",
+      customClass: {
+        confirmButton: "confirm-button",
+      },
+    });
+  };
+
   return {
     showAlert,
     showError,
+    showSuccess,
+    showErrorPopup
   };
 };

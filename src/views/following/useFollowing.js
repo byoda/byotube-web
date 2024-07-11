@@ -1,5 +1,7 @@
-import { useFollow, useLoader, useVideo } from "@/composables"
-import { ref } from "vue"
+import { useFollow, useHelper, useLoader, useVideo } from "@/composables"
+import { useChannelService } from "@/services"
+import { useAuthStore } from "@/store"
+import { ref, toRefs } from "vue"
 import { uuid } from "vue-uuid"
 
 
@@ -9,6 +11,10 @@ export const useFollowing = () => {
     const { getChannelData } = useVideo()
     const { loader, showLoader, hideLoader } = useLoader()
     const { getFollowedChannels } = useFollow()
+    const { getChannelDataFromCentralAPI } = useChannelService();
+    const { toQueryString } = useHelper()
+    const { isBtLiteAccount } = toRefs(useAuthStore())
+
 
     const channels = ref([])
 
@@ -22,12 +28,11 @@ export const useFollowing = () => {
         try {
             showLoader()
             const { data } = await getFollowedChannels()
-            const channelsPromise = await Promise.allSettled( data.edges.map(async (edge) => {
-                const data = await getChannel(edge?.node?.annotations[0], edge?.node?.member_id)
-                return data
-            }))
+            console.log("Data", data);
+            const getAllChannels = data?.edges?.map(channel => channel?.node?.annotations?.map(channelAnnotation => getChannel(channel?.node?.member_id, channelAnnotation)))?.flat()
+            const allData = await Promise.allSettled(getAllChannels)
 
-            channels.value = getUniqueFollowing(channelsPromise)
+            channels.value = getUniqueFollowing(allData)
 
         } catch (error) {
             console.log("Error", error)
@@ -36,26 +41,22 @@ export const useFollowing = () => {
         }
     }
 
-    const getChannel = async (channelName, member_id) => {
-        try {
-            const queryFilter = {
-                filter: {
-                    creator: {
-                        eq: channelName,
-                    },
-                },
-                remote_member_id: member_id,
-                depth: 1,
-                query_id: uuid.v4(),
+    const getChannel = async (memberId, creator) => {
+        try{
+            const queryObj = {
+              creator: creator || channelName.value,
+              member_id: memberId || remoteId.value,
             };
-
-            const { data } = await getChannelData(queryFilter);
-            return data?.edges[0]?.node;
-        } catch (error) {
-            console.log("Erorr", error);
+        
+            const query = toQueryString(queryObj);
+            const { data } = await getChannelDataFromCentralAPI(query);
+        
+            return data?.node
+        }catch(error){
+            console.error("Error", error)
         }
-
-    };
+      };
+    
 
     return {
         channels,

@@ -234,6 +234,8 @@ export const useAssetReaction = () => {
     return getAllAssetReactionsLite(query)
   };
 
+
+
   return {
     LIKE,
     DISLIKE,
@@ -248,6 +250,6 @@ export const useAssetReaction = () => {
     openAuthDialog,
     addOrUpdateReactionLite,
     fetchAssetReactionsLite,
-    fetchAllAssetReactionsLite
+    fetchAllAssetReactionsLite,
   };
 };

@@ -1,6 +1,6 @@
 <template>
   <div id="par">
-    <video autoplay controls ref="videoPlayer" class="video-js vjs-custom-skin"></video>
+    <video controls ref="videoPlayer" class="video-js vjs-custom-skin"></video>
   </div>
 </template>
 
@@ -30,7 +30,15 @@ const props = defineProps({
     default: null
   },
   keyId: {
-    type: Number,
+    type: [Number, String],
+    default: null
+  },
+  memberId: {
+    type: [Number,String],
+    default: null
+  },
+  memberType: {
+    type: [String, Number],
     default: null
   }
 })
@@ -52,13 +60,11 @@ onBeforeMount(() => {
     if (props.contentToken) {
       options.headers["Authorization"] = `Bearer ${props.contentToken}`
       options.headers["X-AuthorizationKeyId"] = props.keyId
-
+      options.headers["X-Member-Id"] = props.memberId
+      options.headers["X-Member-IdType"] = props.memberType
     }
-
     return options;
   };
-
-
 })
 
 
@@ -67,7 +73,6 @@ onMounted(() => {
     player.value.cmcd({ sid: sessionid, cid: `${props.origin}_${props.assetId}`, useHeaders: true });
   });
   player.value.on('ready', () => {
-   console.log( document.querySelector('.vjs-big-play-button'))
   })
 })
 
@@ -107,4 +112,5 @@ defineExpose({
     border-radius: 20px;
   }
 }
+
 </style>

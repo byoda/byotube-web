@@ -6,7 +6,7 @@ export const useCoreStore = defineStore("core", () => {
   const { mdAndUp } = useDisplay();
 
   const _drawer = ref(mdAndUp.value ? true : false);
-  // const filter
+  const fundedDialog = ref(false)
 
   const setDrawer = (val) => {
     _drawer.value = val;
@@ -37,11 +37,25 @@ export const useCoreStore = defineStore("core", () => {
     }
   };
 
+  const EmptyDialogs = () => {
+    _OpenedDialogs.value = []
+  }
+
+  const filter = ref({ name: "All", value: "" })
+
+  const getFilter = computed(()=>{
+    return filter.value
+  })
+
   return {
     isDrawerOpen,
     getOpenedDialogs,
+    fundedDialog,
+    getFilter,
+    filter,
     setDrawer,
     OpenDialog,
     CloseDialog,
+    EmptyDialogs, 
   };
 });

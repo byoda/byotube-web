@@ -2,14 +2,14 @@
     <div>
         <v-container class="container" fluid>
             <v-row>
-                <v-col cols="8">
+                <v-col offset-md="2" md="8" cols="12">
                     <v-sheet v-for="(video, i) in sections.videos" :key="i" class="long-text-ellipses mt-8"
                         position="relative" style="cursor: pointer;">
-                        <video-card thumbnail-width="248" thumbnail-max-width="248" thumbnail-height="138"
+                        <video-card :thumbnail-width="mdAndUp ? 248 : '100%'" :thumbnail-max-width="mdAndUp ? 248 : '100%'" :thumbnail-height=" mdAndUp ? 138 : 203"
                             :search-card="true" :card="{ maxWidth: 248 }" :video="video?.node" :channel="video?.origin"
                             @click="moveToWatch(video)"></video-card>
                         <v-sheet
-                            class="rounded-circle top-78 bg-amber-darken-1 left-2 d-flex flex-column align-center justify-center"
+                            class="rounded-circle bg-amber-darken-1 left-2 d-flex flex-column align-center justify-center" :class="[{'top-40': !mdAndUp, 'top-78': mdAndUp}]"
                             position="absolute" height="55" width="55" :key="key * i">
                             <div class="pr-2 -mb-1"
                                 @click="!isAuthenticated ? openAuthDialog() : (isBtLiteAccount ? saveOrUpdateReactionLite({relation:LIKE, node: video?.node}) :  addReaction(LIKE, allAssetReactions, video?.node, video?.origin))">
@@ -31,7 +31,7 @@
                     <BaseInfiniteScroller class="mt-3" @load="isBtLiteAccount ? getHistoryVideosBtLite($event, sections, 20) : getHistoryVideos($event, sections, 20)" />
 
                 </v-col>
-                <v-col cols="4" class="d-none d-md-block px-5">
+                <!-- <v-col cols="4" class="d-none d-md-block px-5">
                     <div class="sticky-menu">
                         <div>
                             <BaseTextfield v-model="search" color="primary" variant="underlined" rounded hide-details
@@ -53,7 +53,7 @@
                             </v-list-item>
                         </div>
                     </div>
-                </v-col>
+                </v-col> -->
             </v-row>
         </v-container>
 
@@ -67,8 +67,10 @@ import { toRefs } from "vue";
 import { BaseInfiniteScroller, BaseTextfield } from '@/components/base'
 import { useAssetReaction } from "@/composables/index.js";
 import { useAuthStore } from "@/store/index.js";
+import { useDisplay } from "vuetify/lib/framework.mjs";
 
 const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore())
+const { mdAndUp } = useDisplay()
 
 const { key, list, search, sections, allAssetReactions, getHistoryVideos, moveToWatch, addReaction, getHistoryVideosBtLite, saveOrUpdateReactionLite } = useHistory()
 const { LIKE, DISLIKE, isVideoDislikedByCurrentUser, isVideosLikedByCurrentUser, openAuthDialog } = useAssetReaction()

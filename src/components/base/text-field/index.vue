@@ -1,5 +1,5 @@
 <template>
-  <v-text-field v-model="inputModelValue" :error="!!errorMessage" :error-messages="errorMessage">
+  <v-text-field v-model="inputModelValue" :error="!!errorMessage" :error-messages="errorMessage && customError ? customError : errorMessage">
     <template #label>
       <p v-if="label" class="block text-sm font-medium   text-gray-700 mb-1">
         {{ label }}
@@ -30,6 +30,10 @@ const props = defineProps({
     default: null
   },
   label: {
+    type: String,
+    default: null
+  },
+  customError:{
     type: String,
     default: null
   }

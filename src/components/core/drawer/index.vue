@@ -15,23 +15,19 @@
                         <template #default>
                             <div class="font-weight-bold text-body-2">
                                 {{
-                                    parentItem.header
-                                }}
+        parentItem.header
+    }}
                             </div>
                         </template>
                     </v-list-subheader>
                     <v-list-item
                         v-for="(item, index) in parentItem.header == 'Following' ? parentItem?.pages?.filter((_, ind) => ind < channelLength) : parentItem.pages"
-                        :key="index" rounded="xl" class="mb-0" :to="item.link && (item.link)
-                            " exact :href="item.href" :target="item.target" :value="item.link" color="primary"
-                        @click="item.method">
+                        :key="index" rounded="xl" exact class="mb-0" :to="item.link && (item.link)
+        "  :href="item.href" :target="item.target" :value="item.link" color="primary" @click="item.method">
                         <template #prepend>
                             <v-icon v-if="parentItem.header !== 'Following'">{{ item.icon }}</v-icon>
-                            <v-avatar v-else size="30" color="red">
-                                <span class="white--text">
-                                    {{
-                                        item.title.split('')[0].toUpperCase()
-                                    }}</span>
+                            <v-avatar v-else size="30" :image="item?.icon">
+                                <v-icon v-if="!item?.icon" size="30">mdi-account-circle</v-icon>
                             </v-avatar>
                         </template>
                         <v-list-item-title>
@@ -44,15 +40,15 @@
                     </v-list-item>
 
                     <BaseBtn variant="text" id="showBtn" @click="moreChannels" v-if="parentItem.header === 'Following' &&
-                        isAuthenticated &&
-                        items[2]?.pages?.length > 3
-                        " class="text-none mt-1 rounded-pill"
+        isAuthenticated &&
+        items[2]?.pages?.length > 3
+        " class="text-none mt-1 rounded-pill"
                         :prepend-icon="channelLength === 3 ? 'mdi-chevron-down' : 'mdi-chevron-up'">
                         {{
-                            channelLength === 3
-                            ? `Show ${items[2]?.pages?.length - channelLength} more `
-                            : 'Show less'
-                        }}
+        channelLength === 3
+            ? `Show ${items[2]?.pages?.length - channelLength} more `
+            : 'Show less'
+    }}
                     </BaseBtn>
                     <BaseBtn class="pl-4" v-else-if="parentItem.header === 'Following' && !isAuthenticated" size="small"
                         variant="text" prepend-icon="mdi-shield-lock-outline"
@@ -63,20 +59,22 @@
             </v-list>
         </div>
         <template #append v-if="smAndDown">
-            <v-sheet :elevation="10" class="pa-2"  color="grey-lighten-3">
+            <v-sheet :elevation="10" class="pa-2" color="grey-lighten-3">
                 <div v-if="!isAuthenticated" class="text-center">
-                  <v-btn-toggle variant="elevated" density="compact" class="text- bg-white" dense :border="true" divided>
-                    <v-btn @click="$router.push({ name: 'SignIn' })">
-                      Signin
-                    </v-btn>
-                    <v-btn @click="$router.push({ name: 'AccountOptions' })">
-                      Signup
-                    </v-btn>
-                  </v-btn-toggle>
+                    <v-btn-toggle variant="elevated" density="compact" class="text- bg-white" dense :border="true"
+                        divided>
+                        <v-btn @click="$router.push({ name: 'SignIn' })">
+                            Signin
+                        </v-btn>
+                        <v-btn @click="$router.push({ name: 'AccountOptions' })">
+                            Signup
+                        </v-btn>
+                    </v-btn-toggle>
                 </div>
-                <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn bg-white w-100 secondary--text"
-                  v-else-if="isAuthenticated" @click="logout">
-                  <v-icon left size="26">mdi-account-circle</v-icon> Sign out
+                <BaseBtn variant="outlined" color="secondary"
+                    class="font-weight-bold auth-btn bg-white w-100 secondary--text" v-else-if="isAuthenticated"
+                    @click="logout">
+                    <v-icon left size="26">mdi-account-circle</v-icon> Sign out
                 </BaseBtn>
             </v-sheet>
         </template>
@@ -91,17 +89,23 @@ import { computed, onMounted, ref, onUnmounted, toRefs } from "vue";
 import { useEmitter, useFollow, useVideo, useHelper } from "@/composables";
 import { useAuthStore, useCoreStore } from '@/store';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useChannel } from '@/views/channel/useChannel';
+import { all } from 'axios';
+import { onBeforeRouteUpdate } from 'vue-router';
+import router from '@/router';
 
 const emits = defineEmits(['search'])
 const emitter = useEmitter()
 
 const coreStore = useCoreStore()
-const { isAuthenticated } = toRefs(useAuthStore())
+const { isAuthenticated, isByotubeAccount } = toRefs(useAuthStore())
 
 const { getFollowedChannels } = useFollow()
-const { service_id } = useVideo()
+const { getChannel } = useChannel()
+const { service_id, getChannelData } = useVideo()
 const { uniqueArrayOfObjects } = useHelper()
 const { smAndDown } = useDisplay()
+const memberId = localStorage.getItem('member_id')
 
 
 const nonAuthSubscriptionDialog = 'nonAuthSubscription'
@@ -111,16 +115,23 @@ const items = [
         pages: [
             { title: "Home", link: "/", icon: "mdi-home", method: () => { } },
             { title: "About", link: null, target: "_blank", href: 'https://about.byo.tube/', icon: "mdi-information-variant-circle-outline", method: () => { } },
+            { title: isByotubeAccount.value ? 'My Channel' : "For Creators", link: isByotubeAccount.value ? '/channels' : null, target: isByotubeAccount.value ? null : "_self", href: isByotubeAccount.value ? null : 'https://about.byo.tube/creators', icon: "mdi-account-outline", method: async() => { 
+                const { data } = await getChannelData()
+                const channelName = data?.edges[0]?.node?.creator
+                isByotubeAccount.value && router.push(`/channels?member_id=${memberId}&channel=${channelName}`) 
+            } 
+            },
             { title: "FAQ", link: null, target: "_blank", href: 'https://about.byo.tube/faq', icon: "mdi-frequently-asked-questions", method: () => { } },
-            // { title: "Trending", link: "/trending", icon: "mdi-fire", method: () => { } },
             {
                 title: "Following",
-                link: '/following',
+                link: isAuthenticated.value ? '/following' : null,
                 icon: "mdi-youtube-subscription",
                 method: () => {
                     if (!isAuthenticated.value) {
                         coreStore.OpenDialog(nonAuthSubscriptionDialog)
+                        return
                     }
+                    router.push('/following')
                 }
             },
         ],
@@ -130,12 +141,14 @@ const items = [
         pages: [
             {
                 title: "History",
-                link: '/history',
+                link: isAuthenticated.value ? '/history' : null,
                 icon: "mdi-history",
                 method: () => {
                     if (!isAuthenticated.value) {
                         coreStore.OpenDialog(nonAuthSubscriptionDialog)
+                        return
                     }
+                    router.push('/history')
                 }
             },
         ],
@@ -216,21 +229,37 @@ const moreChannels = () => {
     else channelLength.value = 3;
 }
 
-const mapChannelToPages = (channelArr) => {
-    return channelArr?.map(channel => {
-        return {
-            title: channel.node.annotations[0],
-            link: `/channels?member_id=${channel?.node?.member_id}&channel=${channel.node.annotations[0]}`,
-            icon: null
-
-        }
+const mapChannelToPages = async (channelArr) => {
+    const getAllChannels = channelArr?.map(channel => channel?.node?.annotations?.map(channelAnnotation => getChannel(channel?.node?.member_id, channelAnnotation)))?.flat()
+    const allData = await Promise.allSettled(getAllChannels)
+    const urls = allData?.filter((curr) => {
+        return curr.status == "fulfilled"
     })
+
+    return channelArr?.reduce((prev, channel, index) => {
+        if (channel) {
+            return [
+                ...prev,
+                channel?.node?.annotations?.reduce((prevChannel, channelAnnotation, innerIndex) => {
+                    return [...prevChannel, {
+                        title: channelAnnotation,
+                        link: `/channels?member_id=${channel?.node?.member_id}&channel=${channelAnnotation}`,
+                        icon: findUrl(urls, channelAnnotation)
+                    }]
+                }, [])
+            ]
+        }
+    }, [])?.flat()
+}
+
+const findUrl = (allChannels, creator) => {
+    return allChannels?.find(channel => channel?.value?.node?.creator === creator)?.value?.node?.channel_thumbnails?.[0]?.url
 }
 
 const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("domain");
-  window.location.reload();
+    localStorage.removeItem("token");
+    localStorage.removeItem("domain");
+    window.location.reload();
 }
 
 const getUniqueFollowing = (array) => {
@@ -241,13 +270,14 @@ const getUniqueFollowing = (array) => {
 
 const getFollowData = async () => {
     const res = await getFollowedChannels(service_id)
-    items[2].pages = mapChannelToPages(getUniqueFollowing(res?.data.edges))
+    items[2].pages = await mapChannelToPages(getUniqueFollowing(res?.data.edges))
 }
 
 onMounted(async () => {
     if (isAuthenticated.value) {
         await getFollowData()
     }
+
     channelLength.value = 3
     emitter.on('channel-followed', async () => {
         await getFollowData()
@@ -257,6 +287,7 @@ onMounted(async () => {
 onUnmounted(() => {
     coreStore.CloseDialog(nonAuthSubscriptionDialog)
 })
+
 
 
 </script>

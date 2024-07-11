@@ -1,15 +1,11 @@
 <template>
   <nav id="navbar">
-    <v-app-bar class="white" flat app clipped-left>
-
-      <div class="d-flex justify-space-between toolbar-container px-4">
-
+    <v-app-bar class="white" flat app clipped-left :height="mdAndUp ? 64 : 110">
+      <div class="d-flex justify-space-between toolbar-container px-4 pt-1">
         <div class="d-flex align-center cursor-pointer">
           <img src="@/assets/byotube-logo.png" :width="170" :height="39" contain
             @click="$router.push({ name: 'Home' })" />
         </div>
-        <!-- <v-progress-linear :active="loading" :indeterminate="loading" absolute bottom
-            color="primary"></v-progress-linear> -->
         <div v-if="mdAndUp" class="search-field d-flex align-center">
           <BaseTextfield v-model="searchText" color="primary" variant="outlined" rounded hide-details
             append-inner-icon="mdi-magnify" placeholder="Search" label="Search" outlined density="compact"
@@ -21,15 +17,28 @@
               <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-tune-variant" color="secondary"
                 size="small" />
             </template>
-            <v-list>
-              <v-list-item v-for="(item, index) in options" :key="index">
-                <v-list-item-title>
-                  <v-checkbox :key="index" v-model="filter" :value="item" class="mt-0" hide-details :label="item.name"
-                    @change="emitter.emit('filter-changed', filter)" />
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
+            <BaseCard class="pt-3 pl-4 pr-7 rounded-lg shadow-smooth">
+              <v-radio-group v-model="coreStore.filter"
+                @update:model-value="emitter.emit('filter-changed', coreStore.filter)">
+                <v-radio v-for="(item, index) in options" :key="index" :value="item" class="mt-0" hide-details
+                  :label="item.name">
+                </v-radio>
+              </v-radio-group>
+            </BaseCard>
           </v-menu>
+          <div class="mr-5 ml-2 mt-1 cursor-pointer"
+            @click="isAuthenticated ? $router.push({ name: 'Transactions' }) : coreStore.OpenDialog(nonAuthSubscriptionDialog)">
+            <v-tooltip text="Tooltip " location="bottom" content-class="bg-transparent">
+              <template v-slot:activator="{ props }">
+                <img v-bind="props" height="45" src="@/assets/Burst_icon.png" alt="" srcset="">
+              </template>
+              <template #default>
+                <BaseCard v-if="!loader" class="pa-3 rounded-lg elevation-5">
+                  Burst: {{ balance ? addTrailingCommas(balance) + ' points' : 'Buy more!' }}
+                </BaseCard>
+              </template>
+            </v-tooltip>
+          </div>
           <template v-if="mdAndUp">
             <div v-if="!isAuthenticated" class="auth-toggle-btn-class">
               <v-btn-toggle variant="outlined" density="compact" dense rounded="xl" :border="true" divided>
@@ -41,47 +50,78 @@
                 </v-btn>
               </v-btn-toggle>
             </div>
-            <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
+            <v-menu v-else-if="isAuthenticated" offset-y transition="slide-x-transition" :close-on-content-click="true">
+              <template v-slot:activator="{ props }">
+                <BaseBtn v-bind="props" class="ma-2" variant="outlined" icon="mdi-account" color="secondary"
+                  size="small" />
+              </template>
+              <BaseCard class="py-3 px-2 rounded-lg shadow-smooth">
+                <v-list density="compact">
+                  <v-list-item v-for="(item, index) in accountMenuItems" :key="index" :value="index" color="primary"
+                    @click="item.method">
+                    <template #prepend>
+                      <v-icon>
+                        {{ item.icon }}
+                      </v-icon>
+                    </template>
+                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </BaseCard>
+            </v-menu>
+            <!-- <BaseBtn variant="outlined" color="secondary" class="font-weight-bold auth-btn secondary--text"
               v-else-if="isAuthenticated" @click="logout">
               <v-icon left size="26">mdi-account-circle</v-icon> Sign out
-            </BaseBtn>
+            </BaseBtn> -->
           </template>
-
-
           <BaseBtn class="ma-2 hidden-lg-and-up" variant="outlined" icon="mdi-menu" color="secondary"
             @click="coreStore.setDrawer(!coreStore.isDrawerOpen)" size="small" />
         </div>
       </div>
+      <div v-if="smAndDown" class="search-field d-flex align-center">
+        <BaseTextfield v-model="searchText" color="primary" variant="outlined" rounded hide-details
+          append-inner-icon="mdi-magnify" placeholder="Search" label="Search" outlined density="compact"
+          @click:appendInner="search" @keyup.enter="search" />
+      </div>
     </v-app-bar>
-
     <Drawer />
+    <NonAuthDialog content-type="feature" />
   </nav>
 </template>
 
 <script setup>
-import { BaseTextfield, BaseBtn } from '@/components/base'
+import { BaseTextfield, BaseBtn, BaseCard } from '@/components/base'
 import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useEmitter } from "@/composables";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from "vue-router";
+import { useEmitter, useHelper } from "@/composables";
 import Drawer from '../drawer/index.vue'
 import { useAuthStore, useCoreStore } from '@/store';
 import { toRefs } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { NonAuthDialog } from '@/components/shared';
+import { useTransactions } from '@/views/transactions/useTransactions';
+import { onBeforeMount } from 'vue';
 
-const emits = defineEmits(['search'])
+const emits = defineEmits(['search','filter-changed'])
 
-const { isAuthenticated } = toRefs(useAuthStore())
+const { isAuthenticated, setAuth } = toRefs(useAuthStore())
 const coreStore = useCoreStore()
+const { addTrailingCommas } = useHelper()
 
-const { mdAndUp } = useDisplay()
+const { mdAndUp, smAndDown } = useDisplay()
 
 const route = useRoute()
 const router = useRouter()
 const emitter = useEmitter()
+const { balance, loader, getBalance } = useTransactions()
 
-const filter = ref([])
+const nonAuthSubscriptionDialog = 'nonAuthSubscription'
+const videoFilter = JSON.parse(localStorage.getItem('videos-filter')) 
+
+// const filter = ref({ name: "All", value: "" })
 
 const options = [
+  { name: "All", value: "" },
   { name: "YouTube Hosted", value: "external" },
   { name: "BYODA Hosted", value: "published" },
 ]
@@ -89,10 +129,31 @@ const options = [
 const searchText = ref("")
 
 const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("domain");
-  window.location.reload();
+  localStorage.clear()
+  if (route.name !== 'Home') {
+    router.push({ name: 'Home' })
+    setAuth.value()
+  } else {
+    window.location.reload()
+  }
 }
+
+const accountMenuItems = [
+  {
+    title: 'Logout',
+    icon: 'mdi-logout',
+    method: logout
+  },
+  {
+    title: 'Settings',
+    icon: 'mdi-cog-outline',
+    method: () => {
+      router.push({ name: 'Settings' })
+    }
+  },
+]
+
+
 
 
 const search = async () => {
@@ -104,9 +165,30 @@ const search = async () => {
     query: { "search_query": searchText.value },
   });
 }
+const getUser = () => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  if (user?.show_external_assets) {
+    coreStore.filter = { "name": "BYODA Hosted", "value": "published" }
+  }
+  emitter.emit('filter-changed', coreStore.filter, user)
+}
 
 onMounted(() => {
-  filter.value = JSON.parse(localStorage.getItem('videos-filter')) || []
+  if (isAuthenticated.value) {
+    getBalance()
+  }
+  if(videoFilter){
+    coreStore.filter = videoFilter 
+  }
+  getUser()
+ 
+})
+
+
+onBeforeRouteUpdate((to, from) => {
+  if (from.name === 'Search' && to.name !== 'Search') {
+    searchText.value = null
+  }
 })
 
 </script>
@@ -177,51 +259,6 @@ onMounted(() => {
     right: 0;
   }
 
-  // .vb>.vb-dragger>.vb-dragger-styler {
-  //   -webkit-backface-visibility: hidden;
-  //   backface-visibility: hidden;
-  //   -webkit-transform: rotate3d(0, 0, 0, 0);
-  //   transform: rotate3d(0, 0, 0, 0);
-  //   -webkit-transition: background-color 100ms ease-out, margin 100ms ease-out,
-  //     height 100ms ease-out;
-  //   transition: background-color 100ms ease-out, margin 100ms ease-out,
-  //     height 100ms ease-out;
-
-  //   margin: 5px 0px 0px 0;
-  //   border-radius: 20px;
-  //   height: calc(100% - 10px);
-  //   display: block;
-  // }
-
-  // .v-navigation-drawer__content:hover .vb>.vb-dragger>.vb-dragger-styler {
-  //   width: 5px;
-  //   background-color: #e0e0e0;
-  // }
-
-  // .vb.vb-scrolling-phantom>.vb-dragger>.vb-dragger-styler {
-  //   background-color: rgba(48, 121, 244, 0.3);
-  //   background-color: rgba(255, 255, 255, 0.3);
-  // }
-
-  // .vb>.vb-dragger:hover>.vb-dragger-styler {
-  //   margin: 0px;
-  //   width: 10px;
-  // }
-
-  // .vb.vb-dragging>.vb-dragger>.vb-dragger-styler {
-  //   background-color: rgba(48, 121, 244, 0.5);
-  //   margin: 0px;
-  //   height: 100%;
-  // }
-
-  // .vb.vb-dragging-phantom>.vb-dragger>.vb-dragger-styler {
-  //   background-color: rgba(48, 121, 244, 0.5);
-  // }
-
-  // .vb::-webkit-scrollbar-thumb{
-  //   background-color: red !important;
-  // }
-
   .auth-btn {
     height: 40px;
     border-radius: 4px;
@@ -231,8 +268,26 @@ onMounted(() => {
     min-width: 600px;
   }
 
+
+
   .toolbar-container {
     width: 100%;
+  }
+
+  .v-toolbar__content {
+    display: block;
+  }
+}
+
+@media (max-width: 440px) {
+
+  .search-field {
+    // background-color: red;
+    margin-top: 5px;
+    padding-inline: 10px;
+    ;
+    min-width: 200px !important;
+    display: inline-block;
   }
 }
 </style>
