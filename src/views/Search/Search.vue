@@ -19,6 +19,7 @@ import { useRoute } from "vue-router";
 import { watch } from "vue";
 import { useVideo } from "@/composables";
 import { BaseInfiniteScroller } from "@/components/base/index.js";
+import { onBeforeUnmount } from "vue";
 
 const route = useRoute()
 
@@ -43,6 +44,10 @@ watch(() => route.query.search_query, async () => {
 }, {
     deep: true,
     immediate: false
+})
+
+onBeforeUnmount(()=>{
+    text.value = null
 })
 
 

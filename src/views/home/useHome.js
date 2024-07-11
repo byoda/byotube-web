@@ -1,24 +1,29 @@
 import { useVideo } from "@/composables";
-import { useAuthStore } from "@/store";
+import { useChannelService } from "@/services";
+import { useAuthStore, useCoreStore } from "@/store";
 import moment from "moment";
-import { computed, ref, toRefs } from "vue";
-import { useRouter } from "vue-router";
+import { computed, getTransitionRawChildren, ref, toRefs, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 export const useHome = (props) => {
   const router = useRouter();
-  const { width: windowWidth } = useDisplay();
+  const route = useRoute()
+  
+  const coreStore = useCoreStore()
 
-  const { isAuthenticated } = toRefs(useAuthStore());
+  const { isAuthenticated, isBtLiteAccount } = toRefs(useAuthStore());
 
   const { getSegmentedVideos, getMemberAllVideos } = useVideo();
+  const { getShortcutData } = useChannelService()
 
   const options = [
     { name: "YouTube Hosted", value: "external" },
     { name: "BYODA Hosted", value: "published" },
   ];
 
-  const ingestStatus = ref([]);
+  const ingestStatus = ref(coreStore.filter);
+  const videosAccordingToSize = ref(0);
 
   const RECENT_UPLOADS = "recent_uploads";
 
@@ -69,13 +74,6 @@ export const useHome = (props) => {
         ]
   );
 
-  const videosAccordingToSize = computed(() => {
-    return windowWidth.value >= 1800 && windowWidth.value < 2100
-      ? 10
-      : windowWidth.value > 2100
-      ? 12
-      : 9;
-  });
 
   const loadAllVideos = ref(false);
 
@@ -83,7 +81,7 @@ export const useHome = (props) => {
     return moment(date).fromNow();
   };
 
-  const getAllSegmentedVideos = () => {
+  const getAllSegmentedVideos = async () => {
     loadAllVideos.value = true;
     sections?.value.forEach(async (section, index) => {
       await mapSegmentedVideos(section, index);
@@ -95,7 +93,9 @@ export const useHome = (props) => {
     try {
       section.loading = true;
       const videosData =
-        isAuthenticated.value && section.key === RECENT_UPLOADS
+        isAuthenticated.value &&
+        !isBtLiteAccount.value &&
+        section.key === RECENT_UPLOADS
           ? await getMemberAllVideos(
               section?.after,
               first ? first : videosAccordingToSize.value,
@@ -159,15 +159,28 @@ export const useHome = (props) => {
     router.push({ name: "Watch", query });
   };
 
+  const getShortcut = async () => {
+    try {
+      const { data, status }  = await getShortcutData(route.params?.shortcut)
+      if(status === 200){
+        router.push(`/channels?member_id=${data?.member_id}&channel=${data?.creator}`)
+      }
+    } catch (error) {
+      const { response } = error
+    }
+  }
+
   return {
     options,
     sections,
     loadAllVideos,
     ingestStatus,
+    videosAccordingToSize,
     dateFormatter,
     getAllSegmentedVideos,
     emptySectionVideos,
     mapSegmentedVideos,
     moveToWatch,
+    getShortcut
   };
 };

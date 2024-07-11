@@ -12,16 +12,20 @@ import AccountOptions from "@/views/Auth/account-options/AccountOptions.vue";
 import Lists from "@/views/lists/Lists.vue";
 import { useAuthStore } from "@/store";
 import VerifyEmail from "@/views/verify-email/VerifyEmail.vue";
+import Payment from "@/views/payment/Payment.vue";
+import Transactions from "@/views/transactions/Transactions.vue";
+import GetPaid from "@/views/get-paid/GetPaid.vue";
+import Settings from "@/views/settings/Settings.vue";
 
 const routes = [
   {
     path: "/",
-    alias: "/byotube",
     name: "NonAuth",
     component: NonAuth,
     children: [
       {
-        path: "/",
+        path: "/:shortcut?",
+        alias: ['/index.html','/'],
         name: "Home",
         component: Home,
       },
@@ -59,6 +63,26 @@ const routes = [
         path: "history",
         name: "History",
         component: History,
+      },
+      {
+        path: "purchase",
+        name: "Payment",
+        component: Payment,
+      },
+      {
+        path: "burst",
+        name: "Transactions",
+        component: Transactions,
+      },
+      {
+        path: "get-paid",
+        name: "GetPaid",
+        component: GetPaid,
+      },
+      {
+        path: "settings",
+        name: "Settings",
+        component: Settings,
       },
     ],
   },
@@ -106,14 +130,14 @@ router.beforeEach((to, from, next) => {
     "Gaming",
     "Channels",
   ];
-  const authRoutes = ["Host"];
+  const authRoutes = ["Payment", "Transactions"];
   const authPages = ["SignIn", "Signup"];
   const isAuthPages = authPages.includes(to.name);
   const isAuthRoute = authRoutes.includes(to.name);
   const isNonAuthRoute = nonAuthRoutes.includes(to.name);
 
   if (authStore.isAuthenticated && isAuthPages) {
-    next("home");
+    next("/");
   } else if (!authStore.isAuthenticated && isAuthRoute) {
     next("signin");
   } else {

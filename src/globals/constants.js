@@ -10,6 +10,6 @@ export const  IngestStatus = Object.freeze({
 })
 
 export const AccountType = Object.freeze({
-    LITE: 'lite',
+    LITE: 'btlite',
     BYOTUBE: 'byotube'
 })

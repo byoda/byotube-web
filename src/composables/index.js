@@ -8,3 +8,4 @@ export * from "./use-emitter/useEmitter";
 export * from "./use-component/useComponent";
 export * from "./use-asset-reaction/useAssetReaction";
 export * from "./use-app/useApp"
+export * from "./use-burstpoints/useBurstPoints"

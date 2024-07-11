@@ -1,9 +1,18 @@
 import { useFollowService } from "@/services";
 import { ref } from "vue";
+import { useHelper } from "../use-helper/useHelper";
+import { constants } from "@/globals/constants";
 
 export const useFollow = () => {
-  const { follow, informPodAboutFollow, getFollowedAccounts, followBtLite } =
-    useFollowService();
+  const {
+    follow,
+    informPodAboutFollow,
+    getFollowedAccounts,
+    followBtLite,
+    unfollowBtLite,
+  } = useFollowService();
+
+  const { toQueryString } = useHelper();
 
   const followedAccounts = ref(null);
 
@@ -16,7 +25,7 @@ export const useFollow = () => {
     user: null,
   };
 
-  const service_id = import.meta.env.VITE_BYOTUBE_SERVICE_ID;
+  const service_id = constants.BYOTUBE_SERVICE_ID;
 
   //Follow
   const followAccount = (channelName, origin, createdTimestamp) => {
@@ -40,6 +49,17 @@ export const useFollow = () => {
       created_timestamp: createdTimestamp,
     };
     return followBtLite(body);
+  };
+
+  const unfollowWithBtLiteAccount = (channelName, origin) => {
+    const body = {
+      relation: "follow",
+      annotation: channelName,
+      member_id: origin,
+    };
+
+    const query = toQueryString(body);
+    return unfollowBtLite(query);
   };
 
   const informPodAboutAccountFollow = ({
@@ -90,22 +110,27 @@ export const useFollow = () => {
   };
 
   const getFollowedChannels = async (serviceId) => {
-    try{
-      const followedChannels =  await getFollowedAccounts(
+    try {
+      const followedChannels = await getFollowedAccounts(
         {
           domain: initialState.domain,
           serviceId: serviceId ? serviceId : service_id,
         },
         {}
       );
-      const getFollowedIds = followedChannels?.data?.edges?.map(channel => {
-        return channel?.node?.member_id
-      })
-  
-      localStorage.setItem('followedAccounts', JSON.stringify(getFollowedIds))
-  
-      return followedChannels
-    }catch(error){
+      const getFollowedIds = followedChannels?.data?.edges?.map((channel) => {
+        return channel?.node?.annotations?.map((channelAnnotation) => {
+          return {
+            member_id: channel?.node?.member_id,
+            creator: channelAnnotation,
+          };
+        });
+      })?.flat();
+
+      localStorage.setItem("followedAccounts", JSON.stringify(getFollowedIds));
+
+      return followedChannels;
+    } catch (error) {
       console.error("Error", error);
     }
   };
@@ -117,6 +142,7 @@ export const useFollow = () => {
     setFollowed,
     followChannel,
     getFollowedChannels,
-    followWithBtLiteAccount
+    followWithBtLiteAccount,
+    unfollowWithBtLiteAccount,
   };
 };
