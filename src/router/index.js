@@ -24,7 +24,7 @@ const routes = [
     component: NonAuth,
     children: [
       {
-        path: "/:shortcut?",
+        path: "/:shortcut?/:referralCode?",
         alias: ['/index.html','/'],
         name: "Home",
         component: Home,
