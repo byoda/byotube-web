@@ -33,6 +33,10 @@ export const usePaymentService = () => {
   };
 
   const requestSecretKey = (body) => {
+    const refferer = localStorage.getItem('burst_referrer')
+    if(refferer){
+      body.referrer = refferer
+    }
     return byopayApi.post(`/pay/purchase`, body);
   };
 

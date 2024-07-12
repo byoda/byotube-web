@@ -162,6 +162,9 @@ export const useHome = (props) => {
   const getShortcut = async () => {
     try {
       const { data, status }  = await getShortcutData(route.params?.shortcut)
+      if(status == 404){
+        localStorage.setItem('burst_referrer', route.params?.shortcut)
+      }
       if(status === 200){
         router.push(`/channels?member_id=${data?.member_id}&channel=${data?.creator}`)
       }
