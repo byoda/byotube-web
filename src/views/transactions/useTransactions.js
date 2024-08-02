@@ -80,6 +80,9 @@ export const useTransactions = () => {
   const transactionTypes = {
     purchase: "Purchase",
     streaming: "Streaming",
+    stream: "Stream",
+    refund: "Refund",
+    donate: "Donate",
     payout: "Pay-Out",
     receive: "Receive",
   };
