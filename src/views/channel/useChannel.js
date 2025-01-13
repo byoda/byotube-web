@@ -114,29 +114,32 @@ export const useChannel = () => {
     try {
       loading.value = true;
 
-    const queryObj = {
-      creator: creator || channelName.value,
-      member_id: memberId || remoteId.value,
-    };
-    
-    const query = toQueryString(queryObj);
-    const { data } = await getChannelDataFromCentralAPI(query);
-    channel.value = data?.node;
-    return data;
-  } catch (error) {
-    console.error("Error", error)      
-  } finally {
+      const queryObj = {
+        creator: creator || channelName.value,
+        member_id: memberId || remoteId.value,
+      };
+
+      const query = toQueryString(queryObj);
+      const { data } = await getChannelDataFromCentralAPI(query);
+      channel.value = data?.node;
+      return data;
+    } catch (error) {
+      console.error("Error", error);
+    } finally {
       loading.value = false;
-    }    
+    }
   };
 
-  const getChannelVideos = async (load) => {
+  const getChannelVideos = async (load, memberId) => {
     try {
       sections.value.loading = true;
       const data = await getSegmentedVideos(
         channelName.value,
         sections.value.after,
-        9
+        9,
+        {},
+        {},
+        memberId
       );
       if (!data?.page_info?.has_next_page && !data?.edges?.length) {
         load?.done("empty");
@@ -242,7 +245,7 @@ export const useChannel = () => {
   const shortcutByValue = async (memberId, creator) => {
     try {
       const { data } = await getShortcutByValue(memberId, creator);
-      channelShortcut.value = data.shortcut
+      channelShortcut.value = data.shortcut;
     } catch (error) {
       console.error("Error", error);
     }

@@ -88,9 +88,9 @@ export const useVideo = () => {
     after = null,
     first = 8,
     ingestStatus = {}, //optional ingest status array for filtering on base external and pod content
-    options = null //options to compare with ingest status array and it is required with ingest staus array
+    options = null, //options to compare with ingest status array and it is required with ingest staus array
+    memberId
   ) => {
-    const memberId = localStorage.getItem("member_id");
     const filter = {
       first: first,
       list_name: listName,
