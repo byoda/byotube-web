@@ -67,7 +67,7 @@
                 :channel="video.origin" />
             </div>
           </div>
-          <BaseInfiniteScroller class="base-scroller" :items="sections.videos" @load="getChannelVideos($event)">
+          <BaseInfiniteScroller class="base-scroller" :items="sections.videos" @load="getChannelVideos($event, $route?.query?.member_id)">
             <template #loading>
               <div class="grid-layout">
                 <div class="mt-6 w-100 " v-for="skeleten in 3" :key="skeleten">

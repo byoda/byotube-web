@@ -28,9 +28,7 @@ export const useVideo = () => {
     getAssetFromCentralData,
   } = useVideoService();
 
-  const { attestUserBurstPoints } = useBurstPoints()
-
-
+  const { attestUserBurstPoints } = useBurstPoints();
 
   const { compareArrays } = useHelper();
 
@@ -47,6 +45,23 @@ export const useVideo = () => {
   const key_id = ref(null);
   const content_token = ref(null);
   const videoOptions = ref({});
+
+  const drawerPages = [
+    "gaming",
+    "comedy",
+    "sports",
+    "news %26 politics",
+    "film %26 animation",
+    "travel %26 events",
+    "travel %26 events",
+    "howto %26 style",
+    "science %26 technology",
+    "nonprofits %26 activism",
+    "recent_uploads",
+    "Recommended",
+    "entertainment",
+    "education"
+  ];
 
   const service_id = constants.BYOTUBE_SERVICE_ID;
   const initialState = {
@@ -73,7 +88,8 @@ export const useVideo = () => {
     after = null,
     first = 8,
     ingestStatus = {}, //optional ingest status array for filtering on base external and pod content
-    options = null //options to compare with ingest status array and it is required with ingest staus array
+    options = null, //options to compare with ingest status array and it is required with ingest staus array
+    memberId
   ) => {
     const filter = {
       first: first,
@@ -86,6 +102,10 @@ export const useVideo = () => {
 
     if (ingestStatus?.value && !compareArrays(ingestStatus, options)) {
       filter["ingest_status"] = ingestStatus?.value;
+    }
+    
+    if(!drawerPages.includes(listName)){
+      filter['member_id'] = memberId
     }
 
     const videos = await getAll(filter)
@@ -247,20 +267,20 @@ export const useVideo = () => {
 
   const isAttestationSixtyMinutesOld = () => {
     const attestation = JSON.parse(localStorage.getItem("attestation"));
-    return ((new Date() - new Date(attestation?.created_timestamp))/60000) > 60
-  }
+    return (new Date() - new Date(attestation?.created_timestamp)) / 60000 > 60;
+  };
 
   const getItem = async (edge) => {
     const SIGNEDBY = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
     const SIGNED_TOKEN = "dummy";
 
-    if(isAttestationSixtyMinutesOld()){
-      await attestUserBurstPoints()
+    if (isAttestationSixtyMinutesOld()) {
+      await attestUserBurstPoints();
     }
 
     const attestation = JSON.parse(localStorage.getItem("attestation"));
-    const memberIdType = localStorage.getItem("id_type")
-    const memberId = localStorage.getItem("member_id")
+    const memberIdType = localStorage.getItem("id_type");
+    const memberId = localStorage.getItem("member_id");
 
     let asset = edge.node;
     asset.origin = edge.origin;
@@ -271,9 +291,9 @@ export const useVideo = () => {
       member_id_type: memberIdType,
       attestation: attestation,
     };
-    if(!memberIdType){
-      delete body.member_id
-      delete body.member_id_type
+    if (!memberIdType) {
+      delete body.member_id;
+      delete body.member_id_type;
     }
     if (asset.ingest_status != "external") {
       let apiUrl = `https://proxy.${constants.BYODA_NETWORK}/${constants.BYOTUBE_SERVICE_ID}/${edge.origin}/api/v1/pod/content/token`;
