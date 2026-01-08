@@ -1,7 +1,7 @@
 <template>
     <div>
         <h3>
-            {{ comments?.length }} Comments 
+            {{ comments?.length }} Comments
         </h3>
         <AddCommentInput v-model="comment" :comment-loader="commentLoader"
             @add-comment="isAuthenticated ? (isBtLiteAccount ? addBtLiteComment(comment, asset, asset.origin) : addComment(comment, asset, asset.origin)) : coreStore.OpenDialog(nonAuthSubscriptionDialog)" />
@@ -11,7 +11,7 @@
         <template v-else>
             <div v-for="(edge, index) in comments" :key="index" class="d-flex align-items-center mt-4 pb-5">
                 <div>
-                    <img class="rounded-circle" :src="edge?.node?.creator_thumbnail" height="40" width="40" alt=""
+                    <img class="rounded-circle" :src="edge?.node?.channel_thumbnail" height="40" width="40" alt=""
                         srcset="">
                 </div>
                 <div class="w-100 pl-4 mt-n2">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <BaseBtn v-if="edge?.node?.replyThread?.length" color="blue-darken-2" variant="text" density="comfortable" class="rounded-pill px-3 font-weight-medium text-body-2 mr-2" @click="edge.node.openReply = !edge.node.openReply">
-                        {{edge?.node?.replyThread?.length}} {{ edge?.node?.replyThread?.length > 1 ? 'replies' : 'reply' }} 
+                        {{edge?.node?.replyThread?.length}} {{ edge?.node?.replyThread?.length > 1 ? 'replies' : 'reply' }}
                         <template #prepend>
                             <div class="mr-n1">
                                 <v-icon>
@@ -48,7 +48,7 @@
                         <div v-for="(reply, replyIndex) in edge?.node?.replyThread" :key="replyIndex" class="ml-3">
                             <div class="d-flex align-items-center mt-4 pb-5">
                                 <div class="pt-1">
-                                    <img class="rounded-circle" :src="edge?.node?.creator_thumbnail" height="24" width="24"
+                                    <img class="rounded-circle" :src="edge?.node?.channel_thumbnail" height="24" width="24"
                                         alt="" srcset="">
                                 </div>
                                 <div class="pl-3">

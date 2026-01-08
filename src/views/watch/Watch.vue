@@ -113,12 +113,12 @@
                               @click="movetoChannel"
                             >
                               <v-img
-                                v-if="asset?.creator_thumbnail"
+                                v-if="asset?.channel_thumbnail"
                                 class="elevation-6"
-                                :src="asset?.creator_thumbnail"
+                                :src="asset?.channel_thumbnail"
                               ></v-img>
                               <span v-else class="white--text headline">
-                                {{ asset?.creator?.split("")[0].toUpperCase() }}
+                                {{ asset?.channel?.split("")[0].toUpperCase() }}
                               </span>
                             </v-avatar>
 

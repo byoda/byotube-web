@@ -46,24 +46,24 @@
                 <v-img
                   height="40"
                   max-width="40"
-                  v-if="video.creator_thumbnail"
+                  v-if="video.channel_thumbnail"
                   class="elevation-6"
-                  :src="video.creator_thumbnail"
+                  :src="video.channel_thumbnail"
                 ></v-img>
                 <span v-else class="white--text headline">
-                  {{ video?.creator?.split("")[0].toUpperCase() }}</span
+                  {{ video?.channel?.split("")[0].toUpperCase() }}</span
                 >
               </v-avatar>
             </template>
           </v-menu>
           <v-avatar v-else :size="36">
             <v-img
-              v-if="video.creator_thumbnail"
+              v-if="video.channel_thumbnail"
               class="elevation-6"
-              :src="video.creator_thumbnail"
+              :src="video.channel_thumbnail"
             ></v-img>
             <span v-else class="white--text headline">
-              {{ video?.creator?.split("")[0].toUpperCase() }}</span
+              {{ video?.channel?.split("")[0].toUpperCase() }}</span
             >
           </v-avatar>
         </div>
@@ -137,11 +137,11 @@
                 >
                   {{
                     `${
-                      video?.creator?.length > 10 &&
+                      video?.channel?.length > 10 &&
                       video?.ingest_status !== EXTERNAL &&
                       showBurstIcon &&
                       smallCard
-                        ? `${video?.creator?.slice(0, 10)}...`
+                        ? `${video?.channel?.slice(0, 10)}...`
                         : video?.creator
                     }`
                   }}
@@ -184,12 +184,12 @@
                 <img
                   height="40"
                   max-width="40"
-                  v-if="video?.creator_thumbnail"
+                  v-if="video?.channel_thumbnail"
                   class="elevation-6"
-                  :src="video?.creator_thumbnail"
+                  :src="video?.channel_thumbnail"
                 />
                 <span v-else class="white--text headline">
-                  {{ video?.creator?.split("")[0].toUpperCase() }}</span
+                  {{ video?.channel.split("")[0].toUpperCase() }}</span
                 >
               </v-avatar>
               <v-card-subtitle
